@@ -4,7 +4,7 @@ import { PersonCircle, Stack, Basket2Fill, PieChartFill } from 'react-bootstrap-
 
 const SideBar = () => {
   return(
-    <Nav variant="pills" className="col-md-2 vh-100 p-1 d-block bg-light">
+    <Nav variant="pills" className="col-md-2 p-1 d-block bg-light">
       <Nav.Item>
         <Nav.Link className="border nav-link m-2 bg-white" aria-current="page" href="#"><PersonCircle /> Личный кабинет</Nav.Link>
       </Nav.Item>

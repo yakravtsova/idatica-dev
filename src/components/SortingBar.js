@@ -1,5 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import NavBar from 'react-bootstrap/NavBar';
+import NavBar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { ArrowDownUp } from 'react-bootstrap-icons';
 

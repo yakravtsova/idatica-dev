@@ -1,0 +1,5 @@
+html, body, #root, #root > div {
+    min-height: 100vh;
+}
+
+#root > div { padding-top: 1rem; }

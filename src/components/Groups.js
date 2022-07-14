@@ -19,19 +19,15 @@ import {
     TrashFill
 } from "react-bootstrap-icons";
 import Table from "react-bootstrap/Table";
+import UpdateGroupPopup from './UpdateGroupPopup';
 
-const Groups = () => {
-    const [view, setView] = useState(false);
-    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
     const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
+    const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
 
-    const handleMode = () => {
-        setView(!view);
-    }
-
-    const handleDeletePopupOpen = () => {
-        setIsDeletePopupOpen(!isDeletePopupOpen);
+    const handleEditGroupPopupOpen = () => {
+        setIsEditGroupPopupOpen(!isEditGroupPopupOpen);
     }
 
     const handleEditLinkPopupOpen = () => {
@@ -114,7 +110,7 @@ const Groups = () => {
                         />
                     </td>
                     <td><Button size="sm" variant="light"><Plus/></Button></td>
-                    <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill/></Button></td>
+                    <td><Button size="sm" variant="light" onClick={handleEditGroupPopupOpen}><PencilFill/></Button></td>
                     <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button></td>
                 </tr>
 
@@ -143,6 +139,14 @@ const Groups = () => {
                 </tr>
                 </tbody>
             </Table>
+            <DeletePopup 
+                isOpen={isDeletePopupOpen} 
+                onClose={handleDeletePopupOpen} 
+                okButtonText="Удалить" 
+                cancelButtonText="Не удалять" 
+                bodyText="Группа удаляется со всеми товарами без возможности восстановления. Вы хотите удалить группу?" 
+            />
+            <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen}  />
 
         </Container>
     )

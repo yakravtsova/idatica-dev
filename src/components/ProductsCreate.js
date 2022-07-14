@@ -30,7 +30,7 @@ const ProductsCreate = () => {
                 </div>
 
                 <div className="d-flex align-items-center">
-                    <Form.Control className="m-1" type="text" placeholder="Ссылка на товар"></Form.Control>
+                    <Form.Control className="m-1" type="url" placeholder="Ссылка на товар"></Form.Control>
 
                     <Form.Select className="m-1">
                         <option defaultValue="selected">Регион *</option>

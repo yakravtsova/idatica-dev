@@ -7,41 +7,19 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 import Kyrt from '../images/kyrt.jpg';
 import { CaretDownFill, CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 
-const Product = ({ view, isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleReportingProblemPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
-  const menuRef = useRef();
+  
+  
   const handleMenuPopupOpen = () => {
     setIsMenuPopupOpen(!isMenuPopupOpen);
   }
 
-  useEffect(() => {
-    const closeByEscape = (evt) => {
-      if (evt.key === 'Escape') {
-        handleMenuPopupOpen();
-        console.log(menuRef.current)
-      }
-    }
-    const closeByClick = (evt) => {
-      console.log(evt.target);
-      if (menuRef.current && !menuRef.current.contains(evt.target)) {
-        handleMenuPopupOpen();
-        
-      }
-    }
-    if (isMenuPopupOpen) {
-      document.addEventListener('keydown', closeByEscape);
- //     document.addEventListener('click', closeByClick);
-      return () => {
-        document.removeEventListener('keydown', closeByEscape);
-  //      document.removeEventListener('click', closeByClick);
-      }
-    }
-
-    }, [isMenuPopupOpen]
-  )
   return(
     <Card className="m-1">
       <Row className="d-flex">
@@ -65,12 +43,21 @@ const Product = ({ view, isDeletePopupOpen, handleDeletePopupOpen }) => {
           <Card.Text>Цена:</Card.Text>
           <Card.Text>31000&#8381;</Card.Text>
         </Col>
-        <Col xs="auto" className="position-relative">
+        <Col xs="auto">
+          <OverlayTrigger 
+            rootClose 
+            trigger="click" 
+            placement="left"
+            overlay={
+              <Popover>
+                <ButtonGroup vertical>
+                  <Button><PencilFill /> Редактировать</Button>
+                  <Button onClick={handleDeletePopupOpen}><TrashFill /> Удалить товар</Button>
+                </ButtonGroup>
+              </Popover>
+            }>
           <Button size="xs" variant="light" onClick={handleMenuPopupOpen}><ThreeDots /></Button>
-          <ButtonGroup ref={menuRef} vertical className={`position-absolute ${!isMenuPopupOpen && "d-none"}`} style={{right: "10px", width: "160px"}}>
-            <Button><PencilFill /> Редактировать</Button>
-            <Button><TrashFill /> Удалить товар</Button>
-          </ButtonGroup>
+          </OverlayTrigger>
         </Col>
       </Row>
       <Container className={`p-1 ${!view && "d-none"}`}>
@@ -101,10 +88,10 @@ const Product = ({ view, isDeletePopupOpen, handleDeletePopupOpen }) => {
               <td><span class="text-danger"><CaretDownFill /> 3.3%</span></td>
               <td>Москва</td>
               <td>Нет</td>
-              <td><a class="link-dark" href="#"><ExclamationTriangleFill /></a></td>
+              <td><Button size="xs" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td style={{wordWrap: "normal"}}>4896-7352-14</td>
-              <td><a class="link-dark" href="#"><PencilFill /></a></td>
-              <td><a class="link-dark" href="#"><TrashFill /></a></td>
+              <td><Button size="xs" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
+              <td><Button size="xs" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
             </tr>
 
             <tr>
@@ -118,8 +105,8 @@ const Product = ({ view, isDeletePopupOpen, handleDeletePopupOpen }) => {
               <td>Нет</td>
               <td><a class="link-dark" href="#"><ExclamationTriangleFill /></a></td>
               <td>A451-259</td>
-              <td><a class="link-dark" href="#"><PencilFill /></a></td>
-              <td><a class="link-dark" href="#"><TrashFill /></a></td>
+              <td><Button size="xs" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
+              <td><Button size="xs" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
             </tr>
           </tbody>
         </Table>

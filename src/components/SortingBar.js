@@ -1,5 +1,5 @@
 import Container from 'react-bootstrap/Container';
-import NavBar from 'react-bootstrap/NavBar';
+import Navbar from 'react-bootstrap/NavBar';
 import Nav from 'react-bootstrap/Nav';
 import { ArrowDownUp } from 'react-bootstrap-icons';
 
@@ -7,7 +7,7 @@ import { ArrowDownUp } from 'react-bootstrap-icons';
 const SortingBar = () => {
   return(
     <Container>
-      <NavBar>
+      <Navbar>
         <Nav>
           <Nav.Link href="#"><ArrowDownUp /> Название</Nav.Link>
           <Nav.Link href="#"><ArrowDownUp /> Разница %</Nav.Link>
@@ -15,7 +15,7 @@ const SortingBar = () => {
           <Nav.Link href="#"><ArrowDownUp /> Последняя проверка</Nav.Link>
           <Nav.Link href="#"><ArrowDownUp /> Активно</Nav.Link>
         </Nav>
-      </NavBar>
+      </Navbar>
     </Container>
   )
 }

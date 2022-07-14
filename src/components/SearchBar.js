@@ -12,7 +12,6 @@ const SearchBar = ({ handleMode }) => {
     <>
       <Form className="d-flex flex-fill p-2 align-items-center">
         <InputGroup  className="m-1 mt-2 mb-3">
-          <InputGroup.Text><Search /></InputGroup.Text>
           <Form.Control placeholder="Поиск"
                         aria-label="Поиск" 
                         aria-describedby="button-addon2" />

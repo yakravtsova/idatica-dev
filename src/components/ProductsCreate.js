@@ -6,9 +6,9 @@ import {Accordion, Form} from "react-bootstrap";
 const ProductsCreate = () => {
 
     return (
-        <Container className="bg-white">
+        <Container fluid className="bg-white">
             <div className="d-flex align-items-center justify-content-between">
-                <h1>Новый товар</h1>
+                <h2>Новый товар</h2>
                 <Button variant="btn-outline-primary" className="btn-outline-primary">Добавить из файла</Button>
             </div>
 

@@ -51,8 +51,8 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleR
             overlay={
               <Popover>
                 <ButtonGroup vertical>
-                  <Button><PencilFill /> Редактировать</Button>
-                  <Button onClick={handleDeletePopupOpen}><TrashFill /> Удалить товар</Button>
+                  <Button variant="link"><PencilFill /> Редактировать</Button>
+                  <Button variant="link" onClick={handleDeletePopupOpen}><TrashFill /> Удалить товар</Button>
                 </ButtonGroup>
               </Popover>
             }>
@@ -60,7 +60,7 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleR
           </OverlayTrigger>
         </Col>
       </Row>
-      <Container className={`p-1 ${!view && "d-none"}`}>
+      <div className={`p-1 ${!view && "d-none"}`}>
         <Table responsive bordered size="sm" className="small mt-3">
           <thead>
             <tr className="align-middle">
@@ -88,10 +88,10 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleR
               <td><span class="text-danger"><CaretDownFill /> 3.3%</span></td>
               <td>Москва</td>
               <td>Нет</td>
-              <td><Button size="xs" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td style={{wordWrap: "normal"}}>4896-7352-14</td>
-              <td><Button size="xs" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
-              <td><Button size="xs" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
             </tr>
 
             <tr>
@@ -103,15 +103,15 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleR
               <td><span class="text-success"><CaretUpFill /> 36.6%</span></td>
               <td>Москва</td>
               <td>Нет</td>
-              <td><a class="link-dark" href="#"><ExclamationTriangleFill /></a></td>
+              <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td>A451-259</td>
-              <td><Button size="xs" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
-              <td><Button size="xs" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
             </tr>
           </tbody>
         </Table>
-        <Button variant="outline-secondary"><Plus /> Добавить ссылку</Button>
-      </Container>
+        <Button size="sm" variant="outline-secondary" className="mb-1"><Plus /> Добавить ссылку</Button>
+      </div>
     </Card>
   )
 }

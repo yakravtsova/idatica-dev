@@ -7,6 +7,7 @@ import SortingBar from './SortingBar';
 import DeletePopup from './DeletePopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
+import {Link} from "react-router-dom";
 
 const Products = () => {
   const [view, setView] = useState(false);  
@@ -31,15 +32,15 @@ const Products = () => {
   }
 
   return(
-    <div className="w-100">
-      <Container className="d-flex align-items-center">
-        <h1 className="p-4 pt-0 pb-0">Товары</h1>
+    <Container fluid>
+        <div className="d-flex align-items-center justify-content-between">
+        <h2>Товары</h2>
         <SearchBar handleMode={handleMode} />
-      </Container>
-      <Container>
-        <Button className="m-1">Добавить новый товар</Button>
+      </div>
+      <div>
+        <Link to="/products/create" className="m-1 btn btn-primary">Добавить новый товар</Link>
         <Button className="m-1">Добавить товары из файла</Button>
-      </Container>
+      </div>
       <SortingBar />
       <Product view={view}  
                 isDeletePopupOpen={isDeletePopupOpen} 
@@ -52,7 +53,7 @@ const Products = () => {
       <DeletePopup isOpen={isDeletePopupOpen} onClose={handleDeletePopupOpen} />
       <UpdateLinkPopup isOpen={isEditLinkPopupOpen} onClose={handleEditLinkPopupOpen} />
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
-    </div>
+    </Container>
   )
 }
 

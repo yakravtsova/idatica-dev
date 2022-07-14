@@ -6,8 +6,7 @@ import { ArrowDownUp } from 'react-bootstrap-icons';
 
 const SortingBar = () => {
   return(
-    <Container>
-      <Navbar>
+      <NavBar>
         <Nav>
           <Nav.Link href="#"><ArrowDownUp /> Название</Nav.Link>
           <Nav.Link href="#"><ArrowDownUp /> Разница %</Nav.Link>
@@ -15,8 +14,7 @@ const SortingBar = () => {
           <Nav.Link href="#"><ArrowDownUp /> Последняя проверка</Nav.Link>
           <Nav.Link href="#"><ArrowDownUp /> Активно</Nav.Link>
         </Nav>
-      </Navbar>
-    </Container>
+      </NavBar>
   )
 }
 

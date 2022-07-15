@@ -8,27 +8,35 @@ import DeletePopup from './DeletePopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
+import CreateLinkPopup from './CreateLinkPopup';
+import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 
-const Products = () => {
-  const [view, setView] = useState(false);  
-  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
+  const [view, setView] = useState(false);
   const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
+  const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
+  const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   
   const handleMode = () => {
     setView(!view);
   }
 
-  const handleDeletePopupOpen = () => {
-    setIsDeletePopupOpen(!isDeletePopupOpen);
-  }
 
   const handleEditLinkPopupOpen = () => {
     setIsEditLinkPopupOpen(!isEditLinkPopupOpen);
   }
 
+  const handleCreateLinkPopupOpen = () => {
+    setIsCreateLinkPopupOpen(!isCreateLinkPopupOpen);
+  }
+
   const handleReportingProblemPopupOpen = () => {
     setIsReportingProblemPopupOpen(!isReportingProblemPopupOpen);
+  }
+
+  const handleAddProductsFromFilePopupOpen = () => {
+    setIsAddProductsFromFilePopupOpen(!isAddProductsFromFilePopupOpen);
   }
 
   return(
@@ -39,20 +47,23 @@ const Products = () => {
       </div>
       <div>
         <Link to="/products/create" className="m-1 btn btn-primary">Добавить новый товар</Link>
-        <Button className="m-1">Добавить товары из файла</Button>
+        <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <SortingBar />
       <Product view={view}  
                 isDeletePopupOpen={isDeletePopupOpen} 
                 handleDeletePopupOpen={handleDeletePopupOpen}
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen}
+                handleCreateLinkPopupOpen={handleCreateLinkPopupOpen}
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}  />
       <Product view={view} />
       <Product view={view} />
       
-      <DeletePopup isOpen={isDeletePopupOpen} onClose={handleDeletePopupOpen} />
+      <DeletePopup isOpen={isDeletePopupOpen} onClose={handleDeletePopupOpen} title="Удалить?" okButtonText="Да" cancelButtonText="Нет" />
       <UpdateLinkPopup isOpen={isEditLinkPopupOpen} onClose={handleEditLinkPopupOpen} />
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
+      <CreateLinkPopup isOpen={isCreateLinkPopupOpen} onClose={handleCreateLinkPopupOpen} />
+      <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>
     </Container>
   )
 }

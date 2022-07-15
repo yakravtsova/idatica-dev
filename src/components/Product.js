@@ -12,7 +12,7 @@ import Popover from 'react-bootstrap/Popover';
 import Kyrt from '../images/kyrt.jpg';
 import { CaretDownFill, CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 
-const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleReportingProblemPopupOpen }) => {
+const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   
   
@@ -110,7 +110,7 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleR
             </tr>
           </tbody>
         </Table>
-        <Button size="sm" variant="outline-secondary" className="mb-1"><Plus /> Добавить ссылку</Button>
+        <Button size="sm" variant="outline-secondary" onClick={handleCreateLinkPopupOpen} className="mb-1"><Plus /> Добавить ссылку</Button>
       </div>
     </Card>
   )

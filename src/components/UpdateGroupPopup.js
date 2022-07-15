@@ -10,7 +10,7 @@ const UpdateGroupPopup = ({ isOpen, onClose }) => {
         <Form.Group className="mb-3" controlId="exampleForm.textInput">
           <Form.Control
             type="text"
-            placeholder="Название"
+            placeholder="Название группы"
             autoFocus
           />
         </Form.Group>

@@ -1,9 +1,15 @@
-import {useState} from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import {Accordion, Form} from "react-bootstrap";
 
 const ProductsCreate = () => {
+    const navigate = useNavigate();
+
+    const redirectToProducts = () => {
+        navigate("/products", {replace: true})
+    }
 
     return (
         <Container fluid className="bg-white">
@@ -60,7 +66,7 @@ const ProductsCreate = () => {
 
 
                 <div className="d-flex justify-content-center m-2 mb-3">
-                    <Button variant="primary" type="submit">Сохранить</Button>
+                    <Button variant="primary" type="submit" onClick={redirectToProducts}>Сохранить</Button>
                 </div>
 
             </Form>

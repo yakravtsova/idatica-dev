@@ -5,6 +5,8 @@ import {Form, Modal} from "react-bootstrap";
 import {EnvelopeOpenFill, PencilFill} from "react-bootstrap-icons";
 import {Link} from "react-router-dom";
 import Table from "react-bootstrap/Table";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Popover from 'react-bootstrap/Popover';
 
 const Profile = () => {
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
@@ -21,12 +23,35 @@ const Profile = () => {
     const [apiManualModalShow, setApiManualModalShow] = useState(false);
 
 
+
     return (
         <>
             <Container fluid className="bg-white">
                 <div className="d-flex align-items-center justify-content-between">
                     <h2>Личный кабинет</h2>
-                    <Button variant="link"><EnvelopeOpenFill/> Написать в поддержку</Button>
+                    <OverlayTrigger 
+                        rootClose 
+                        trigger="click" 
+                        placement="left"
+                        overlay={
+                            <Popover>
+                                <Popover.Body>
+                                    <p className='text-center'>
+                                        Напишите ваше<br/> <Link
+                                                                to='#'
+                                                                onClick={(e) => {
+                                                                    window.location.href = "mailto:manager@company.com";
+                                                                    e.preventDefault();
+                                                                }}
+        >
+            сообщение
+        </Link>
+                                    </p>
+                                </Popover.Body>
+                            </Popover>
+                        }>
+                        <Button variant="link"><EnvelopeOpenFill/> Написать в поддержку</Button>
+                    </OverlayTrigger>
                 </div>
 
                 <span className="text-decoration-underline">Аккаунт активен до: 20 сентября</span>

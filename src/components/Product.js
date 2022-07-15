@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -14,11 +15,15 @@ import { CaretDownFill, CaretUpFill, ExclamationTriangleFill, PencilFill, TrashF
 
 const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
-  
+  const navigate = useNavigate();
   
   const handleMenuPopupOpen = () => {
     setIsMenuPopupOpen(!isMenuPopupOpen);
   }
+
+  const redirectToProductsCreate = () => {
+    navigate("/products/create", {replace: true})
+}
 
   return(
     <Card className="m-1">
@@ -51,7 +56,7 @@ const Product = ({ view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleC
             overlay={
               <Popover>
                 <ButtonGroup vertical>
-                  <Button variant="link"><PencilFill /> Редактировать</Button>
+                  <Button variant="link" onClick={redirectToProductsCreate}><PencilFill /> Редактировать</Button>
                   <Button variant="link" onClick={handleDeletePopupOpen}><TrashFill /> Удалить товар</Button>
                 </ButtonGroup>
               </Popover>

@@ -1,4 +1,5 @@
-import {useState} from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/Button';
@@ -22,6 +23,7 @@ import Table from "react-bootstrap/Table";
 import UpdateGroupPopup from './UpdateGroupPopup';
 
 const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
+    const navigate = useNavigate();
     const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
     const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
@@ -36,6 +38,10 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
 
     const handleReportingProblemPopupOpen = () => {
         setIsReportingProblemPopupOpen(!isReportingProblemPopupOpen);
+    }
+
+    const redirectToProductsCreate = () => {
+        navigate("/products/create", {replace: true})
     }
 
     return (
@@ -109,7 +115,7 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
                             id=""
                         />
                     </td>
-                    <td><Button size="sm" variant="light"><Plus/></Button></td>
+                    <td><Button size="sm" variant="light" onClick={redirectToProductsCreate}><Plus/></Button></td>
                     <td><Button size="sm" variant="light" onClick={handleEditGroupPopupOpen}><PencilFill/></Button></td>
                     <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button></td>
                 </tr>

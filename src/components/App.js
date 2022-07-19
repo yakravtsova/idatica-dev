@@ -9,6 +9,8 @@ import Container from 'react-bootstrap/Container';
 import Profile from "./Profile";
 import Groups from "./Groups";
 import Register from './Register';
+import Rules from './Rules';
+import Login from './Login';
 
 const App = () => {  
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
@@ -19,8 +21,22 @@ const App = () => {
         setIsDeletePopupOpen(!isDeletePopupOpen);
     }
 
-    const redirectToRegister = () => {
-        navigate("/register", {replace: true})
+    const redirectTo = (path) => {
+        navigate(path)
+    }
+
+    const handleRegister = (email, password, confirmPassword, isAccepted) => {
+        if ((password === confirmPassword) && isAccepted) {
+            console.log(`${email}, ${password}`)
+        }
+    }
+
+    const handleAuthorization = (email, password) => {
+        console.log(`${email}, ${password}`)
+    }
+
+    const handleReset = (email) => {
+        console.log(email);
     }
 
 
@@ -28,8 +44,10 @@ const App = () => {
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
             {loggedIn && <SideBar/>}
             <Routes>
-                <Route path="/start" element={<StartPage redirectToRegister={redirectToRegister} />}/>
-                <Route path="/register" element={<Register />} />
+                <Route path="/start" element={<StartPage redirectTo={redirectTo} />}/>
+                <Route path="/register" element={<Register handleRegister={handleRegister} />} />
+                <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
+                <Route path="/rules" element={<Rules />} />
                 <Route path="/products" element={<Products isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen} />}/>
                 <Route path="/products/create" element={<ProductsCreate/>}/>
                 <Route path="/groups" element={<Groups isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}/>}/>

@@ -30,14 +30,14 @@ const Login = ({ handleAuthorization, handleReset }) => {
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
-      <Form className="d-flex flex-column">
+      <Form className="d-flex flex-column" onSubmit={handleSubmit}>
         <Form.Group className="mb-2" controlId="registerEmail">
           <Form.Control type="email" placeholder="Почта *" onChange={handleEmailChange} />
         </Form.Group>
         <Form.Group className="mb-2" controlId="registerPassword">
           <Form.Control type="password" placeholder="Пароль *" onChange={handlePasswordChange} />
         </Form.Group>
-        <Button type="submit" className="align-self-center m-3" onClick={handleSubmit}>Войти</Button>
+        <Button type="submit" className="align-self-center m-3">Войти</Button>
       </Form>
       <Button variant="link" onClick={handleForgotPassword}>забыл пароль</Button> 
       <ResetPasswordPopup isOpen={forgotPassword} onClose={handleForgotPassword} handleReset={handleReset} />

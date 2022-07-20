@@ -32,7 +32,7 @@ const Register = ({ handleRegister }) => {
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
-      <Form className="d-flex flex-column">
+      <Form className="d-flex flex-column" onSubmit={handleSubmit}>
         <Form.Group className="mb-2" controlId="registerEmail">
           <Form.Control type="email" placeholder="Почта *" onChange={handleEmailChange} />
         </Form.Group>
@@ -46,7 +46,7 @@ const Register = ({ handleRegister }) => {
           <Form.Check.Input type="checkbox" onChange={handleAccept} />
           <Form.Check.Label>Согласен с <Link to="/rules" target="_blank" rel="noopener noreferrer">правилами использования сервиса</Link></Form.Check.Label>
         </Form.Check>
-        <Button type="submit" className="align-self-center" onClick={handleSubmit}>Зарегистрироваться</Button>
+        <Button type="submit" className="align-self-center">Зарегистрироваться</Button>
       </Form>
     </Container>
   )

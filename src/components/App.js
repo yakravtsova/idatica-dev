@@ -32,11 +32,9 @@ const App = () => {
         navigate(path)
     }
 
-    const handleRegister = (email, password, confirmPassword, isAccepted) => {
-        if ((password === confirmPassword) && isAccepted) {
-            console.log(`${email}, ${password}`);
-            handleRegistrationInfoTooltipOpen();
-        }
+    const handleRegister = ({ email, password }) => {
+        console.log(`${email}, ${password}`);
+        handleRegistrationInfoTooltipOpen();
     }
 
     const handleAuthorization = (email, password) => {
@@ -47,7 +45,7 @@ const App = () => {
         console.log(email);
     }
 
-    const handleCompleteRegister = (username, phone, company, plan) => {
+    const handleCompleteRegister = ({username, phone, company, plan}) => {
         console.log(`${username} ${phone} ${company} ${plan}`)
     }
 

@@ -10,6 +10,7 @@ import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
 import CreateLinkPopup from './CreateLinkPopup';
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
+import { productsList } from '../utils/constants';
 
 const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
   const [view, setView] = useState(false);
@@ -50,14 +51,18 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <SortingBar />
-      <Product view={view}  
-                isDeletePopupOpen={isDeletePopupOpen} 
-                handleDeletePopupOpen={handleDeletePopupOpen}
-                handleEditLinkPopupOpen={handleEditLinkPopupOpen}
-                handleCreateLinkPopupOpen={handleCreateLinkPopupOpen}
-                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}  />
-      <Product view={view} />
-      <Product view={view} />
+      {productsList.map((product, i) => (
+              <Product 
+                key={product.id} 
+                productData={product} 
+                view={view} 
+                handleDeletePopupOpen={handleDeletePopupOpen} 
+                handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
+                handleCreateLinkPopupOpen={handleCreateLinkPopupOpen} 
+                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
+                />
+            ))}
+      
       
       <DeletePopup isOpen={isDeletePopupOpen} onClose={handleDeletePopupOpen} title="Удалить?" okButtonText="Да" cancelButtonText="Нет" />
       <UpdateLinkPopup isOpen={isEditLinkPopupOpen} onClose={handleEditLinkPopupOpen} />

@@ -21,6 +21,11 @@ import {
 } from "react-bootstrap-icons";
 import Table from "react-bootstrap/Table";
 import UpdateGroupPopup from './UpdateGroupPopup';
+import BootstrapTable from 'react-bootstrap-table-next';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import { groups } from '../utils/constants';
+import GroupTableRow from './GroupTable Row';
+
 
 const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     const navigate = useNavigate();
@@ -28,9 +33,82 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
 
+    const redirectToProductsCreate = () => {
+        navigate("/products/create", {replace: true})
+    }
+
     const handleEditGroupPopupOpen = () => {
         setIsEditGroupPopupOpen(!isEditGroupPopupOpen);
     }
+
+    const addProductButton = () => {
+        return (
+            <Button size="sm" variant="light" onClick={redirectToProductsCreate}><Plus/></Button>
+          );
+    }
+
+    const updateProductButton = () => {
+        return (
+            <Button size="sm" variant="light" onClick={handleEditGroupPopupOpen}><PencilFill/></Button>
+          );
+    }
+
+    const deleteProductButton = () => {
+        return (
+            <Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button>
+          );
+    }
+
+    const isUpdatingAvailable = () => {
+        return(
+            <Form.Check
+                            type="switch"
+                            id=""
+                        />
+        )
+    }
+
+    const isDefault = () => {
+        return(
+            <Form.Check
+                            defaultChecked
+                            type="radio"
+                            name="defaultGroup[]"
+                            id=""
+                        />
+        )
+    }
+
+    const columns=[
+        {dataField: 'id',
+        text:'N',
+        hidden: true},
+        {dataField: 'name',
+        text:'Название группы'},
+        {dataField: 'count',
+        text:'Количество товаров'},
+        {dataField: 'isDefault',
+        text:'По умолчанию',
+        formatter: isDefault},
+        {dataField: 'updateFrequency',
+        text:'Частота проверки'},
+        {dataField: 'isUpdatingEnabled',
+        text:'Активно',
+        formatter: isUpdatingAvailable},
+        {dataField: 'addProducts',
+        text:'Добавить товары',
+        formatter: addProductButton},
+        {dataField: 'update',
+        text:'Редактировать',
+        formatter: updateProductButton},
+        {dataField: 'delete',
+        text:'Удалить',
+        formatter: deleteProductButton},
+    ]
+
+    
+
+   
 
     const handleEditLinkPopupOpen = () => {
         setIsEditLinkPopupOpen(!isEditLinkPopupOpen);
@@ -40,9 +118,6 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
         setIsReportingProblemPopupOpen(!isReportingProblemPopupOpen);
     }
 
-    const redirectToProductsCreate = () => {
-        navigate("/products/create", {replace: true})
-    }
 
     return (
         <Container fluid className="bg-white">
@@ -82,6 +157,8 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
 
             <div>&nbsp;</div>
 
+            
+
             <Table responsive bordered size="sm" className="small mt-3">
                 <thead>
                 <tr className="align-middle">
@@ -96,53 +173,14 @@ const Groups = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td><a href="#">Коррозия металла</a></td>
-                    <td>3</td>
-                    <td>
-                        <Form.Check
-                            defaultChecked
-                            type="radio"
-                            name="defaultGroup[]"
-                            id=""
-                        />
-                    </td>
-                    <td>Раз в день</td>
-                    <td>
-                        <Form.Check
-                            defaultChecked
-                            type="switch"
-                            id=""
-                        />
-                    </td>
-                    <td><Button size="sm" variant="light" onClick={redirectToProductsCreate}><Plus/></Button></td>
-                    <td><Button size="sm" variant="light" onClick={handleEditGroupPopupOpen}><PencilFill/></Button></td>
-                    <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button></td>
-                </tr>
-
-                <tr>
-                    <td><a href="#">ВИА Песняры</a></td>
-                    <td>3</td>
-                    <td>
-                        <Form.Check
-                            defaultChecked
-                            type="radio"
-                            name="defaultGroup[]"
-                            id=""
-                        />
-                    </td>
-                    <td>Раз в неделю</td>
-                    <td>
-                        <Form.Check
-                            defaultChecked
-                            type="switch"
-                            id=""
-                        />
-                    </td>
-                    <td><Button size="sm" variant="light"><Plus/></Button></td>
-                    <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill/></Button></td>
-                    <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button></td>
-                </tr>
+                    {groups.map((group, i) => (
+                        <GroupTableRow 
+                            key={group.id}
+                            group={group} 
+                            redirectToProductsCreate={redirectToProductsCreate} 
+                            handleEditGroupPopupOpen={handleEditGroupPopupOpen} 
+                            handleDeletePopupOpen={handleDeletePopupOpen} />
+                    ))}
                 </tbody>
             </Table>
             <DeletePopup 

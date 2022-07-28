@@ -33,7 +33,11 @@ const App = () => {
     }
 
     const handleRegister = ({ email, password }) => {
-        console.log(`${email}, ${password}`);
+        const registerData = {
+            email: email,
+            password: password
+        }
+        console.log(registerData);
         handleRegistrationInfoTooltipOpen();
     }
 
@@ -49,6 +53,10 @@ const App = () => {
         console.log(`${username} ${phone} ${company} ${plan}`)
     }
 
+    const handleProductsCreate = (form) => {
+        console.log(form);
+    }
+
 
     return (
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
@@ -59,7 +67,7 @@ const App = () => {
                 <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
                 <Route path="/rules" element={<Rules />} />
                 <Route path="/products" element={<Products isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen} />}/>
-                <Route path="/products/create" element={<ProductsCreate/>}/>
+                <Route path="/products/create" element={<ProductsCreate handleProductsCreate={handleProductsCreate} />}/>
                 <Route path="/groups" element={<Groups isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />

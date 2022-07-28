@@ -27,7 +27,7 @@ const GroupTableRow = ({ group, redirectToProductsCreate, handleEditGroupPopupOp
           type="switch"
           />
       </td>
-      <td><Button size="sm" variant="light" onClick={redirectToProductsCreate}><Plus/></Button></td>
+      <td><Button className="text-center" size="sm" variant="light" onClick={redirectToProductsCreate}><Plus/></Button></td>
       <td><Button size="sm" variant="light" onClick={handleEditGroupPopupOpen}><PencilFill/></Button></td>
       <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill/></Button></td>
     </tr>

@@ -112,7 +112,7 @@ const productsList = [
               },
               {
                 id : 13,
-                url : 'https://remit.ru/catalog/kolbasy/varenye-kolbasy/kolbasa-molochnaya-gost-v-belkovoy-obolochke/',
+                url : 'http://remit.ru/catalog/kolbasy/varenye-kolbasy/kolbasa-molochnaya-gost-v-belkovoy-obolochke/',
                 price : 309.00,
                 discount : 20,
                 inStock : false,
@@ -182,7 +182,7 @@ const productsList = [
     productUrls : [
             {
                 id : 56,
-                url : 'https://www.perekrestok.ru/cat/373/p/tvorog-prostokvasino-5-200g-4121613',
+                url : 'www.perekrestok.ru/cat/373/p/tvorog-prostokvasino-5-200g-4121613',
                 price : 309.00,
                 discount : 20,
                 inStock : false,

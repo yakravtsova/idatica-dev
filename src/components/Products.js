@@ -13,7 +13,7 @@ import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 import { productsList } from '../utils/constants';
 
 const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
-  const [view, setView] = useState(false);
+  const [view, setView] = useState(true);
   const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
@@ -44,7 +44,7 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     <Container fluid>
         <div className="d-flex align-items-center justify-content-between">
         <h2>Товары</h2>
-        <SearchBar handleMode={handleMode} />
+        <SearchBar handleMode={handleMode} view={view} />
       </div>
       <div>
         <Link to="/products/create" className="m-1 btn btn-primary">Добавить новый товар</Link>

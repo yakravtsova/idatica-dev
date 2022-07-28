@@ -23,8 +23,10 @@ const Product = ({ productData, view, handleDeletePopupOpen, handleEditLinkPopup
   }
 
   const redirectToProductsCreate = () => {
-    navigate("/products/create", {replace: true})
-}
+    navigate("/products/create", {replace: false})
+  }
+
+  
 
   return(
     <Card className="m-1">

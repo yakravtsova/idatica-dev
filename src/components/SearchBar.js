@@ -7,7 +7,7 @@ import { Search, FunnelFill, FileEarmarkExcelFill } from 'react-bootstrap-icons'
 import FilterForm from './FilterForm';
 import DownloadDataForm from './DownloadDataForm';
 
-const SearchBar = ({ handleMode }) => {
+const SearchBar = ({ handleMode, view }) => {
   return(
     <>
       <Form className="d-flex flex-fill p-2 align-items-center">
@@ -18,7 +18,7 @@ const SearchBar = ({ handleMode }) => {
           <Button variant="outline-secondary">Найти</Button>
         </InputGroup>
       </Form>
-      <Button variant="outline-secondary" className="m-1 mt-2 mb-3" onClick={handleMode}><Search /></Button>
+      <Button variant={view ? "outline-secondary" : "secondary"} className="m-1 mt-2 mb-3" onClick={handleMode}><Search /></Button>
       <OverlayTrigger rootClose 
                       trigger="click" 
                       placement="auto"

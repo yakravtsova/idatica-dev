@@ -18,9 +18,21 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
+  const [checkedProducts, setCheckedProducts] = useState([]);
   
   const handleMode = () => {
     setView(!view);
+  }
+
+  const checkProduct = (isChecked, id) => {
+    if (!isChecked) {
+      setCheckedProducts([id, ...checkedProducts]);
+    }
+    else {
+      setCheckedProducts((state) => state.filter((el) => el !==  id))
+    }
+    
+    console.log(checkedProducts)
   }
 
 
@@ -50,11 +62,16 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
         <Link to="/products/create" className="m-1 btn btn-primary">Добавить новый товар</Link>
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
-      <SortingBar />
+      <div className="d-flex align-items-center justify-content-between">
+        <SortingBar />
+        <Button variant="link">Удалить выбранные</Button>
+      </div>
+      
       {productsList.map((product, i) => (
               <Product 
                 key={product.id} 
                 productData={product} 
+                checkProduct={checkProduct}
                 view={view} 
                 handleDeletePopupOpen={handleDeletePopupOpen} 
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 

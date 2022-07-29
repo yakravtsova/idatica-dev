@@ -49,8 +49,8 @@ const App = () => {
         console.log(email);
     }
 
-    const handleCompleteRegister = ({username, phone, company, plan}) => {
-        console.log(`${username} ${phone} ${company} ${plan}`)
+    const handleCompleteRegister = (form) => {
+        console.log(form)
     }
 
     const handleProductsCreate = (form) => {

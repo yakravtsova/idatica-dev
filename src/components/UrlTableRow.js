@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
-import { CaretDownFill, PencilFill, ExclamationTriangleFill, TrashFill } from "react-bootstrap-icons";
+import { CaretDownFill, PencilFill, ExclamationTriangleFill, TrashFill, CaretUpFill } from "react-bootstrap-icons";
 
-const UrlTableRow = ({ productUrl, handleReportingProblemPopupOpen, handleEditLinkPopupOpen, handleDeletePopupOpen }) => {
+const UrlTableRow = ({ basePrice, productUrl, handleReportingProblemPopupOpen, handleEditLinkPopupOpen, handleDeletePopupOpen }) => {
   
   const urlLabel = (url) => {
     if (!url.indexOf('https://')) {
@@ -14,7 +14,16 @@ const UrlTableRow = ({ productUrl, handleReportingProblemPopupOpen, handleEditLi
     }
     return url.substring(0, url.indexOf('/'))
   }
+
   
+  const priceDifference = () => {
+    const dif = (basePrice-productUrl.price)*100/basePrice;
+    return dif;
+  }
+  
+  const dif = priceDifference().toFixed(2);
+  const isCheaper = (dif >= 0);
+
   return(
     <tr>
       <td><a href={productUrl.url}>{urlLabel(productUrl.url)}</a></td>
@@ -22,7 +31,7 @@ const UrlTableRow = ({ productUrl, handleReportingProblemPopupOpen, handleEditLi
       <td>{productUrl.discount}%</td>
       <td>{productUrl.inStock ? "Да" : "Нет"}</td>
       <td>{productUrl.lastCheck}</td>
-      <td><span className="text-danger"><CaretDownFill /> ??%</span></td>
+      <td><span className={isCheaper ? "text-danger" : "text-success"}>{(isCheaper) ? <CaretDownFill /> : <CaretUpFill /> } {Math.abs(dif)}%</span></td>
       <td>{productUrl.regionName}</td>
       <td>{productUrl.parsingErrors ? "Да" : "Нет"}</td>
       <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>

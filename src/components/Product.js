@@ -5,6 +5,7 @@ import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
@@ -14,8 +15,9 @@ import Kyrt from '../images/kyrt.jpg';
 import { CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, view, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen }) => {
+const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
+  const [ isChecked, setIsChecked ] = useState(false);
   const navigate = useNavigate();
   
   const handleMenuPopupOpen = () => {
@@ -26,12 +28,20 @@ const Product = ({ productData, view, handleDeletePopupOpen, handleEditLinkPopup
     navigate("/products/create", {replace: false})
   }
 
+  const handleCheck = () => {
+    setIsChecked(!isChecked);
+    checkProduct(isChecked, productData.id)
+  }
+
   
 
   return(
     <Card className="m-1">
       <Row className="d-flex">
         <Col xs="auto">
+         {/* <Form>*/}
+            <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
+         {/* </Form>*/}
           <Card.Img src={productData.productUrls[0].imgUrl ? productData.productUrls[0].imgUrl : Kyrt} alt="" className="rounded m-2" style={{width: '200px'}}/>
         </Col>
         <Col>
@@ -87,6 +97,7 @@ const Product = ({ productData, view, handleDeletePopupOpen, handleEditLinkPopup
             {productData.productUrls.map((url, i) => (
               <UrlTableRow 
                 key={url.id} 
+                basePrice={productData.basePrice}
                 productUrl={url} 
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 

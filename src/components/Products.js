@@ -12,13 +12,14 @@ import CreateLinkPopup from './CreateLinkPopup';
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 import { productsList } from '../utils/constants';
 
-const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }) => {
   const [view, setView] = useState(true);
   const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   const [checkedProducts, setCheckedProducts] = useState([]);
+  const [ products, setProducts ] = useState(productsList);
   
   const handleMode = () => {
     setView(!view);
@@ -33,6 +34,10 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     }
     
     console.log(checkedProducts)
+  }
+
+  const deleteCheckedProducts = () => {
+    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))))
   }
 
 
@@ -52,6 +57,7 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
     setIsAddProductsFromFilePopupOpen(!isAddProductsFromFilePopupOpen);
   }
 
+
   return(
     <Container fluid>
         <div className="d-flex align-items-center justify-content-between">
@@ -64,10 +70,10 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
       </div>
       <div className="d-flex align-items-center justify-content-between">
         <SortingBar />
-        <Button variant="link">Удалить выбранные</Button>
+        <Button variant="link" onClick={deleteCheckedProducts}>Удалить выбранные</Button>
       </div>
       
-      {productsList.map((product, i) => (
+      {products.map((product, i) => (
               <Product 
                 key={product.id} 
                 productData={product} 
@@ -77,6 +83,7 @@ const Products = ({ isDeletePopupOpen, handleDeletePopupOpen }) => {
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
                 handleCreateLinkPopupOpen={handleCreateLinkPopupOpen} 
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
+                getUpdateProduct={getUpdateProduct}
                 />
             ))}
       

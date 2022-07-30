@@ -17,7 +17,8 @@ import CompleteRegistration from './CompleteRegistration';
 const App = () => {  
     const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
     const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(true);
+    const [ updateProduct, setUpdateProduct ] = useState({});
     const navigate = useNavigate();
 
     const handleRegistrationInfoTooltipOpen = () => {
@@ -30,6 +31,10 @@ const App = () => {
 
     const redirectTo = (path) => {
         navigate(path)
+    }
+
+    const getUpdateProduct = (productData) => {
+        setUpdateProduct(productData);
     }
 
     const handleRegister = ({ email, password }) => {
@@ -66,8 +71,8 @@ const App = () => {
                 <Route path="/register" element={<Register handleRegister={handleRegister} />} />
                 <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
                 <Route path="/rules" element={<Rules />} />
-                <Route path="/products" element={<Products isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen} />}/>
-                <Route path="/products/create" element={<ProductsCreate handleProductsCreate={handleProductsCreate} />}/>
+                <Route path="/products" element={<Products getUpdateProduct={getUpdateProduct} isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen} />}/>
+                <Route path="/products/create" element={<ProductsCreate initData={updateProduct} handleProductsCreate={handleProductsCreate} />}/>
                 <Route path="/groups" element={<Groups isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />

@@ -15,9 +15,10 @@ import Kyrt from '../images/kyrt.jpg';
 import { CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen }) => {
+const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
+  const [ productState, setProductState ] = useState(productData);
   const navigate = useNavigate();
   
   const handleMenuPopupOpen = () => {
@@ -25,12 +26,13 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
   }
 
   const redirectToProductsCreate = () => {
+    getUpdateProduct(productData);
     navigate("/products/create", {replace: false})
   }
 
   const handleCheck = () => {
     setIsChecked(!isChecked);
-    checkProduct(isChecked, productData.id)
+    checkProduct(isChecked, productState.id)
   }
 
   
@@ -42,21 +44,21 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
          {/* <Form>*/}
             <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
          {/* </Form>*/}
-          <Card.Img src={productData.productUrls[0].imgUrl ? productData.productUrls[0].imgUrl : Kyrt} alt="" className="rounded m-2" style={{width: '200px'}}/>
+          <Card.Img src={productState.productUrls[0].imgUrl ? productState.productUrls[0].imgUrl : Kyrt} alt="" className="rounded m-2" style={{width: '200px'}}/>
         </Col>
         <Col>
           <Card.Body>
-            <Card.Title>{productData.name}</Card.Title>
+            <Card.Title>{productState.name}</Card.Title>
             <ListGroup variant="flush">
               <ListGroup.Item>
-                Категория: {productData.categoryName}
+                Категория: {productState.categoryName}
               </ListGroup.Item>
             </ListGroup>
           </Card.Body>
         </Col>
         <Col md={2} className="flex-column justify-content-center align-self-center" style={{fontSize: "20px"}}>
           <Card.Text>Цена:</Card.Text>
-          <Card.Text>{productData.basePrice}&#8381;</Card.Text>
+          <Card.Text>{productState.basePrice}&#8381;</Card.Text>
         </Col>
         <Col xs="auto">
           <OverlayTrigger 
@@ -94,10 +96,10 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
             </tr>
           </thead>
          <tbody>
-            {productData.productUrls.map((url, i) => (
+            {productState.productUrls.map((url, i) => (
               <UrlTableRow 
                 key={url.id} 
-                basePrice={productData.basePrice}
+                basePrice={productState.basePrice}
                 productUrl={url} 
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 

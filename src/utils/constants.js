@@ -101,11 +101,11 @@ const productsList = [
               {
                   id : 12,
                   url : 'https://remit.ru/catalog/kolbasy/varenye-kolbasy/kolbasa-molochnaya-gost-v-belkovoy-obolochke/',
-                  price : 309.00,
+                  price : 432.00,
                   discount : 20,
                   inStock : false,
                   lastCheck : 7777777,
-                  regionName : 'Суздаль',
+                  regionName : 2,
                   parsingErrors : true,
                   vendorCode : '72376',
                   imgUrl : 'https://ratimir.ru/storage/app/uploads/public/5cd/25e/798/5cd25e798d915040955887.jpg'
@@ -113,13 +113,13 @@ const productsList = [
               {
                 id : 13,
                 url : 'http://remit.ru/catalog/kolbasy/varenye-kolbasy/kolbasa-molochnaya-gost-v-belkovoy-obolochke/',
-                price : 309.00,
+                price : 300.00,
                 discount : 20,
                 inStock : false,
                 lastCheck : 7777777,
-                regionName : 'Суздаль',
+                regionName : 1,
                 parsingErrors : false,
-                vendorCode : '72376',
+                vendorCode : '1111',
                 imgUrl : 'https://remit.ru/upload/iblock/aaf/1yqpj9av4qmidzjk167etm7lq1iv0ki1/72376s1.jpg'
             }
           ]

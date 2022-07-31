@@ -15,7 +15,7 @@ import Kyrt from '../images/kyrt.jpg';
 import { CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
+const Product = ({ productData, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
@@ -35,15 +35,21 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
     checkProduct(isChecked, productState.id)
   }
 
+  const handleDeleteProductPopupOpen = () => {
+    handleDeleteProductId(productData.id);
+    console.log(productData.id);
+    deleteProductPopupOpen();
+  }
+
+  
+
   
 
   return(
     <Card className="m-1">
       <Row className="d-flex">
         <Col xs="auto">
-         {/* <Form>*/}
-            <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
-         {/* </Form>*/}
+          <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
           <Card.Img src={productState.productUrls[0].imgUrl ? productState.productUrls[0].imgUrl : Kyrt} alt="" className="rounded m-2" style={{width: '200px'}}/>
         </Col>
         <Col>
@@ -69,7 +75,7 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
               <Popover>
                 <ButtonGroup vertical>
                   <Button variant="link" onClick={redirectToProductsCreate}><PencilFill /> Редактировать</Button>
-                  <Button variant="link" onClick={handleDeletePopupOpen}><TrashFill /> Удалить товар</Button>
+                  <Button variant="link" onClick={handleDeleteProductPopupOpen}><TrashFill /> Удалить товар</Button>
                 </ButtonGroup>
               </Popover>
             }>
@@ -103,7 +109,8 @@ const Product = ({ productData, view, checkProduct, handleDeletePopupOpen, handl
                 productUrl={url} 
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
-                handleDeletePopupOpen={handleDeletePopupOpen} />
+                deleteLinkPopupOpen={deleteLinkPopupOpen}
+                handleDeleteUrlId={handleDeleteUrlId} />
             ))}
           </tbody>
         </Table>

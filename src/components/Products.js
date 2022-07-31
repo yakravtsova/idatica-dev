@@ -4,22 +4,18 @@ import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/Button';
 import Product from './Product';
 import SortingBar from './SortingBar';
-import DeletePopup from './DeletePopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
 import CreateLinkPopup from './CreateLinkPopup';
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
-import { productsList } from '../utils/constants';
 
-const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Products = ({ products, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen }) => {
   const [view, setView] = useState(true);
   const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
-  const [checkedProducts, setCheckedProducts] = useState([]);
-  const [ products, setProducts ] = useState(productsList);
   
   const handleMode = () => {
     setView(!view);
@@ -27,19 +23,12 @@ const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }
 
   const checkProduct = (isChecked, id) => {
     if (!isChecked) {
-      setCheckedProducts([id, ...checkedProducts]);
+      addProductIdToArr(id);
     }
     else {
-      setCheckedProducts((state) => state.filter((el) => el !==  id))
+      removeProductIdFromArr(id);
     }
-    
-    console.log(checkedProducts)
   }
-
-  const deleteCheckedProducts = () => {
-    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))))
-  }
-
 
   const handleEditLinkPopupOpen = () => {
     setIsEditLinkPopupOpen(!isEditLinkPopupOpen);
@@ -57,6 +46,7 @@ const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }
     setIsAddProductsFromFilePopupOpen(!isAddProductsFromFilePopupOpen);
   }
 
+  
 
   return(
     <Container fluid>
@@ -70,7 +60,7 @@ const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }
       </div>
       <div className="d-flex align-items-center justify-content-between">
         <SortingBar />
-        <Button variant="link" onClick={deleteCheckedProducts}>Удалить выбранные</Button>
+        <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
       </div>
       
       {products.map((product, i) => (
@@ -78,17 +68,19 @@ const Products = ({ getUpdateProduct, isDeletePopupOpen, handleDeletePopupOpen }
                 key={product.id} 
                 productData={product} 
                 checkProduct={checkProduct}
+                handleDeleteProductId={handleDeleteProductId}
+                handleDeleteUrlId={handleDeleteUrlId}
                 view={view} 
-                handleDeletePopupOpen={handleDeletePopupOpen} 
+                deleteLinkPopupOpen={deleteLinkPopupOpen} 
+                deleteProductPopupOpen={deleteProductPopupOpen}
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
                 handleCreateLinkPopupOpen={handleCreateLinkPopupOpen} 
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
                 getUpdateProduct={getUpdateProduct}
                 />
             ))}
-      
-      
-      <DeletePopup isOpen={isDeletePopupOpen} onClose={handleDeletePopupOpen} title="Удалить?" okButtonText="Да" cancelButtonText="Нет" />
+
+
       <UpdateLinkPopup isOpen={isEditLinkPopupOpen} onClose={handleEditLinkPopupOpen} />
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
       <CreateLinkPopup isOpen={isCreateLinkPopupOpen} onClose={handleCreateLinkPopupOpen} />

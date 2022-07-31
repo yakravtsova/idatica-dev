@@ -13,20 +13,67 @@ import Rules from './Rules';
 import Login from './Login';
 import RegistrationOkInfoTooltip from './RegistrationOkInfoTooltip';
 import CompleteRegistration from './CompleteRegistration';
+import DeleteLinkPopup from './DeleteLinkPopup';
+import DeleteProductPopup from './DeleteProductPopup';
+import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
+import { productsList } from '../utils/constants';
 
 const App = () => {  
-    const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+    
+    const [ products, setProducts ] = useState(productsList);
+    const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
+    const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
+    const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
     const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(true);
     const [ updateProduct, setUpdateProduct ] = useState({});
+    const [deleteProductId, setDeleteProductId] = useState(null);
+    const [deleteUrlId, setDeleteUrlId ] = useState(null);
+    const [checkedProducts, setCheckedProducts] = useState([]);
+
     const navigate = useNavigate();
+
+    const handleDeleteCheckedProductsPopupOpen = () => {
+        setIsDeleteCheckedProductsPopupOpen(!isDeleteCheckedProductsPopupOpen);
+        console.log(checkedProducts)
+    }
+
+    const handleDeleteProductId = (id) => {
+        setDeleteProductId(id);
+        console.log(deleteProductId)
+    }
+
+    const handleDeleteUrlId = (id) => {
+        setDeleteUrlId(id);
+        console.log(id)
+    }
+
+    const addProductIdToArr = (id) => {
+        setCheckedProducts([id, ...checkedProducts])
+    }
+
+    const removeProductIdFromArr = (id) => {
+        setCheckedProducts((state) => state.filter((i) => i !==  id))
+    }
+    
+    const deleteCheckedProducts = (checkedProducts) => {
+        setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))))
+    }
+
+    const deleteOneProduct = (id) => {
+        setProducts((state) => state.filter((p) => p.id !== id))
+      }
 
     const handleRegistrationInfoTooltipOpen = () => {
         setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
     }
     
-    const handleDeletePopupOpen = () => {
-        setIsDeletePopupOpen(!isDeletePopupOpen);
+    const deleteLinkPopupOpen = () => {
+        setIsDeleteLinkPopupOpen(!isDeleteLinkPopupOpen);
+    }
+    
+    const deleteProductPopupOpen = () => {
+        setIsDeleteProductPopupOpen(!isDeleteProductPopupOpen);
     }
 
     const redirectTo = (path) => {
@@ -61,6 +108,19 @@ const App = () => {
     const handleProductsCreate = (form) => {
         console.log(form);
     }
+    
+  const handleDeleteOneProduct = () => {
+    deleteOneProduct(deleteProductId);
+    deleteProductPopupOpen();
+    setDeleteProductId(null);
+  }
+
+  const handleDeleteCheckedProducts = () => {
+    deleteCheckedProducts(checkedProducts);
+    setCheckedProducts([]);
+  }
+
+
 
 
     return (
@@ -71,14 +131,30 @@ const App = () => {
                 <Route path="/register" element={<Register handleRegister={handleRegister} />} />
                 <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
                 <Route path="/rules" element={<Rules />} />
-                <Route path="/products" element={<Products getUpdateProduct={getUpdateProduct} isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen} />}/>
+                <Route path="/products" element={
+                    <Products
+                        products={products}
+                        addProductIdToArr={addProductIdToArr}
+                        removeProductIdFromArr={removeProductIdFromArr}
+                        deleteCheckedProducts={deleteCheckedProducts}
+                        handleDeleteProductId= {handleDeleteProductId}
+                        handleDeleteUrlId={handleDeleteUrlId}
+                        getUpdateProduct={getUpdateProduct} 
+                        deleteLinkPopupOpen={deleteLinkPopupOpen} 
+                        deleteProductPopupOpen={deleteProductPopupOpen} 
+                        handleDeleteCheckedProductsPopupOpen={handleDeleteCheckedProductsPopupOpen}
+                    />
+                }/>
                 <Route path="/products/create" element={<ProductsCreate initData={updateProduct} handleProductsCreate={handleProductsCreate} />}/>
-                <Route path="/groups" element={<Groups isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}/>}/>
+                <Route path="/groups" element={<Groups /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/ />} />
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />
             } />
             </Routes>
             <RegistrationOkInfoTooltip isOpen={isRegistrationInfoTooltipOpen} onClose={handleRegistrationInfoTooltipOpen} />
+            <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} />
+            <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
+            <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
         </Container>
 
 

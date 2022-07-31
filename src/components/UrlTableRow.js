@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { CaretDownFill, PencilFill, ExclamationTriangleFill, TrashFill, CaretUpFill } from "react-bootstrap-icons";
 
-const UrlTableRow = ({ basePrice, productUrl, handleReportingProblemPopupOpen, handleEditLinkPopupOpen, handleDeletePopupOpen }) => {
+const UrlTableRow = ({ basePrice, productUrl, handleDeleteUrlId, handleReportingProblemPopupOpen, handleEditLinkPopupOpen, deleteLinkPopupOpen }) => {
   
   const urlLabel = (url) => {
     if (!url.indexOf('https://')) {
@@ -15,6 +15,11 @@ const UrlTableRow = ({ basePrice, productUrl, handleReportingProblemPopupOpen, h
     return url.substring(0, url.indexOf('/'))
   }
 
+  const handleDeleteLinkPopupOpen = () => {
+    handleDeleteUrlId(productUrl.id);
+    deleteLinkPopupOpen();
+    
+  }
   
   const priceDifference = () => {
     const dif = (basePrice-productUrl.price)*100/basePrice;
@@ -37,7 +42,7 @@ const UrlTableRow = ({ basePrice, productUrl, handleReportingProblemPopupOpen, h
       <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
       <td style={{wordWrap: "normal"}}>{productUrl.vendorCode}</td>
       <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
-      <td><Button size="sm" variant="light" onClick={handleDeletePopupOpen}><TrashFill /></Button></td>
+      <td><Button size="sm" variant="light" onClick={handleDeleteLinkPopupOpen}><TrashFill /></Button></td>
     </tr>
   )
 }

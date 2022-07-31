@@ -1,8 +1,7 @@
-import { ModalBody } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
-const DeletePopup = ({ isOpen, onClose, title, okButtonText, cancelButtonText, bodyText }) => {
+const DeletePopup = ({ isOpen, onClose, title, okButtonText, cancelButtonText, bodyText, okButtonAction }) => {
   return (
     <Modal size="sm" show={isOpen} onHide={onClose}>
       <Modal.Header closeButton>
@@ -14,11 +13,11 @@ const DeletePopup = ({ isOpen, onClose, title, okButtonText, cancelButtonText, b
         </p>
       </Modal.Body>}
       <Modal.Footer className="d-flex justify-content-center">
-        <Button variant="secondary" onClick={onClose}>
-          {okButtonText}
-        </Button>
         <Button variant="primary" onClick={onClose}>
           {cancelButtonText}
+        </Button>
+        <Button variant="secondary" onClick={okButtonAction}>
+          {okButtonText}
         </Button>
       </Modal.Footer>
     </Modal>

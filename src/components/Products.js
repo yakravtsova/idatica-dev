@@ -10,7 +10,7 @@ import {Link} from "react-router-dom";
 import CreateLinkPopup from './CreateLinkPopup';
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 
-const Products = ({ products, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen }) => {
+const Products = ({ products, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen }) => {
   const [view, setView] = useState(true);
   const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
@@ -67,6 +67,7 @@ const Products = ({ products, addProductIdToArr, removeProductIdFromArr, handleD
               <Product 
                 key={product.id} 
                 productData={product} 
+                productDataForUpdate={productDataForUpdate}
                 checkProduct={checkProduct}
                 handleDeleteProductId={handleDeleteProductId}
                 handleDeleteUrlId={handleDeleteUrlId}

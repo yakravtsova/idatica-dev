@@ -81,7 +81,7 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         handleProductsCreate(form);
-        
+        redirectToProducts();
     }
     
 

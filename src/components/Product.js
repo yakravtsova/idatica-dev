@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Table from 'react-bootstrap/Table';
 import Card from 'react-bootstrap/Card';
@@ -15,18 +15,24 @@ import Kyrt from '../images/kyrt.jpg';
 import { CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
+const Product = ({ productData, productDataForUpdate, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
+
+  
   const navigate = useNavigate();
   
   const handleMenuPopupOpen = () => {
     setIsMenuPopupOpen(!isMenuPopupOpen);
   }
 
+  const handleProductState = (newProductState) => {
+    setProductState(newProductState);
+  }
+
   const redirectToProductsCreate = () => {
-    getUpdateProduct(productData);
+    getUpdateProduct(productState);
     navigate("/products/create", {replace: false})
   }
 
@@ -41,7 +47,7 @@ const Product = ({ productData, view, checkProduct, handleDeleteUrlId, handleDel
     deleteProductPopupOpen();
   }
 
-  
+
 
   
 

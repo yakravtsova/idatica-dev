@@ -48,6 +48,10 @@ const App = () => {
         console.log(id)
     }
 
+    const deleteUrl = (id) => {
+        
+    }
+
     const addProductIdToArr = (id) => {
         setCheckedProducts([id, ...checkedProducts])
     }
@@ -106,7 +110,19 @@ const App = () => {
     }
 
     const handleProductsCreate = (form) => {
-        console.log(form);
+        const newProducts = products.map(p => {
+            if (p.id === updateProduct.id) {
+                return {...p, 
+                    name: form.name,
+                    basePrice: form.basePrice,
+                    ownVendorCode: form.ownVendorCode,
+                    groupId: form.groupId,
+                    productUrls: form.productUrls}
+            }
+            return p;
+        })
+        setProducts(newProducts);
+        console.log(newProducts)
     }
     
   const handleDeleteOneProduct = () => {
@@ -134,6 +150,7 @@ const App = () => {
                 <Route path="/products" element={
                     <Products
                         products={products}
+                        productDataForUpdate={updateProduct}
                         addProductIdToArr={addProductIdToArr}
                         removeProductIdFromArr={removeProductIdFromArr}
                         deleteCheckedProducts={deleteCheckedProducts}

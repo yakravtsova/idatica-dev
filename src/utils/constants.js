@@ -82,7 +82,7 @@ const productsList = [
                   discount : 33,
                   inStock : true,
                   lastCheck : 1653248625,
-                  regionName : 'Москва',
+                  regionName : 2,
                   parsingErrors : false,
                   vendorCode : '123e4567-e89b',
                   imgUrl : 'https://cs9.pikabu.ru/post_img/2016/11/26/11/1480184708144619212.jpg'
@@ -140,7 +140,7 @@ const productsList = [
                 discount : 45,
                 inStock : true,
                 lastCheck : 7775,
-                regionName : 'Москва',
+                regionName : 2,
                 parsingErrors : '???',
                 vendorCode : '123e4567-e89b',
                 imgUrl : 'https://avatars.mds.yandex.net/get-marketpic/4967514/pic0377940de60c03db647d68fc45aaa52f/orig'
@@ -152,7 +152,7 @@ const productsList = [
               discount : 45,
               inStock : true,
               lastCheck : 7775,
-              regionName : 'Москва',
+              regionName : 3,
               parsingErrors : false,
               vendorCode : '123e4567-e89b',
               imgUrl : 'https://avatars.mds.yandex.net/get-marketpic/4967514/pic0377940de60c03db647d68fc45aaa52f/orig'
@@ -164,7 +164,7 @@ const productsList = [
             discount : 45,
             inStock : true,
             lastCheck : 7775,
-            regionName : 'Москва',
+            regionName : 2,
             parsingErrors : true,
             vendorCode : '123e4567-e89b',
             imgUrl : 'https://avatars.mds.yandex.net/get-marketpic/4967514/pic0377940de60c03db647d68fc45aaa52f/orig'
@@ -187,7 +187,7 @@ const productsList = [
                 discount : 20,
                 inStock : false,
                 lastCheck : 7777777,
-                regionName : 'Суздаль',
+                regionName : 3,
                 parsingErrors : false,
                 vendorCode : '72376',
                 imgUrl : 'https://cdn-img.perekrestok.ru/i/1600x1600-fit/xdelivery/files/d7/8b/31c4c0166062f48e3d2c705c358a.jpg'
@@ -199,7 +199,7 @@ const productsList = [
               discount : 20,
               inStock : false,
               lastCheck : 7777777,
-              regionName : 'Суздаль',
+              regionName : 2,
               parsingErrors : false,
               vendorCode : '72376',
               imgUrl : 'https://cdn-img.perekrestok.ru/i/1600x1600-fit/xdelivery/files/d7/8b/31c4c0166062f48e3d2c705c358a.jpg'
@@ -211,7 +211,7 @@ const productsList = [
             discount : 20,
             inStock : false,
             lastCheck : 7777777,
-            regionName : 'Суздаль',
+            regionName : 2,
             parsingErrors : false,
             vendorCode : '72376',
             imgUrl : 'https://cdn-img.perekrestok.ru/i/1600x1600-fit/xdelivery/files/d7/8b/31c4c0166062f48e3d2c705c358a.jpg'

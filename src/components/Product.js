@@ -12,14 +12,16 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Kyrt from '../images/kyrt.jpg';
-import { CaretUpFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
+import { CaretUpFill, CaretDownFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, productDataForUpdate, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct }) => {
+const Product = ({ productData, productDataForUpdate, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, handleEditLinkPopupOpen, handleCreateLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct, handleUpdateProduct, handleIndexOfDeleteProduct }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
-
+  useEffect(() => {
+    setProductState(productData)
+  }, [handleIndexOfDeleteProduct])
   
   const navigate = useNavigate();
   
@@ -47,6 +49,37 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
     deleteProductPopupOpen();
   }
 
+  ///////////
+  const urlLabel = (url) => {
+    if (!url.indexOf('https://')) {
+      let newUrl = url.substring(8, url.indexOf('/', 8));
+      return newUrl;
+    }
+    else if (!url.indexOf('http://')) {
+      let newUrl = url.substring(7, url.indexOf('/', 7));
+      return newUrl;
+    }
+    return url.substring(0, url.indexOf('/'))
+  }
+
+  const handleDeleteLinkPopupOpen = (index) => {
+    handleIndexOfDeleteProduct(index);
+    getUpdateProduct(productState);
+    deleteLinkPopupOpen(); 
+  }
+  
+  const priceDifference = (i) => {
+    const dif = (productState.basePrice-productState.productUrls[i].price)*100/productState.basePrice;
+    return dif;
+  }
+  
+  const dif = (i) => priceDifference(i).toFixed(2);
+  const isCheaper = (i) => (dif(i) >= 0);
+
+  /////////////////////
+
+  
+
 
 
   
@@ -56,7 +89,7 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
       <Row className="d-flex">
         <Col xs="auto">
           <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
-          <Card.Img src={productState.productUrls[0].imgUrl ? productState.productUrls[0].imgUrl : Kyrt} alt="" className="rounded m-2" style={{width: '200px'}}/>
+          <Card.Img src={productState.productUrls[0] ? productState.productUrls[0].imgUrl : ''} alt="" className="rounded m-2" style={{width: '200px'}}/>
         </Col>
         <Col>
           <Card.Body>
@@ -108,7 +141,8 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
             </tr>
           </thead>
          <tbody>
-            {productState.productUrls.map((url, i) => (
+
+          {/*  {productState.productUrls.map((url, i) => (
               <UrlTableRow 
                 key={url.id} 
                 basePrice={productState.basePrice}
@@ -117,7 +151,23 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
                 handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
                 deleteLinkPopupOpen={deleteLinkPopupOpen}
                 handleDeleteUrlId={handleDeleteUrlId} />
-            ))}
+          ))}*/}
+          {productState.productUrls.map((url, i) => (
+            <tr key={url.id}>
+              <td><a href={url.url}>{urlLabel(url.url)}</a></td>
+              <td>{url.price}</td>
+              <td>{url.discount}%</td>
+              <td>{url.inStock ? "Да" : "Нет"}</td>
+              <td>{url.lastCheck}</td>
+              <td><span className={isCheaper(i) ? "text-danger" : "text-success"}>{(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> } {Math.abs(dif(i))}%</span></td>
+              <td>{url.regionName}</td>
+              <td>{url.parsingErrors ? "Да" : "Нет"}</td>
+              <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
+              <td style={{wordWrap: "normal"}}>{url.vendorCode}</td>
+              <td><Button size="sm" variant="light" onClick={handleEditLinkPopupOpen}><PencilFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(i)}><TrashFill /></Button></td>
+            </tr>
+          ))}
           </tbody>
         </Table>
         <Button size="sm" variant="outline-secondary" onClick={handleCreateLinkPopupOpen} className="mb-1"><Plus /> Добавить ссылку</Button>

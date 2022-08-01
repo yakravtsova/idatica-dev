@@ -30,8 +30,15 @@ const App = () => {
     const [deleteProductId, setDeleteProductId] = useState(null);
     const [deleteUrlId, setDeleteUrlId ] = useState(null);
     const [checkedProducts, setCheckedProducts] = useState([]);
+    const [ indexOfDeleteUrl, setIndexOfDeleteUrl ] = useState(null);
+    const [ newUrls, setNewUrls ] = useState([]);
+
 
     const navigate = useNavigate();
+
+    const handleIndexOfDeleteProduct = (index) => {
+        setIndexOfDeleteUrl(index);
+    }
 
     const handleDeleteCheckedProductsPopupOpen = () => {
         setIsDeleteCheckedProductsPopupOpen(!isDeleteCheckedProductsPopupOpen);
@@ -48,9 +55,13 @@ const App = () => {
         console.log(id)
     }
 
-    const deleteUrl = (id) => {
-        
+    const removeUrlFromState = () => {
+        let data = [...updateProduct.productUrls];
+        data.splice(indexOfDeleteUrl, 1);
+        return data;
     }
+    
+      
 
     const addProductIdToArr = (id) => {
         setCheckedProducts([id, ...checkedProducts])
@@ -109,7 +120,7 @@ const App = () => {
         console.log(form)
     }
 
-    const handleProductsCreate = (form) => {
+    const handleUpdateProduct = (form) => {
         const newProducts = products.map(p => {
             if (p.id === updateProduct.id) {
                 return {...p, 
@@ -117,12 +128,31 @@ const App = () => {
                     basePrice: form.basePrice,
                     ownVendorCode: form.ownVendorCode,
                     groupId: form.groupId,
+                    brand: form.brand,
+                    purchasePrice: form.purchasePrice,
+                    categoryName: form.categoryName,
                     productUrls: form.productUrls}
             }
             return p;
         })
         setProducts(newProducts);
         console.log(newProducts)
+    }
+
+    const handleUpdateProductUrl = () => {
+        const newProducts = products.map(p => {
+            if (p.id === updateProduct.id) {
+                return {...p, 
+                    productUrls: removeUrlFromState()}
+            }
+            return p;
+        })
+        setProducts(newProducts);
+        console.log(newProducts)
+    }
+
+    const handleCreateNewProduct = (form) => {
+        setProducts([form, ...products])
     }
     
   const handleDeleteOneProduct = () => {
@@ -134,6 +164,17 @@ const App = () => {
   const handleDeleteCheckedProducts = () => {
     deleteCheckedProducts(checkedProducts);
     setCheckedProducts([]);
+    handleDeleteCheckedProductsPopupOpen();
+  }
+
+  const removeUrl = () => {
+    ;
+    console.log(removeUrlFromState());
+    
+    console.log(newUrls) 
+    handleUpdateProductUrl();
+    
+    deleteLinkPopupOpen()
   }
 
 
@@ -160,16 +201,23 @@ const App = () => {
                         deleteLinkPopupOpen={deleteLinkPopupOpen} 
                         deleteProductPopupOpen={deleteProductPopupOpen} 
                         handleDeleteCheckedProductsPopupOpen={handleDeleteCheckedProductsPopupOpen}
+                        handleUpdateProduct={handleUpdateProduct}
+                        handleIndexOfDeleteProduct={handleIndexOfDeleteProduct}
                     />
                 }/>
-                <Route path="/products/create" element={<ProductsCreate initData={updateProduct} handleProductsCreate={handleProductsCreate} />}/>
+                <Route path="/products/create" element={
+                    <ProductsCreate 
+                        initData={updateProduct} 
+                        handleUpdateProduct={handleUpdateProduct} 
+                        handleCreateNewProduct={handleCreateNewProduct} 
+                    />}/>
                 <Route path="/groups" element={<Groups /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/ />} />
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />
             } />
             </Routes>
             <RegistrationOkInfoTooltip isOpen={isRegistrationInfoTooltipOpen} onClose={handleRegistrationInfoTooltipOpen} />
-            <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} />
+            <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
             <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
         </Container>

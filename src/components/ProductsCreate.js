@@ -3,13 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import {Accordion, Form} from "react-bootstrap";
+import { TrashFill } from 'react-bootstrap-icons';
 
-const ProductsCreate = ({ initData, handleProductsCreate }) => {
+const ProductsCreate = ({ initData, handleUpdateProduct, handleCreateNewProduct }) => {
     const [ form, setForm ] = useState({
         ['name']: '',
         ['basePrice']: '',
         ['ownVendorCode']: '',
         ['groupId']: '',
+        ['brand']: '',
+        ['purchasePrice']: '',
+        ['categoryName']: '',
         ['productUrls']: [{}]
       });
     
@@ -40,10 +44,13 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
     
             setForm({
                 ...form,
-                ['name']: name,
-                ['basePrice']: basePrice,
-                ['groupId']: groupId,
-                ['productUrls']: productUrls
+                ['name']: initData.name,
+                ['basePrice']: initData.basePrice,
+                ['groupId']: initData.groupId,
+                ['brand']: initData.brand,
+                ['purchasePrice']: initData.purchasePrice,
+                ['categoryName']: initData.categoryName,
+                ['productUrls']: initData.productUrls
               });
 
         }
@@ -67,9 +74,27 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
         setField('groupId', e.target.value);
     }
 
+    const setBrand = (e) => {
+        setField('brand', e.target.value);
+    }
+
+    const setPurchasePrice = (e) => {
+        setField('purchasePrice', e.target.value);
+    }
+
+    const setCategoryName = (e) => {
+        setField('categoryName', e.target.value);
+    }
+
     const addFields = () => {
         let newField = { url: '', regionName: '', vendorCode: ''};
         setField('productUrls', [...form.productUrls, newField]);
+    }
+
+    const removeFields = (index) => {
+        let data = [...form.productUrls];
+        data.splice(index, 1);
+        setField('productUrls', data);
     }
 
     const handleFormChange = (i, e) => {
@@ -80,7 +105,12 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleProductsCreate(form);
+        if (initData.id) {
+            handleUpdateProduct(form)
+        }
+        else {
+            handleCreateNewProduct(form)
+        }
         redirectToProducts();
     }
     
@@ -132,6 +162,7 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
                             </Form.Select>
 
                             <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendorCode" value={form.productUrls[i].vendorCode ? form.productUrls[i].vendorCode : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
+                            <Button onClick={() => removeFields(i)}><TrashFill /></Button>
                         </Form.Group>
                     )
                 })}
@@ -149,9 +180,9 @@ const ProductsCreate = ({ initData, handleProductsCreate }) => {
                         <Accordion.Body>
 
                             <div className="d-flex align-items-center">
-                                <Form.Control className="m-1" type="text" placeholder="Бренд"></Form.Control>
-                                <Form.Control className="m-1" type="text" placeholder="Закупочная цена"></Form.Control>
-                                <Form.Control className="m-1" type="text" placeholder="Категория"></Form.Control>
+                                <Form.Control className="m-1" type="text" placeholder="Бренд" onChange={setBrand}></Form.Control>
+                                <Form.Control className="m-1" type="text" placeholder="Закупочная цена" onChange={setPurchasePrice}></Form.Control>
+                                <Form.Control className="m-1" type="text" placeholder="Категория" onChange={setCategoryName}></Form.Control>
                             </div>
 
                         </Accordion.Body>

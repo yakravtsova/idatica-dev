@@ -17,6 +17,8 @@ import DeleteLinkPopup from './DeleteLinkPopup';
 import DeleteProductPopup from './DeleteProductPopup';
 import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
 import { productsList } from '../utils/constants';
+import * as auth from '../utils/auth';
+import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 
 const App = () => {  
     
@@ -103,9 +105,15 @@ const App = () => {
         const registerData = {
             email: email,
             password: password
-        }
+        };
         console.log(registerData);
-        handleRegistrationInfoTooltipOpen();
+        auth.register(registerData)
+        .then(res => {
+            console.log(res);
+            console.log(JSON.stringify(registerData));
+            handleRegistrationInfoTooltipOpen()
+        })
+        .catch(err => console.log(err))
     }
 
     const handleAuthorization = (email, password) => {

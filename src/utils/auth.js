@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://idatica.com/api';
+export const BASE_URL = 'https://pricehub.idatica.com/api/v1/';
 
 function handleResponse(res) {
   if (res.ok) {
@@ -7,16 +7,20 @@ function handleResponse(res) {
   return Promise.reject(`Что-то пошло не так: ${res.status}`);
 }
 
-export function register(email, password) {
-  return fetch(`${BASE_URL}/signup`, {
-    method: 'POST',
+export function register(registerData) {
+  return fetch("https://pricehub.idatica.com/api/v1/users/registration/step1/", {
+    //mode: "no-cors",
+    method: "POST",
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      "accept": "application/json",
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify({ email, password })
+    body: JSON.stringify(registerData)
     })
-    .then(res => handleResponse(res))
+    .then(res => {
+      console.log(res);
+    //  handleResponse(res)
+})
 }
 
 export function authorize(email, password) {

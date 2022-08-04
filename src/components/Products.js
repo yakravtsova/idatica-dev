@@ -7,13 +7,10 @@ import SortingBar from './SortingBar';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
-import CreateLinkPopup from './CreateLinkPopup';
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 
-const Products = ({ products, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfDeleteProduct }) => {
+const Products = ({ products, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
   const [view, setView] = useState(true);
-  const [isEditLinkPopupOpen, setIsEditLinkPopupOpen] = useState(false);
-  const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   
@@ -30,13 +27,7 @@ const Products = ({ products, productDataForUpdate, addProductIdToArr, removePro
     }
   }
 
-  const handleEditLinkPopupOpen = () => {
-    setIsEditLinkPopupOpen(!isEditLinkPopupOpen);
-  }
-
-  const handleCreateLinkPopupOpen = () => {
-    setIsCreateLinkPopupOpen(!isCreateLinkPopupOpen);
-  }
+  
 
   const handleReportingProblemPopupOpen = () => {
     setIsReportingProblemPopupOpen(!isReportingProblemPopupOpen);
@@ -74,19 +65,18 @@ const Products = ({ products, productDataForUpdate, addProductIdToArr, removePro
                 view={view} 
                 deleteLinkPopupOpen={deleteLinkPopupOpen} 
                 deleteProductPopupOpen={deleteProductPopupOpen}
-                handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
-                handleCreateLinkPopupOpen={handleCreateLinkPopupOpen} 
+                handleUpdateLinkPopupOpen={handleUpdateLinkPopupOpen}  
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
                 getUpdateProduct={getUpdateProduct}
                 handleUpdateProduct={handleUpdateProduct}
-                handleIndexOfDeleteProduct={handleIndexOfDeleteProduct}
+                handleIndexOfProduct={handleIndexOfProduct}
+                createLinkPopupOpen={createLinkPopupOpen}
                 />
             ))}
 
 
-      <UpdateLinkPopup isOpen={isEditLinkPopupOpen} onClose={handleEditLinkPopupOpen} />
+      
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
-      <CreateLinkPopup isOpen={isCreateLinkPopupOpen} onClose={handleCreateLinkPopupOpen} />
       <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>
     </Container>
   )

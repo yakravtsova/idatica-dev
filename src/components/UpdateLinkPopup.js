@@ -1,35 +1,49 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import { useState, useEffect } from 'react';
+import EditLinkPopup from './EditLinkPopup';
 
-const UpdateLinkPopup = ({ isOpen, onClose }) => {
+const UpdateLinkPopup = ({ initData, index, isOpen, onClose, getUpdateProduct, handleIndexOfProduct, updateUrl }) => {
+  const [ urlForm, setUrlForm] = useState({
+    url: '',
+    vendorCode: '',
+    regionName: ''
+  });
+
+  const handleUrlForm = (data) => {
+    setUrlForm(data)
+  }
+
+  useEffect(() => {
+    if (initData.name) {
+      setUrlForm({
+        ...urlForm,
+        url: initData.productUrls[index].url,
+        vendorCode: initData.productUrls[index].vendorCode,
+        regionName: initData.productUrls[index].regionName,
+      })  
+    }
+  }, [index]);
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  updateUrl(urlForm);
+  getUpdateProduct({});
+  setUrlForm({
+    ...urlForm,
+    url: '',
+    vendorCode: '',
+    regionName: ''
+  });
+  onClose();
+}
+
+const handleClose = () => {
+  getUpdateProduct({});
+  handleIndexOfProduct(null);
+  onClose()
+}
+
   return (
-    <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header closeButton />
-      <Form>
-        <Form.Group className="m-3" controlId="exampleForm.urlInput">
-          <Form.Control
-            type="url"
-            placeholder="Ссылка"
-            autoFocus
-          />
-        </Form.Group>
-      </Form>
-      <Modal.Footer className="flex-nowrap">
-      <Button variant="secondary" onClick={onClose}>
-            Сохранить
-          </Button>
-          <Button variant="primary" onClick={onClose}>
-            Отмена
-          </Button>
-          <Form.Select aria-label="Регион">
-            <option>Регион*</option>
-            <option value="1">Москва</option>
-            <option value="2">Санкт-Петербург</option>
-            <option value="3">Сызрань</option>
-          </Form.Select>
-      </Modal.Footer>
-    </Modal>
+    <EditLinkPopup isOpen={isOpen} onClose={handleClose} title="Редактировать ссылку" okButtonAction={handleSubmit} urlForm={urlForm} handleUrlForm={handleUrlForm} />
   )
 }
 

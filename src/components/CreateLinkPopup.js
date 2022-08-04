@@ -1,38 +1,31 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
+import { useState } from 'react';
+import EditLinkPopup from './EditLinkPopup';
 
-const CreateLinkPopup = ({ isOpen, onClose }) => {
+const CreateLinkPopup = ({ isOpen, onClose, createUrl, getUpdateProduct }) => {
+  const [ urlForm, setUrlForm] = useState({
+    url: '',
+    vendorCode: '',
+    regionName: ''
+  });
+
+  const handleUrlForm = (data) => {
+    setUrlForm(data)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createUrl(urlForm);
+  setUrlForm({
+    ...urlForm,
+    url: '',
+    vendorCode: '',
+    regionName: ''
+  })
+    onClose();
+  }
+
   return (
-    <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Добавление ссылки</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group className="m-2">
-            <Form.Control type="url" placeholder="Ссылка" />
-          </Form.Group>
-          <div className="d-flex">
-            <Form.Select className="m-2" aria-label="Регион">
-              <option>Регион</option>
-              <option value="1">Москва</option>
-              <option value="2">Санкт-Петербург</option>
-              <option value="3">Сызрань</option>
-            </Form.Select>
-            <Form.Control className="m-2" placeholder="Артикул" />
-          </div>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Да
-        </Button>
-        <Button variant="primary" onClick={onClose}>
-          Нет
-        </Button>
-      </Modal.Footer>
-    </Modal>
+    <EditLinkPopup isOpen={isOpen} onClose={onClose} title="Добавить ссылку" okButtonAction={handleSubmit} urlForm={urlForm} handleUrlForm={handleUrlForm} />
   )
 }
 

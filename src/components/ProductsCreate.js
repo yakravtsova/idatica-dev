@@ -18,7 +18,6 @@ const ProductsCreate = ({ initData, handleUpdateProduct, handleCreateNewProduct 
       });
     
     const navigate = useNavigate();
-    const {name, basePrice, groupId} = initData;
     
     const redirectToProducts = () => {
         navigate("/products", {replace: true})

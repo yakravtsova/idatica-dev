@@ -16,6 +16,8 @@ import CompleteRegistration from './CompleteRegistration';
 import DeleteLinkPopup from './DeleteLinkPopup';
 import DeleteProductPopup from './DeleteProductPopup';
 import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
+import CreateLinkPopup from './CreateLinkPopup';
+import UpdateLinkPopup from './UpdateLinkPopup';
 import { productsList } from '../utils/constants';
 import * as auth from '../utils/auth';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
@@ -29,17 +31,38 @@ const App = () => {
     const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(true);
     const [ updateProduct, setUpdateProduct ] = useState({});
-    const [deleteProductId, setDeleteProductId] = useState(null);
-    const [deleteUrlId, setDeleteUrlId ] = useState(null);
+    const [updateUrlId, setUpdateUrlId] = useState(null);
     const [checkedProducts, setCheckedProducts] = useState([]);
-    const [ indexOfDeleteUrl, setIndexOfDeleteUrl ] = useState(null);
-    const [ newUrls, setNewUrls ] = useState([]);
+    const [ indexOfProduct, setIndexOfProduct ] = useState(null);
+    const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
+    const [ deleteProductId, setDeleteProductId ] = useState(null);
+    const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
+  
 
 
     const navigate = useNavigate();
 
-    const handleIndexOfDeleteProduct = (index) => {
-        setIndexOfDeleteUrl(index);
+    const handleUpdateLinkPopupOpen = () => {
+        setIsUpdateLinkPopupOpen(!isUpdateLinkPopupOpen);
+      }
+    
+
+    const handleDeleteProductId = (id) => {
+        setDeleteProductId(id)
+    }
+
+    const handleCreateNewUrl = (urlData) => {
+        /*setNewUrl(urlData);
+        console.log(urlData);*/
+        return urlData;
+    }
+
+    const createLinkPopupOpen = () => {
+        setIsCreateLinkPopupOpen(!isCreateLinkPopupOpen);
+      }
+
+    const handleIndexOfProduct = (index) => {
+        setIndexOfProduct(index);
     }
 
     const handleDeleteCheckedProductsPopupOpen = () => {
@@ -47,23 +70,29 @@ const App = () => {
         console.log(checkedProducts)
     }
 
-    const handleDeleteProductId = (id) => {
-        setDeleteProductId(id);
-        console.log(deleteProductId)
+    const handleUpdateUrlId = (id) => {
+        setUpdateUrlId(id);
+        console.log(updateUrlId)
     }
 
-    const handleDeleteUrlId = (id) => {
-        setDeleteUrlId(id);
-        console.log(id)
-    }
-
-    const removeUrlFromState = () => {
+    const newUrlListAfterDelete = () => {
         let data = [...updateProduct.productUrls];
-        data.splice(indexOfDeleteUrl, 1);
+        data.splice(indexOfProduct, 1);
+        setIndexOfProduct(null);
         return data;
     }
+
+    const newUrlListAfterCreate = (urlData) => {
+        let data = [...updateProduct.productUrls, handleCreateNewUrl(urlData)  ];
+        return data;
+    } 
     
-      
+    const newUrlListAfterUpdate = (urlData) => {
+        let data = [...updateProduct.productUrls];
+        data[indexOfProduct]=handleCreateNewUrl(urlData);
+        console.log(data);
+        return data;
+    }
 
     const addProductIdToArr = (id) => {
         setCheckedProducts([id, ...checkedProducts])
@@ -144,18 +173,20 @@ const App = () => {
             return p;
         })
         setProducts(newProducts);
+        setUpdateProduct({});
         console.log(newProducts)
     }
 
-    const handleUpdateProductUrl = () => {
+    const handleUpdateProductUrl = (newUrlList) => {
         const newProducts = products.map(p => {
             if (p.id === updateProduct.id) {
                 return {...p, 
-                    productUrls: removeUrlFromState()}
+                    productUrls: newUrlList}
             }
             return p;
         })
         setProducts(newProducts);
+        setUpdateProduct({});
         console.log(newProducts)
     }
 
@@ -176,13 +207,21 @@ const App = () => {
   }
 
   const removeUrl = () => {
-    ;
-    console.log(removeUrlFromState());
-    
-    console.log(newUrls) 
-    handleUpdateProductUrl();
-    
+    console.log(newUrlListAfterDelete());
+    handleUpdateProductUrl(newUrlListAfterDelete());
     deleteLinkPopupOpen()
+  }
+
+  const createUrl = (urlData) => {
+    console.log(newUrlListAfterCreate(urlData));
+    handleUpdateProductUrl(newUrlListAfterCreate(urlData));
+    createLinkPopupOpen()
+  }
+
+  const updateUrl = (urlData) => {
+    console.log(newUrlListAfterUpdate(urlData));
+    handleUpdateProductUrl(newUrlListAfterUpdate(urlData));
+    handleUpdateLinkPopupOpen()
   }
 
 
@@ -203,14 +242,17 @@ const App = () => {
                         addProductIdToArr={addProductIdToArr}
                         removeProductIdFromArr={removeProductIdFromArr}
                         deleteCheckedProducts={deleteCheckedProducts}
-                        handleDeleteProductId= {handleDeleteProductId}
-                        handleDeleteUrlId={handleDeleteUrlId}
+                        handleUpdateUrlId= {handleUpdateUrlId}
                         getUpdateProduct={getUpdateProduct} 
                         deleteLinkPopupOpen={deleteLinkPopupOpen} 
                         deleteProductPopupOpen={deleteProductPopupOpen} 
                         handleDeleteCheckedProductsPopupOpen={handleDeleteCheckedProductsPopupOpen}
                         handleUpdateProduct={handleUpdateProduct}
-                        handleIndexOfDeleteProduct={handleIndexOfDeleteProduct}
+                        createLinkPopupOpen={createLinkPopupOpen}
+                        handleIndexOfProduct={handleIndexOfProduct}
+                        handleDeleteProductId={handleDeleteProductId}
+                        newUrlListAfterCreate={newUrlListAfterCreate}
+                        handleUpdateLinkPopupOpen={handleUpdateLinkPopupOpen}
                     />
                 }/>
                 <Route path="/products/create" element={
@@ -225,9 +267,11 @@ const App = () => {
             } />
             </Routes>
             <RegistrationOkInfoTooltip isOpen={isRegistrationInfoTooltipOpen} onClose={handleRegistrationInfoTooltipOpen} />
+            <CreateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
             <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
             <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
+            <UpdateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
         </Container>
 
 

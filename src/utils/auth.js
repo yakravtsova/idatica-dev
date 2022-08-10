@@ -19,7 +19,7 @@ export function register(registerData) {
     })
     .then(res => {
       console.log(res);
-    //  handleResponse(res)
+      handleResponse(res)
 })
 }
 

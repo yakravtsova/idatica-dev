@@ -139,7 +139,6 @@ const App = () => {
         auth.register(registerData)
         .then(res => {
             console.log(res);
-            console.log(JSON.stringify(registerData));
             handleRegistrationInfoTooltipOpen()
         })
         .catch(err => console.log(err))

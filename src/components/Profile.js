@@ -1,21 +1,68 @@
-import {useState} from 'react';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import {Form, Modal} from "react-bootstrap";
-import {EnvelopeOpenFill, PencilFill} from "react-bootstrap-icons";
-import {Link} from "react-router-dom";
+import { Form, Modal } from "react-bootstrap";
+import { EnvelopeOpenFill, PencilFill } from "react-bootstrap-icons";
+import { Link } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 
-const Profile = () => {
+const Profile = ({ profile, handleUpdateProfile }) => {
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
+    const [profileState, setProfileState] = useState(profile);
+    const [ form, setForm ] = useState({
+        'name': '',
+        'email': '',
+        'phone': '',
+        'companyName': ''
+      });
+    
+    useEffect(() => {
+        if (profileState.name) {
+    
+            setForm({
+                ...form,
+                'name': profileState.name,
+                'email': profileState.email,
+                'phone': profileState.phone,
+                'companyName': profileState.companyName
+              });
+        }
+    },[]);
 
-    const handleIsProfileFormDisabled = () => {
-        setIsProfileFormDisabled(!isProfileFormDisabled);
+    const setField = (field, value) => {
+        setForm({
+          ...form,
+          [field]: value
+        });
     }
 
-    const handleProfileFormDisabledUpdate = () => {
+    const setName = (e) => {
+        setField('name', e.target.value);
+    }
+
+    const setEmail = (e) => {
+        setField('email', e.target.value);
+    }
+
+    const setPhone = (e) => {
+        setField('phone', e.target.value);
+    }
+
+    const setCompanyName = (e) => {
+        setField('companyName', e.target.value);
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleUpdateProfile(form);
+        handleIsProfileFormDisabled();
+        setProfileState(profile);
+        console.log(profileState);
+    }
+
+    const handleIsProfileFormDisabled = () => {
         setIsProfileFormDisabled(!isProfileFormDisabled);
     }
 
@@ -29,28 +76,28 @@ const Profile = () => {
             <Container fluid className="bg-white">
                 <div className="d-flex align-items-center justify-content-between">
                     <h2>Личный кабинет</h2>
-                    <OverlayTrigger 
-                        rootClose 
-                        trigger="click" 
+                    <OverlayTrigger
+                        rootClose
+                        trigger="click"
                         placement="left"
                         overlay={
                             <Popover>
                                 <Popover.Body>
                                     <p className='text-center'>
-                                        Напишите ваше<br/> <Link
-                                                                to='#'
-                                                                onClick={(e) => {
-                                                                    window.location.href = "mailto:manager@company.com";
-                                                                    e.preventDefault();
-                                                                }}
-        >
-            сообщение
-        </Link>
+                                        Напишите ваше<br /> <Link
+                                            to='#'
+                                            onClick={(e) => {
+                                                window.location.href = "mailto:manager@company.com";
+                                                e.preventDefault();
+                                            }}
+                                        >
+                                            сообщение
+                                        </Link>
                                     </p>
                                 </Popover.Body>
                             </Popover>
                         }>
-                        <Button variant="link"><EnvelopeOpenFill/> Написать в поддержку</Button>
+                        <Button variant="link"><EnvelopeOpenFill /> Написать в поддержку</Button>
                     </OverlayTrigger>
                 </div>
 
@@ -58,15 +105,20 @@ const Profile = () => {
 
                 <div>&nbsp;</div>
 
-                <Form>
+                <Form onSubmit={handleSubmit}>
                     <div className="col-md-6">
                         <div className="row row-cols-2">
                             <div className="col">
 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Имя</Form.Label>
-                                    <Form.Control disabled={isProfileFormDisabled} type="text" placeholder="Введите имя"
-                                                  defaultValue="Валерий"/>
+                                    <Form.Control 
+                                        disabled={isProfileFormDisabled} 
+                                        type="text" 
+                                        placeholder="Введите имя" 
+                                        onChange={setName}
+                                        value={form.name ? form.name : ''}
+                                    />
                                 </Form.Group>
 
 
@@ -74,8 +126,13 @@ const Profile = () => {
                             <div className="col">
                                 <Form.Group className="mb-3">
                                     <Form.Label>Email</Form.Label>
-                                    <Form.Control disabled={isProfileFormDisabled} type="email"
-                                                  placeholder="Введите email" defaultValue="valeriy.myrza@idatica.com"/>
+                                    <Form.Control
+                                        disabled={isProfileFormDisabled}
+                                        type="email"
+                                        placeholder="Введите email"
+                                        onChange={setEmail}
+                                        value={form.email ? form.email : ''}
+                                    />
                                 </Form.Group>
                             </div>
                         </div>
@@ -85,8 +142,13 @@ const Profile = () => {
 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Телефон</Form.Label>
-                                    <Form.Control disabled={isProfileFormDisabled} type="text"
-                                                  placeholder="Введите телефон" defaultValue="+7 921 777-77-77"/>
+                                    <Form.Control 
+                                        disabled={isProfileFormDisabled} 
+                                        type="text"
+                                        placeholder="Введите телефон" 
+                                        onChange={setPhone}
+                                        value={form.phone ? form.phone : ''}
+                                    />
                                 </Form.Group>
 
 
@@ -94,20 +156,22 @@ const Profile = () => {
                             <div className="col">
                                 <Form.Group className="mb-3">
                                     <Form.Label>Компания</Form.Label>
-                                    <Form.Control disabled={isProfileFormDisabled} type="text"
-                                                  placeholder="Введите название компании" defaultValue="Лиу Мобаил"/>
+                                    <Form.Control 
+                                        disabled={isProfileFormDisabled} 
+                                        type="text"
+                                        placeholder="Введите название компании" 
+                                        onChange={setCompanyName}
+                                        value={form.companyName ? form.companyName : ''} 
+                                    />
                                 </Form.Group>
                             </div>
                         </div>
                     </div>
 
-                    <div>
-
-                        <Button variant="outline-primary" type="button"
-                                onClick={handleIsProfileFormDisabled}>Редактировать</Button>
-                        <Button disabled={isProfileFormDisabled} onClick={handleProfileFormDisabledUpdate}
-                                variant="primary" type="submit" className="m-2 mt-0 mb-0">Сохранить</Button>
-                    </div>
+                    <Button variant="outline-primary" type="button"
+                            onClick={handleIsProfileFormDisabled}>Редактировать</Button>
+                        <Button disabled={isProfileFormDisabled}
+                            variant="primary" type="submit" className="m-2 mt-0 mb-0">Сохранить</Button>
 
                 </Form>
 
@@ -148,9 +212,9 @@ const Profile = () => {
 
                         <div className="col-auto">
                             <Form.Control size="sm"
-                                          type="number"
-                                          id=""
-                                          defaultValue="0.5"
+                                type="number"
+                                id=""
+                                defaultValue="0.5"
                             />
                         </div>
 
@@ -165,8 +229,8 @@ const Profile = () => {
 
                 <h5>Тариф</h5>
                 <a href="#" onClick={() => setTariffModalShow(true)} className="link-primary">Тарифный план №3</a> <span
-                className="m-5 mt-0 mb-0 text-muted">Осталось проверок: <u>100 312</u></span>
-                <br/>
+                    className="m-5 mt-0 mb-0 text-muted">Осталось проверок: <u>100 312</u></span>
+                <br />
                 <Button variant="outline-primary" size="sm" className="mt-2">Сменить тариф</Button>
 
 
@@ -183,33 +247,33 @@ const Profile = () => {
 
                 <Table responsive bordered size="sm" className="small mt-3">
                     <thead>
-                    <tr className="align-middle">
-                        <th>Название группы</th>
-                        <th>Частота проверки</th>
-                        <th>Время начала</th>
-                        <th></th>
-                    </tr>
+                        <tr className="align-middle">
+                            <th>Название группы</th>
+                            <th>Частота проверки</th>
+                            <th>Время начала</th>
+                            <th></th>
+                        </tr>
                     </thead>
 
                     <tbody>
-                    <tr>
-                        <td><Link to="/groups/id">Коррозия Металла</Link></td>
-                        <td>Раз в день</td>
-                        <td>00:00</td>
-                        <td><a className="link-dark" href="#"><PencilFill/></a></td>
-                    </tr>
-                    <tr>
-                        <td><Link to="/groups/id">ВИА Песняры</Link></td>
-                        <td>Раз в день</td>
-                        <td>23:59</td>
-                        <td><a className="link-dark" href="#"><PencilFill/></a></td>
-                    </tr>
-                    <tr>
-                        <td><Link to="/groups/id">Комбинация</Link></td>
-                        <td>Раз в неделю</td>
-                        <td>14:00</td>
-                        <td><a className="link-dark" href="#"><PencilFill/></a></td>
-                    </tr>
+                        <tr>
+                            <td><Link to="/groups/id">Коррозия Металла</Link></td>
+                            <td>Раз в день</td>
+                            <td>00:00</td>
+                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
+                        </tr>
+                        <tr>
+                            <td><Link to="/groups/id">ВИА Песняры</Link></td>
+                            <td>Раз в день</td>
+                            <td>23:59</td>
+                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
+                        </tr>
+                        <tr>
+                            <td><Link to="/groups/id">Комбинация</Link></td>
+                            <td>Раз в неделю</td>
+                            <td>14:00</td>
+                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
+                        </tr>
                     </tbody>
                 </Table>
 

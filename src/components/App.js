@@ -7,6 +7,7 @@ import ProductsCreate from './ProductsCreate';
 import SideBar from './SideBar';
 import Container from 'react-bootstrap/Container';
 import Profile from "./Profile";
+import Clients from "./Clients";
 import Groups from "./Groups";
 import Register from './Register';
 import Rules from './Rules';
@@ -18,29 +19,53 @@ import DeleteProductPopup from './DeleteProductPopup';
 import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
 import CreateLinkPopup from './CreateLinkPopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
-import { productsList } from '../utils/constants';
+import UpdateGroupPopup from './UpdateGroupPopup';
+import { productsList, groupsList, clientsList, profileInfo } from '../utils/constants';
 import * as auth from '../utils/auth';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
+import DeleteGroupPopup from './DeleteGroupPopup';
 
 const App = () => {  
     
     const [ products, setProducts ] = useState(productsList);
+    const [ groups, setGroups ] = useState(groupsList);
+    const [ clients, setClients ] = useState(clientsList);
     const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
     const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
     const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
     const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(true);
     const [ updateProduct, setUpdateProduct ] = useState({});
+    const [ updateGroup, setUpdateGroup ] = useState({});
     const [updateUrlId, setUpdateUrlId] = useState(null);
     const [checkedProducts, setCheckedProducts] = useState([]);
     const [ indexOfProduct, setIndexOfProduct ] = useState(null);
     const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
     const [ deleteProductId, setDeleteProductId ] = useState(null);
     const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
+    const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
+    const [isDeleteGroupPopupOpen, setIsDeleteGroupPopupOpen] = useState(false);
+    const [isSuperUser, setIsSuperUser] = useState(true);
+    const [profile, setProfile] = useState(profileInfo);
+    
   
 
 
     const navigate = useNavigate();
+
+    const handleUpdateProfile = (form) => {
+        setProfile(form);
+        console.log(profile);
+    }
+
+    const handleDeleteGroupPopupOpen = () => {
+        setIsDeleteGroupPopupOpen(!isDeleteGroupPopupOpen);
+    }
+
+    const handleEditGroupPopupOpen = () => {
+        setIsEditGroupPopupOpen(!isEditGroupPopupOpen);
+    }
+
 
     const handleUpdateLinkPopupOpen = () => {
         setIsUpdateLinkPopupOpen(!isUpdateLinkPopupOpen);
@@ -126,6 +151,10 @@ const App = () => {
         navigate(path)
     }
 
+    const getUpdateGroup = (groupData) => {
+        setUpdateGroup(groupData);
+    }
+
     const getUpdateProduct = (productData) => {
         setUpdateProduct(productData);
     }
@@ -176,6 +205,49 @@ const App = () => {
         console.log(newProducts)
     }
 
+    const handleUpdateGroup = (form) => {
+        console.log(updateGroup);
+        const newGroups = groups.map(g => {
+            if (g.id === updateGroup.id) {
+                return {...g, 
+                    name: form.name,
+                    updateFrequency: form.updateFrequency}
+            }
+            return g;
+        })
+        setGroups(newGroups);
+        setUpdateGroup({});
+        console.log(newGroups)
+    }
+
+    const handleUpdatingEnabledGroup = (group) => {
+        const newGroups = groups.map(g => {
+            if (g.id === group.id) {
+                return {...g, 
+                    isUpdatingEnabled: !group.isUpdatingEnabled}
+            }
+            return g;
+        })
+        setGroups(newGroups);
+        setUpdateGroup({});
+        console.log(newGroups)
+    }
+
+    const handleIsDefaultGroup = (group) => {
+        const newGroups = groups.map(g => {
+            if (g.id === group.id) {
+                return {...g, 
+                    isDefault: true}
+            }
+            return {...g, 
+                isDefault: false};
+        })
+        setGroups(newGroups);
+        setUpdateGroup({});
+        console.log(newGroups)
+    }
+
+
     const handleUpdateProductUrl = (newUrlList) => {
         const newProducts = products.map(p => {
             if (p.id === updateProduct.id) {
@@ -191,6 +263,11 @@ const App = () => {
 
     const handleCreateNewProduct = (form) => {
         setProducts([form, ...products])
+    }
+
+    const handleCreateNewGroup = (form) => {
+        setGroups([form, ...groups]);
+        console.log(groups);
     }
     
   const handleDeleteOneProduct = () => {
@@ -223,12 +300,20 @@ const App = () => {
     handleUpdateLinkPopupOpen()
   }
 
+  const handleDeleteGroup = () => {
+    const groupId = updateGroup.id;
+    setProducts(state => state.filter(p => p.groupId !== groupId));
+    setGroups(state => state.filter(g => g.id !== groupId));
+    setUpdateGroup({});
+    handleDeleteGroupPopupOpen();
+  }
+
 
 
 
     return (
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
-            {loggedIn && <SideBar/>}
+            {loggedIn && <SideBar isSuperUser={isSuperUser} />}
             <Routes>
                 <Route path="/start" element={<StartPage redirectTo={redirectTo} />}/>
                 <Route path="/register" element={<Register handleRegister={handleRegister} />} />
@@ -257,11 +342,23 @@ const App = () => {
                 <Route path="/products/create" element={
                     <ProductsCreate 
                         initData={updateProduct} 
+                        group={updateGroup}
                         handleUpdateProduct={handleUpdateProduct} 
                         handleCreateNewProduct={handleCreateNewProduct} 
                     />}/>
-                <Route path="/groups" element={<Groups /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/ />} />
-                <Route path="/profile" element={<Profile/>}/>
+                <Route 
+                    path="/groups" 
+                    element={
+                        <Groups 
+                            groups={groups} 
+                            handleCreateNewGroup={handleCreateNewGroup} 
+                            handleEditGroupPopupOpen={handleEditGroupPopupOpen}
+                            handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
+                            getUpdateGroup={getUpdateGroup}
+                            handleUpdatingEnabledGroup={handleUpdatingEnabledGroup}
+                            handleIsDefaultGroup={handleIsDefaultGroup} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/ />} />
+                <Route path="/profile" element={<Profile profile={profile} handleUpdateProfile={handleUpdateProfile} />} />
+                <Route path="/clients" element={<Clients clients={clients}/>} />
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />
             } />
             </Routes>
@@ -271,6 +368,8 @@ const App = () => {
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
             <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
             <UpdateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
+            <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} />
+            <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
         </Container>
 
 

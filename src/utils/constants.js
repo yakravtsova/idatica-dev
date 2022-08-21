@@ -1,4 +1,4 @@
-const groups = [
+const groupsList = [
   {
     id : 1,
     name : 'Группа 1',
@@ -19,7 +19,7 @@ const groups = [
   id : 3,
   name : 'Группа 3',
   count : 4,
-  isDefault : true,
+  isDefault : false,
   isUpdatingEnabled : false,
   updateFrequency : 4
 },
@@ -27,7 +27,7 @@ const groups = [
   id : 4,
   name : 'Группа 4',
   count : 3,
-  isDefault : true,
+  isDefault : false,
   isUpdatingEnabled : true,
   updateFrequency : 2
 },
@@ -43,7 +43,7 @@ const groups = [
 id : 6,
 name : 'Группа 6',
 count : 49,
-isDefault : true,
+isDefault : false,
 isUpdatingEnabled : false,
 updateFrequency : 5
 },
@@ -51,7 +51,7 @@ updateFrequency : 5
 id : 7,
 name : 'Группа 7',
 count : 7,
-isDefault : true,
+isDefault : false,
 isUpdatingEnabled : false,
 updateFrequency : 1
 },
@@ -220,4 +220,89 @@ const productsList = [
 },
 ]
 
-export { groups, productsList }
+const clientsList = [
+  {
+    id : 1,
+    companyName : 'ООО "Розничная торговля"',
+    tariffName : 'Тариф 1',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/54',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  },
+  {
+    id : 2,
+    companyName : 'ООО "Оптовая торговля"',
+    tariffName : 'Тариф 4',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/55',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  },
+  {
+    id : 3,
+    companyName : 'ООО "Стационарная торговля"',
+    tariffName : 'Тариф 2',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/55',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  },
+  {
+    id : 4,
+    companyName : 'ООО "Нестационарная торговля"',
+    tariffName : 'Тариф 1',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/55',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  },
+  {
+    id : 5,
+    companyName : 'ООО "Комиссионная торговля"',
+    tariffName : 'Тариф 3',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/55',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  },
+  {
+    id : 6,
+    companyName : 'ООО "Интернет торговля"',
+    tariffName : 'Тариф 1',
+    tariffExpirationDate : 1653254833,
+    isActive : true,
+    contractNumber : 'А-150-ГЖЭ/55',
+    paymentDetails : 'ОРГН, ИНН, БИК, РС, К/С и прочее',
+  }
+]
+
+const profileInfo = {
+  id : 123,
+  name : 'Валерий',
+  email : 'valeriy.myrza@idatica.com',
+  phone : '+7 921 777-77-77',
+  companyName : 'Лиу Мобаил',
+  tariffName : 'Тариф 1',
+  tariffExpirationDate : 1653254833,
+  tariffDescription : 'Данный тариф удобен для начинающих кооператоров.',
+  notifications : [
+          {
+              type : 'notInStock',
+              value : true
+          },
+          {
+              type : 'parsingError',
+              value : false,
+          },
+          {
+              type : 'priceChange',
+              payload : {
+                      index : 'less',
+                      percentage : 5
+                  },
+          }
+      ],
+}
+
+export { groupsList, productsList, clientsList, profileInfo }

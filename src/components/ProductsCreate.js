@@ -5,16 +5,16 @@ import Button from 'react-bootstrap/Button';
 import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
 
-const ProductsCreate = ({ initData, handleUpdateProduct, handleCreateNewProduct }) => {
+const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewProduct }) => {
     const [ form, setForm ] = useState({
-        ['name']: '',
-        ['basePrice']: '',
-        ['ownVendorCode']: '',
-        ['groupId']: '',
-        ['brand']: '',
-        ['purchasePrice']: '',
-        ['categoryName']: '',
-        ['productUrls']: [{}]
+        'name': '',
+        'basePrice': '',
+        'ownVendorCode': '',
+        'groupId': '',
+        'brand': '',
+        'purchasePrice': '',
+        'categoryName': '',
+        'productUrls': [{}]
       });
     
     const navigate = useNavigate();
@@ -33,27 +33,26 @@ const ProductsCreate = ({ initData, handleUpdateProduct, handleCreateNewProduct 
 
     useEffect(() => {
         if (initData.id) {
-            const productUrls=initData.productUrls.map (item => {
-                return {
-                    url: item.url,
-                    regionName: item.regionName,
-                    vendorCode: item.vendorCode
-                }
-            });
     
             setForm({
                 ...form,
-                ['name']: initData.name,
-                ['basePrice']: initData.basePrice,
-                ['groupId']: initData.groupId,
-                ['brand']: initData.brand,
-                ['purchasePrice']: initData.purchasePrice,
-                ['categoryName']: initData.categoryName,
-                ['productUrls']: initData.productUrls
+                'name': initData.name,
+                'basePrice': initData.basePrice,
+                'groupId': initData.groupId,
+                'brand': initData.brand,
+                'purchasePrice': initData.purchasePrice,
+                'categoryName': initData.categoryName,
+                'productUrls': initData.productUrls
               });
-
+        }
+        if (group) {
+            setForm({
+                ...form,
+                'groupId': group.id
+              });
         }
         
+        console.log(group);
     },[]);
     
 
@@ -138,6 +137,8 @@ const ProductsCreate = ({ initData, handleUpdateProduct, handleCreateNewProduct 
                             <option value="1">Коррозия Металла</option>
                             <option value="2">ВИА Песняры</option>
                             <option value="3">Комбинация</option>
+                            <option value="4">Дюна</option>
+                            <option value="5">Альянс</option>
                     </Form.Select>
 
                     <Form.Check defaultChecked className="m-1"></Form.Check>

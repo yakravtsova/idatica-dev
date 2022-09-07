@@ -37,3 +37,27 @@ export const updateGroup = (groupId, data, token) => {
   })
   .then(res => handleResponse(res))
 }
+
+export const deleteGroup = (groupId, token) => {
+  return fetch(`${BASE_URL}groups/${groupId}/`, {
+    method: 'DELETE',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  })
+  .then(res => handleResponse(res))
+}
+
+export const setDefaultGroup = (groupId, token) => {
+  return fetch(`${BASE_URL}groups/${groupId}/set-default/`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  })
+  .then(res => handleResponse(res))
+}

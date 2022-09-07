@@ -260,6 +260,7 @@ const App = () => {
                     console.log('Авторизация не удалась');
                   }
                 })
+            .catch(err => console.log(err));
     }
 
     const handleReset = (email) => {
@@ -304,6 +305,7 @@ const App = () => {
             setUpdateGroup({});
             console.log(newGroups)
         })
+        .catch(err => console.log(err));
     }
 
     const handleUpdatingEnabledGroup = (group) => {
@@ -320,17 +322,21 @@ const App = () => {
     }
 
     const handleIsDefaultGroup = (group) => {
-        const newGroups = groups.map(g => {
-            if (g.id === group.id) {
+        const token = localStorage.getItem('token');
+        groupsApi.setDefaultGroup(group.id, token)
+        .then(res => {
+            const newGroups = groups.map(g => {
+                if (g.id === group.id) {
+                    return {...g, 
+                        is_default: true}
+                }
                 return {...g, 
-                    isDefault: true}
-            }
-            return {...g, 
-                isDefault: false};
+                    is_default: false};
+            })
+            setGroups(newGroups);
+            setUpdateGroup({});
+            console.log(newGroups)
         })
-        setGroups(newGroups);
-        setUpdateGroup({});
-        console.log(newGroups)
     }
 
 
@@ -353,11 +359,17 @@ const App = () => {
 
     const handleCreateNewGroup = (form) => {
         console.log(form);
-        groupsApi.createGroup(form, localStorage.getItem('token'))
-        .then(res => {
-            setGroups([form, ...groups]);
+        const token = localStorage.getItem('token');
+        groupsApi.createGroup(form, token)
+        .then(data => {
+            const newGroups = groups.map(g => {
+                return {...g, 
+                    is_default: false};
+            })
+            setGroups([data, ...newGroups]);
             console.log(groups);    
         })
+        .catch(err => console.log(err));
     }
     
   const handleDeleteOneProduct = () => {
@@ -392,10 +404,15 @@ const App = () => {
 
   const handleDeleteGroup = () => {
     const groupId = updateGroup.id;
-    setProducts(state => state.filter(p => p.groupId !== groupId));
-    setGroups(state => state.filter(g => g.id !== groupId));
-    setUpdateGroup({});
-    handleDeleteGroupPopupOpen();
+    const token = localStorage.getItem('token');
+    groupsApi.deleteGroup(groupId, token)
+    .then(res => {
+        setProducts(state => state.filter(p => p.groupId !== groupId));
+        setGroups(state => state.filter(g => g.id !== groupId));
+        setUpdateGroup({});
+        handleDeleteGroupPopupOpen();    
+    })
+    .catch(err => console.log(err));
   }
 
   

@@ -28,10 +28,6 @@ const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handle
 
   const handleIsDefaultChange = () => {
     handleIsDefaultGroup(groupState);
-    setGroupState({
-      ...groupState,
-      isDefault: true
-    });
   }
 
   const editGroupPopupOpen = () => {

@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form';
 const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup }) => {
   const [ form, setForm ] = useState({
     name: '',
-    updateFrequency: ''
+  //  updateFrequency: ''
 });
 
   useEffect(() => {
@@ -15,7 +15,7 @@ const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup }) => {
       setForm({
         ...form,
         'name': formData.name,
-        'updateFrequency': formData.updateFrequency,
+      //  'updateFrequency': formData.updateFrequency,
       })
     }
   }, [isOpen]);

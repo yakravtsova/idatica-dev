@@ -4,9 +4,9 @@ import { Form, Button } from 'react-bootstrap';
 const CompleteRegistration = ({ handleCompleteRegister }) => {
   const [ form, setForm ] = useState({});
   const [ errors, setErrors ] = useState({});
-  const [ usernameError, setUsernameError ] = useState('');
+  const [ nameError, setNameError ] = useState('');
   const [ phoneError, setPhoneError ] = useState('');
-  const [ companyError, setCompanyError ] = useState('');
+  const [ companyNameError, setCompanyNameError ] = useState('');
   const [ tariffIdError, setTariffIdError ] = useState('');
 
   const setField = (field, value) => {
@@ -20,14 +20,18 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
     })
   }
 
-  const setUsername = (e) => {
+  const setEmail = (e) => {
+    setField('email', e.target.value);
+  }
+
+  const setName = (e) => {
     if (!e.target.validity.valid) {
-      setUsernameError(e.target.validationMessage)
+      setNameError(e.target.validationMessage)
     }
     else {
-      setUsernameError(null)
+      setNameError(null)
     }
-    setField('username', e.target.value);
+    setField('name', e.target.value);
   }
 
   const setPhone = (e) => {
@@ -40,14 +44,14 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
     setField('phone', e.target.value);
   }
 
-  const setCompany = (e) => {
+  const setCompanyName = (e) => {
     if (!e.target.validity.valid) {
-      setCompanyError(e.target.validationMessage)
+      setCompanyNameError(e.target.validationMessage)
     }
     else {
-      setCompanyError(null)
+      setCompanyNameError(null)
     }
-    setField('company', e.target.value);
+    setField('companyName', e.target.value);
   }
 
   const setTariffId = (e) => {
@@ -55,12 +59,12 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
   }
 
   const findFormErrors = () => {
-    const { username, company, tariffId } = form;
+    const { name, companyName, tariffId } = form;
     const newErrors = {};
-    if (!username || username === '') newErrors.username = 'Введите имя'
-    else if (usernameError) {newErrors.username = usernameError}
+    if (!name || name === '') newErrors.name = 'Введите имя'
+    else if (nameError) {newErrors.name = nameError}
     if (phoneError) {newErrors.phone = phoneError}
-    if (!company || company === '') newErrors.company = 'Введите название компании'
+    if (!companyName || companyName === '') newErrors.companyName = 'Введите название компании'
     if (!tariffId || tariffId === '') newErrors.tariffId = 'Выберите тариф'
     return newErrors
   }
@@ -85,15 +89,26 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
           Пожалуйста, добавьте необходимые регистрационные данные.
         </p>
         <Form className="d-flex flex-column" onSubmit={handleSubmit} noValidate>
-          <Form.Group className="mb-2" controlId="username">
+          <Form.Group className="mb-2" controlId="email">
+            <Form.Control 
+              type="text" 
+              placeholder="Ваш email *" 
+              onChange={setEmail} 
+            //  isInvalid={errors.name}
+              required />
+          {/*  <Form.Control.Feedback type="invalid">
+              {errors.name}
+  </Form.Control.Feedback>*/}
+          </Form.Group>
+          <Form.Group className="mb-2" controlId="name">
             <Form.Control 
               type="text" 
               placeholder="Ваше имя *" 
-              onChange={setUsername} 
-              isInvalid={errors.username}
+              onChange={setName} 
+              isInvalid={errors.name}
               required />
             <Form.Control.Feedback type="invalid">
-              {errors.username}
+              {errors.name}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-2" controlId="phone">
@@ -106,15 +121,15 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
               {errors.phone}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group className="mb-2" controlId="company">
+          <Form.Group className="mb-2" controlId="companyName">
             <Form.Control 
               type="text" 
               placeholder="Компания *" 
-              onChange={setCompany} 
-              isInvalid={errors.company}
+              onChange={setCompanyName} 
+              isInvalid={errors.companyName}
               required />
             <Form.Control.Feedback type="invalid">
-              {errors.company}
+              {errors.companyName}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-5">

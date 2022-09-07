@@ -3,25 +3,39 @@ import { Form, Container, Button } from 'react-bootstrap';
 import ResetPasswordPopup from './ResetPasswordPopup';
 
 const Login = ({ handleAuthorization, handleReset }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [ form, setForm ] = useState({});
   const [forgotPassword, setForgotPassword] = useState(false);
   
-
- const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value
+    });
   }
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+  const setEmail = (e) => {
+    /*if (!isValidEmail(e.target.value)) {
+      setEmailError('Адрес электронной почты содержит ошибку');
+    } else {
+      setEmailError(null);
+    }*/
+    setField('email', e.target.value);
+  }
+
+  const setPassword = (e) => {
+   /* if (!e.target.validity.valid) {
+      setPasswordError(e.target.validationMessage)
+    }
+    else setPasswordError(null)*/
+    setField('password', e.target.value);
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!form.email || !form.password) {
       return;
     }
-    handleAuthorization(email, password);
+    handleAuthorization(form);
   }
 
   const handleForgotPassword = () => {
@@ -32,10 +46,22 @@ const Login = ({ handleAuthorization, handleReset }) => {
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
       <Form className="d-flex flex-column" onSubmit={handleSubmit}>
         <Form.Group className="mb-2" controlId="registerEmail">
-          <Form.Control type="email" placeholder="Почта *" onChange={handleEmailChange} />
+          <Form.Control
+            type="email" 
+            placeholder="Почта *" 
+            onChange={setEmail} 
+            // isInvalid={errors.email}
+            required
+          />
         </Form.Group>
         <Form.Group className="mb-2" controlId="registerPassword">
-          <Form.Control type="password" placeholder="Пароль *" onChange={handlePasswordChange} />
+          <Form.Control
+            type="password" 
+            placeholder="Пароль *" 
+            onChange={setPassword} 
+            // isInvalid={errors.password}
+            required
+          />
         </Form.Group>
         <Button type="submit" className="align-self-center m-3">Войти</Button>
       </Form>

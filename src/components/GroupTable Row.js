@@ -11,11 +11,11 @@ const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handle
   }, [getUpdateGroup])
   
   const updateFrequency={
-    1: "Раз в день",
-    2: "Раз в неделю",
-    3: "Раз в две недели",
-    4: "Раз в три недели",
-    5: "Раз в месяц"
+    2: "Раз в день",
+    3: "Раз в неделю",
+    4: "Раз в две недели",
+    5: "Раз в три недели",
+    6: "Раз в месяц"
   }
 
   const handleUpdateFrequencyChange = () => {
@@ -59,12 +59,12 @@ const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handle
       <td>{groupState.count}</td>
       <td>
         <Form.Check
-          checked={groupState.isDefault}
+          checked={groupState.is_default}
           type="radio"
           onChange={handleIsDefaultChange}
           />
       </td>
-      <td>{updateFrequency[groupState.updateFrequency]}</td>
+      <td>{updateFrequency[groupState.updater.id]}</td>
       <td>
         <Form.Check
           checked={groupState.isUpdatingEnabled}

@@ -7,28 +7,19 @@ import DeletePopup from './DeletePopup';
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
-import UpdateGroupPopup from './UpdateGroupPopup';
 import GroupTableRow from './GroupTable Row';
-import { Plus, PencilFill, TrashFill } from "react-bootstrap-icons";
 
 
 const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
     const navigate = useNavigate();
     const [ form, setForm ] = useState({
         name: '',
-        updateFrequency: ''
+        updater_id: '',
+        is_default: true,
     });
 
-    const updateFrequency={
-        1: "Раз в день",
-        2: "Раз в неделю",
-        3: "Раз в две недели",
-        4: "Раз в три недели",
-        5: "Раз в месяц"
-      }
-
     const redirectToProductsCreate = () => {
-        navigate("/products/create", {replace: true})
+        navigate('/products/create', {replace: true})
     }
 
     const setField = (field, value) => {
@@ -42,8 +33,8 @@ const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handle
         setField('name', e.target.value);
     }
 
-    const setFrequency = (e) => {
-        setField('updateFrequency', e.target.value);
+    const setUpdater = (e) => {
+        setField('updater_id', e.target.value);
     }
 
     const handleSubmit = (e) => {
@@ -51,7 +42,8 @@ const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handle
         handleCreateNewGroup(form);
         setForm({
             name: '',
-            updateFrequency: ''
+            updater_id: '',
+            is_default: true,
         });
     }
 
@@ -77,13 +69,13 @@ const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handle
                     <div className="d-flex align-items-center">
                         <Form.Control className="m-1" type="text" placeholder="Название *" value={form.name} onChange={setGroupName}></Form.Control>
 
-                        <Form.Select className="m-1" onChange={setFrequency} value={form.updateFrequency}>
+                        <Form.Select className="m-1" onChange={setUpdater} value={form.updater_id}>
                             <option defaultValue="selected">Частота проверки *</option>
-                            <option value="1">Раз в день</option>
-                            <option value="2">Раз в неделю</option>
-                            <option value="3">Раз в две недели</option>
-                            <option value="4">Раз в три недели</option>
-                            <option value="5">Раз в месяц</option>
+                            <option value="2">Раз в день</option>
+                            <option value="3">Раз в неделю</option>
+                            <option value="4">Раз в две недели</option>
+                            <option value="5">Раз в три недели</option>
+                            <option value="6">Раз в месяц</option>
                         </Form.Select>
 
                         <Button variant="primary" type="submit">Создать</Button>

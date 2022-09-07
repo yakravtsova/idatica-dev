@@ -1,41 +1,53 @@
-export const BASE_URL = 'https://pricehub.idatica.com/api/v1/';
+import { BASE_URL, handleResponse } from "./handleResponse";
 
-function handleResponse(res) {
-  if (res.ok) {
-    return res.json();
-  }
-  return Promise.reject(`Что-то пошло не так: ${res.status}`);
-}
-
-export function register(registerData) {
-  return fetch("https://pricehub.idatica.com/api/v1/users/registration/step1/", {
+export const register = (registerData) => {
+  return fetch(`${BASE_URL}users/registration/step1/`, {
     //mode: "no-cors",
     method: "POST",
     headers: {
-      "accept": "application/json",
+      "Accept": "application/json",
       "Content-Type": "application/json"
     },
     body: JSON.stringify(registerData)
     })
-    .then(res => {
-      console.log(res);
-      handleResponse(res)
-})
+    .then(res => handleResponse(res))
+}
+
+export const completeRegister = (registerData) => {
+  return fetch(`${BASE_URL}users/registration/step2/`, {
+    //mode: "no-cors",
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(registerData)
+    })
+    .then(res => handleResponse(res))
+    .then(data => {
+      if (data){
+        localStorage.setItem('token', data.access_token);
+        return data;
+      }
+    })
 }
 
 export function authorize(email, password) {
-  return fetch(`${BASE_URL}/signin`, {
+  let urlencoded = new URLSearchParams();
+  urlencoded.append("username", email);
+  urlencoded.append("password", password);
+  return fetch(`${BASE_URL}auth/login/`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: JSON.stringify({ email, password })
+    body: urlencoded,
   })
   .then(res => handleResponse(res))
   .then(data => {
     if (data){
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data.access_token);
       return data;
     }
   })

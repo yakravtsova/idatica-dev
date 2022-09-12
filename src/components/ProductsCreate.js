@@ -1,26 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
+//import { GroupsContext } from '../contexts/GroupsContext';
 
-const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewProduct }) => {
+const ProductsCreate = ({ initData, group, groups, defaultGroupId, handleUpdateProduct, handleCreateNewProduct }) => {
+//    const groups = useContext(GroupsContext);
+    const navigate = useNavigate();
     const [ form, setForm ] = useState({
         'name': '',
-        'basePrice': '',
-        'ownVendorCode': '',
-        'groupId': '',
+        'base_price': '',
+        'own_vendor_code': '',
+        'group_id': '',
         'brand': '',
-        'purchasePrice': '',
+        'purchase_price': '',
         'categoryName': '',
-        'productUrls': [{}]
+        'product_urls': [{}]
       });
-    
-    const navigate = useNavigate();
+
     
     const redirectToProducts = () => {
-        navigate("/products", {replace: true})
+        navigate('/products', {replace: true})
     }
 
     const setField = (field, value) => {
@@ -32,44 +34,50 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
     
 
     useEffect(() => {
+        console.log(groups);
+        
         if (initData.id) {
     
             setForm({
                 ...form,
                 'name': initData.name,
-                'basePrice': initData.basePrice,
-                'groupId': initData.groupId,
+                'base_price': initData.base_price,
+                'group_id': initData.group_id,
                 'brand': initData.brand,
-                'purchasePrice': initData.purchasePrice,
+                'purchase_price': initData.purchase_price,
                 'categoryName': initData.categoryName,
-                'productUrls': initData.productUrls
+                'product_urls': initData.product_urls
               });
+              return;
         }
-        if (group) {
+        if (group.id) {
             setForm({
                 ...form,
-                'groupId': group.id
+                'group_id': group.id
+              });
+              return;
+        } else {
+            setForm({
+                ...form,
+                'group_id': defaultGroupId,
               });
         }
-        
-        console.log(group);
-    },[]);
-    
+    },[groups]);
 
     const setName = (e) => {
       setField('name', e.target.value);
     }
 
     const setBasePrice = (e) => {
-        setField('basePrice', e.target.value);
+        setField('base_price', e.target.value);
     }
 
     const setOwnVendorCode = (e) => {
-        setField('ownVendorCode', e.target.value);
+        setField('own_vendor_code', e.target.value);
     }
 
     const setGroupId = (e) => {
-        setField('groupId', e.target.value);
+        setField('group_id', e.target.value);
     }
 
     const setBrand = (e) => {
@@ -77,7 +85,7 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
     }
 
     const setPurchasePrice = (e) => {
-        setField('purchasePrice', e.target.value);
+        setField('purchase_price', e.target.value);
     }
 
     const setCategoryName = (e) => {
@@ -85,20 +93,20 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
     }
 
     const addFields = () => {
-        let newField = { url: '', regionName: '', vendorCode: ''};
-        setField('productUrls', [...form.productUrls, newField]);
+        let newField = { url: '', region_id: '', vendor_sku: ''};
+        setField('product_urls', [...form.product_urls, newField]);
     }
 
     const removeFields = (index) => {
-        let data = [...form.productUrls];
+        let data = [...form.product_urls];
         data.splice(index, 1);
-        setField('productUrls', data);
+        setField('product_urls', data);
     }
 
     const handleFormChange = (i, e) => {
-        let data = [...form.productUrls];
+        let data = [...form.product_urls];
         data[i][e.target.name] = e.target.value;
-        setField('productUrls', data);
+        setField('product_urls', data);
     }
 
     const handleSubmit = (e) => {
@@ -109,7 +117,6 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
         else {
             handleCreateNewProduct(form)
         }
-        redirectToProducts();
     }
     
 
@@ -124,35 +131,33 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
 
                 <div className="d-flex align-items-center">
                     <Form.Control className="m-1" type="text" placeholder="Название *" value={form.name ? form.name : ''} required onChange={setName}></Form.Control>
-                    <Form.Control className="m-1" type="text" placeholder="Ваша цена" value={form.basePrice ? form.basePrice : ''} onChange={setBasePrice}></Form.Control>
+                    <Form.Control className="m-1" type="text" placeholder="Ваша цена" value={form.base_price ? form.base_price : ''} onChange={setBasePrice}></Form.Control>
                     <Form.Control className="m-1" type="text" placeholder="Ваш артикул" onChange={setOwnVendorCode}></Form.Control>
 
                     <Form.Select 
                         className="m-1"  
-                        value={form.groupId ? form.groupId : ''}
+                        value={form.group_id ? form.group_id : ''}
                         onChange={setGroupId} 
                         /*isInvalid={}*/
                         required>
                             <option value=''>Группа *</option>
-                            <option value="1">Коррозия Металла</option>
-                            <option value="2">ВИА Песняры</option>
-                            <option value="3">Комбинация</option>
-                            <option value="4">Дюна</option>
-                            <option value="5">Альянс</option>
+                            {groups.map((group, i) => (
+                                <option key={group.id} value={group.id}>{group.name}</option>
+                            ))}
                     </Form.Select>
 
                     <Form.Check defaultChecked className="m-1"></Form.Check>
                 </div>
 
-                {form.productUrls.map((item ,i) => {
+                {form.product_urls.map((item ,i) => {
                     return(
                         <Form.Group key={i} className="d-flex align-items-center">
-                            <Form.Control className="m-1" type="url" placeholder="Ссылка на товар" name="url" value={form.productUrls[i].url ? form.productUrls[i].url : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
+                            <Form.Control className="m-1" type="url" placeholder="Ссылка на товар" name="url" value={form.product_urls[i].url ? form.product_urls[i].url : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
 
                             <Form.Select 
                                 className="m-1"
-                                name="regionName"
-                                value={form.productUrls[i].regionName ? form.productUrls[i].regionName : ''} 
+                                name="region_id"
+                                value={form.product_urls[i].region_id ? form.product_urls[i].region_id : ''} 
                                 onChange={(e) => handleFormChange(i, e)}
                                 required>
                                     <option value=''>Регион *</option>
@@ -161,7 +166,7 @@ const ProductsCreate = ({ initData, group, handleUpdateProduct, handleCreateNewP
                                     <option value="3">ХМАО</option>
                             </Form.Select>
 
-                            <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendorCode" value={form.productUrls[i].vendorCode ? form.productUrls[i].vendorCode : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
+                            <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendor_sku" value={form.product_urls[i].vendor_sku ? form.product_urls[i].vendor_sku : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
                             <Button onClick={() => removeFields(i)}><TrashFill /></Button>
                         </Form.Group>
                     )

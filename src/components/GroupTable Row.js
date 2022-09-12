@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Plus, PencilFill, TrashFill } from "react-bootstrap-icons";
 
-const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
+const GroupTableRow = ({ group, redirectTo, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
   const [groupState, setGroupState] = useState(group);
   const [isUpdatingAnabledState, setIsUpdatingAnabledState] = useState(group.isUpdatingAnabled);
 
@@ -38,7 +38,7 @@ const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handle
   const handleCreateProduct = () => {
     getUpdateGroup(groupState);
     console.log(groupState);
-    redirectToProductsCreate();
+    redirectTo('/create-product');
   }
 
   const deleteGroupPopupOpen = () => {
@@ -47,11 +47,16 @@ const GroupTableRow = ({ group, redirectToProductsCreate, getUpdateGroup, handle
     
   }
 
+  const handleGroupProductsOutput = () => {
+    getUpdateGroup(groupState);
+    redirectTo('/products');
+  }
+
 
 
   return(
     <tr>
-      <td><a href="#">{groupState.name}</a></td>
+      <td><Button variant="link" onClick={handleGroupProductsOutput}>{groupState.name}</Button></td>
       <td>{groupState.count}</td>
       <td>
         <Form.Check

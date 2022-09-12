@@ -93,7 +93,7 @@ const Register = ({ handleRegister }) => {
             type="password" 
             placeholder="Пароль *" 
             onChange={setPassword} 
-            minLength={5}
+            minLength={8}
             isInvalid={errors.password}
             required />
           <Form.Control.Feedback type="invalid">

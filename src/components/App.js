@@ -20,23 +20,32 @@ import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
 import CreateLinkPopup from './CreateLinkPopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import UpdateGroupPopup from './UpdateGroupPopup';
-import { productsList, groupsList, clientsList, profileInfo } from '../utils/constants';
+import { productsList, clientsList, profileInfo } from '../utils/constants';
 import * as auth from '../utils/auth';
 import * as groupsApi from '../utils/groupsApi';
+import * as productsApi from '../utils/productsApi';
+import * as updatersApi from '../utils/updatersApi';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
+//import { GroupsContext } from '../contexts/GroupsContext';
+
 
 const App = () => {  
     
-    const [ products, setProducts ] = useState(productsList);
+    const [ products, setProducts ] = useState([]);
     const [ groups, setGroups ] = useState([]);
+    const [ defaultGroupId, setDefaultGroupId] = useState(null);
+    const [ updaters, setUpdaters ] = useState([]);
     const [ clients, setClients ] = useState(clientsList);
     const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
     const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
     const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
     const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(() => {
+        const token = localStorage.getItem('token');
+        return token !== null;
+    });
     const [ updateProduct, setUpdateProduct ] = useState({});
     const [ updateGroup, setUpdateGroup ] = useState({});
     const [updateUrlId, setUpdateUrlId] = useState(null);
@@ -56,10 +65,6 @@ const App = () => {
 
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        setLoggedIn(true);
-    }
-
     const handleLoginOut = () => {
         setLoggedIn(false);
     }
@@ -74,9 +79,21 @@ const App = () => {
         const token = localStorage.getItem('token');
         isSidebarShown();
         if (token) {
-            console.log(token);
-            handleLogin();
+            groupsApi.getGroups()
+            .then(data => {
+                setGroups(data);
+            })
+            .catch(err => console.log(err));
+            updatersApi.getUpdaters()
+            .then(data => {
+                setUpdaters(data);
+            })
+            .catch(err => console.log(err));
         }
+        console.log(token);
+        console.log(loggedIn);
+        console.log(groups);
+        console.log(updaters);
       }
 
     useEffect(() => {
@@ -84,14 +101,12 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        if (loggedIn) {
-            const token = localStorage.getItem('token');
-            groupsApi.getGroups(token)
-            .then(data => {
-                setGroups(data);
-            })
+        if (groups.length) {
+            const defaultGroup = groups.find(g => g.is_default);
+            setDefaultGroupId(defaultGroup.id);
         }
-    }, [loggedIn])
+        console.log(defaultGroupId);
+    }, [groups]);
     
     const handleUpdateProfile = (form) => {
         setProfile(form);
@@ -117,8 +132,6 @@ const App = () => {
     }
 
     const handleCreateNewUrl = (urlData) => {
-        /*setNewUrl(urlData);
-        console.log(urlData);*/
         return urlData;
     }
 
@@ -187,8 +200,8 @@ const App = () => {
         setIsDeleteProductPopupOpen(!isDeleteProductPopupOpen);
     }
 
-    const redirectTo = (path) => {
-        navigate(path)
+    const redirectTo = (path, bool = false) => {
+        navigate(path, {replace: bool})
     }
 
     const getUpdateGroup = (groupData) => {
@@ -235,7 +248,8 @@ const App = () => {
         auth.completeRegister(registerData)
         .then(data => {
             if (data.access_token) {
-                tokenCheck();
+                setLoggedIn(true);
+                navigate("/groups", {replace: true});
               }
               else {
                 setIsRegisterFirstStepOk(false);
@@ -253,14 +267,18 @@ const App = () => {
         auth.authorize(email, password)
             .then(data => {
                 if (data.access_token) {
-                    tokenCheck();
-                    navigate("/products/create", {replace: true});
+                    setLoggedIn(true);
+                    navigate('/groups', {replace: true});
                   }
                   else {
                     console.log('Авторизация не удалась');
                   }
                 })
-            .catch(err => console.log(err));
+            .catch(err => {
+                setIsRegisterFirstStepOk(false);
+                handleRegistrationInfoTooltipOpen();
+                console.log(err);
+            });
     }
 
     const handleReset = (email) => {
@@ -284,13 +302,13 @@ const App = () => {
         })
         setProducts(newProducts);
         setUpdateProduct({});
+        redirectTo('/products');
         console.log(newProducts)
     }
 
     const handleUpdateGroup = (form) => {
         console.log(updateGroup);
-        const token = localStorage.getItem('token');
-        groupsApi.updateGroup(updateGroup.id, form, token)
+        groupsApi.updateGroup(updateGroup.id, form)
         .then(data => {
             const newGroups = groups.map(g => {
                 if (g.id === data.id) {
@@ -322,8 +340,7 @@ const App = () => {
     }
 
     const handleIsDefaultGroup = (group) => {
-        const token = localStorage.getItem('token');
-        groupsApi.setDefaultGroup(group.id, token)
+        groupsApi.setDefaultGroup(group.id)
         .then(res => {
             const newGroups = groups.map(g => {
                 if (g.id === group.id) {
@@ -354,13 +371,16 @@ const App = () => {
     }
 
     const handleCreateNewProduct = (form) => {
-        setProducts([form, ...products])
+        productsApi.createProduct(form)
+        .then(data => {
+            setProducts([data, ...products]);
+            redirectTo('/products');
+        });
     }
 
     const handleCreateNewGroup = (form) => {
         console.log(form);
-        const token = localStorage.getItem('token');
-        groupsApi.createGroup(form, token)
+        groupsApi.createGroup(form)
         .then(data => {
             const newGroups = groups.map(g => {
                 return {...g, 
@@ -404,10 +424,14 @@ const App = () => {
 
   const handleDeleteGroup = () => {
     const groupId = updateGroup.id;
-    const token = localStorage.getItem('token');
-    groupsApi.deleteGroup(groupId, token)
+    groupsApi.deleteGroup(groupId)
     .then(res => {
         setProducts(state => state.filter(p => p.groupId !== groupId));
+        if (updateGroup.is_default) {
+            const tempGroups = groups;
+            tempGroups[0].is_default = true;
+            setGroups(tempGroups);
+        }
         setGroups(state => state.filter(g => g.id !== groupId));
         setUpdateGroup({});
         handleDeleteGroupPopupOpen();    
@@ -415,12 +439,17 @@ const App = () => {
     .catch(err => console.log(err));
   }
 
-  
+  const setGroupProductsList = () => {
+    productsApi.getProducts(updateGroup.id)
+    .then(data => setProducts(data))
+    .catch(err => console.log(err));
+  }
 
 
 
 
     return (
+    //    <GroupsContext.Provider value={groups}>
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
             {loggedIn && <SideBar isSuperUser={isSuperUser} handleLoginOut={handleLoginOut} />}
             <Routes>
@@ -428,12 +457,16 @@ const App = () => {
                     <ProtectedRoute loggedIn={loggedIn}>
                         <Products
                             products={products}
+                            setGroupProductsList={setGroupProductsList}
+                            groups={groups}
+                            redirectTo={redirectTo}
                             productDataForUpdate={updateProduct}
                             addProductIdToArr={addProductIdToArr}
                             removeProductIdFromArr={removeProductIdFromArr}
                             deleteCheckedProducts={deleteCheckedProducts}
                             handleUpdateUrlId= {handleUpdateUrlId}
                             getUpdateProduct={getUpdateProduct} 
+                            getUpdateGroup={getUpdateGroup}
                             deleteLinkPopupOpen={deleteLinkPopupOpen} 
                             deleteProductPopupOpen={deleteProductPopupOpen} 
                             handleDeleteCheckedProductsPopupOpen={handleDeleteCheckedProductsPopupOpen}
@@ -446,11 +479,13 @@ const App = () => {
                         />
                     </ProtectedRoute>
                 }/>
-                <Route path="/products/create" element={
+                <Route path="/create-product" element={
                     <ProtectedRoute loggedIn={loggedIn}>
                         <ProductsCreate 
                             initData={updateProduct} 
                             group={updateGroup}
+                            defaultGroupId={defaultGroupId}
+                            groups={groups}
                             handleUpdateProduct={handleUpdateProduct} 
                             handleCreateNewProduct={handleCreateNewProduct} 
                         />
@@ -459,9 +494,11 @@ const App = () => {
                 <Route 
                     path="/groups" 
                     element={
-                       // <ProtectedRoute loggedIn={loggedIn}>
+                        <ProtectedRoute loggedIn={loggedIn}>
                             <Groups 
                                 groups={groups} 
+                                updaters={updaters}
+                                redirectTo={redirectTo}
                                 handleCreateNewGroup={handleCreateNewGroup} 
                                 handleEditGroupPopupOpen={handleEditGroupPopupOpen}
                                 handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
@@ -469,7 +506,7 @@ const App = () => {
                                 handleUpdatingEnabledGroup={handleUpdatingEnabledGroup}
                                 handleIsDefaultGroup={handleIsDefaultGroup} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/ 
                             />
-                        //</ProtectedRoute>
+                        </ProtectedRoute>
                         } />
                 <Route 
                     path="/profile" 
@@ -483,14 +520,20 @@ const App = () => {
                         <ProtectedRoute loggedIn={loggedIn}>
                             <Clients clients={clients}/>
                         </ProtectedRoute>} />
-                <Route path="/start" element={<StartPage redirectTo={redirectTo} />}/>
+                <Route path="/" element={<StartPage redirectTo={redirectTo} />}/>
                 <Route path="/register" element={<Register handleRegister={handleRegister} />} />
                 <Route path="/accept" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />} />
                 <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
                 <Route path="/rules" element={<Rules />} />
 
             </Routes>
-            <RegistrationInfoTooltip isOpen={isRegistrationInfoTooltipOpen} onClose={handleRegistrationInfoTooltipOpen} isOk={isRegisterFirstStepOk} />
+            <RegistrationInfoTooltip 
+                isOpen={isRegistrationInfoTooltipOpen} 
+                onClose={handleRegistrationInfoTooltipOpen} 
+                isOk={isRegisterFirstStepOk} 
+                redirect={() => {
+                redirectTo('/accept');
+                handleRegistrationInfoTooltipOpen()}} />
             <CreateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
             <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
@@ -499,6 +542,7 @@ const App = () => {
             <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} />
             <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
         </Container>
+    //    </GroupsContext.Provider>
 
 
     );

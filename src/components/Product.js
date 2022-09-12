@@ -101,7 +101,7 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
       <Row className="d-flex">
         <Col xs="auto">
           <Form.Check type="checkbox" className="m-2" onClick={handleCheck} />
-          <Card.Img src={productState.productUrls[0] ? productState.productUrls[0].imgUrl : ''} alt="" className="rounded m-2" style={{width: '200px'}}/>
+          <Card.Img alt="" className="rounded m-2" style={{width: '200px'}}/>
         </Col>
         <Col>
           <Card.Body>
@@ -164,18 +164,18 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
                 deleteLinkPopupOpen={deleteLinkPopupOpen}
                 handleDeleteUrlId={handleDeleteUrlId} />
           ))}*/}
-          {productState.productUrls.map((url, i) => (
+          {productState.product_urls.map((url, i) => (
             <tr key={url.id}>
               <td><a href={url.url}>{urlLabel(url.url)}</a></td>
               <td>{url.price}</td>
-              <td>{url.discount}%</td>
-              <td>{url.inStock ? "Да" : "Нет"}</td>
-              <td>{url.lastCheck}</td>
+              <td>{url?.discount}%</td>
+              <td>{url.in_stock ? "Да" : "Нет"}</td>
+              <td>{url?.last_collected_at}</td>
               <td><span className={isCheaper(i) ? "text-danger" : "text-success"}>{(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> } {Math.abs(dif(i))}%</span></td>
-              <td>{url.regionName}</td>
-              <td>{url.parsingErrors ? "Да" : "Нет"}</td>
+              <td>{url?.region.name}</td>
+              <td>{url.has_parsing_errors ? "Да" : "Нет"}</td>
               <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
-              <td style={{wordWrap: "normal"}}>{url.vendorCode}</td>
+              <td style={{wordWrap: "normal"}}>{url.vendor_sku}</td>
               <td><Button size="sm" variant="light" onClick={() => updateLinkPopupOpen(i)}><PencilFill /></Button></td>
               <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(i)}><TrashFill /></Button></td>
             </tr>

@@ -12,7 +12,7 @@ const SideBar = ({isSuperUser, handleLoginOut}) => {
 
   function signOut() {
     localStorage.removeItem('token');
-    navigate('/start', { replace: true });
+    navigate('/', { replace: true });
     handleLoginOut();
   }
 

@@ -1,19 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/Button';
 import Product from './Product';
 import SortingBar from './SortingBar';
-import UpdateLinkPopup from './UpdateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 
-const Products = ({ products, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
+const Products = ({ products, groups, setGroupProductsList, redirectTo, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, getUpdateGroup, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
   const [view, setView] = useState(true);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   
+  useEffect(() => {
+    setGroupProductsList();
+  }
+  , [])
+
   const handleMode = () => {
     setView(!view);
   }
@@ -37,6 +41,10 @@ const Products = ({ products, productDataForUpdate, addProductIdToArr, removePro
     setIsAddProductsFromFilePopupOpen(!isAddProductsFromFilePopupOpen);
   }
 
+  const handleAddProduct = () => {
+    redirectTo('/create-product')
+  }
+
   
 
   return(
@@ -46,7 +54,7 @@ const Products = ({ products, productDataForUpdate, addProductIdToArr, removePro
         <SearchBar handleMode={handleMode} view={view} />
       </div>
       <div>
-        <Link to="/products/create" className="m-1 btn btn-primary">Добавить новый товар</Link>
+        <Button onClick={handleAddProduct} className="m-1">Добавить новый товар</Button>
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <div className="d-flex align-items-center justify-content-between">

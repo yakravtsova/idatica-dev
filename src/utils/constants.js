@@ -305,4 +305,32 @@ const profileInfo = {
       ],
 }
 
-export { groupsList, productsList, clientsList, profileInfo }
+const updatersList = [
+  {
+    "updater_type": "daily",
+    "weekday": null,
+    "update_time": "00:00"
+  },
+  {
+    "updater_type": "daily",
+    "weekday": null,
+    "update_time": "01:00"
+  },
+  {
+    "updater_type": "daily",
+    "weekday": null,
+    "update_time": "12:00"
+  },
+  {
+    "updater_type": "weekly",
+    "weekday": 7,
+    "update_time": "06:00"
+  },
+  {
+    "updater_type": "weekly",
+    "weekday": 7,
+    "update_time": "04:00"
+  },
+]
+
+export { groupsList, productsList, clientsList, profileInfo, updatersList }

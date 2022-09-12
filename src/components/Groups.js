@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import SearchBar from './SearchBar';
@@ -8,19 +8,17 @@ import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import GroupTableRow from './GroupTable Row';
+//import { GroupsContext } from '../contexts/GroupsContext';
 
 
-const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
     const navigate = useNavigate();
+//    const groups = useContext(GroupsContext);
     const [ form, setForm ] = useState({
         name: '',
         updater_id: '',
         is_default: true,
     });
-
-    const redirectToProductsCreate = () => {
-        navigate('/products/create', {replace: true})
-    }
 
     const setField = (field, value) => {
         setForm({
@@ -71,11 +69,14 @@ const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handle
 
                         <Form.Select className="m-1" onChange={setUpdater} value={form.updater_id}>
                             <option defaultValue="selected">Частота проверки *</option>
-                            <option value="2">Раз в день</option>
+                            {/*<option value="2">Раз в день</option>
                             <option value="3">Раз в неделю</option>
                             <option value="4">Раз в две недели</option>
                             <option value="5">Раз в три недели</option>
-                            <option value="6">Раз в месяц</option>
+    <option value="6">Раз в месяц</option>*/}
+                            {updaters.map((u, i) => (
+                                <option key={u.id} value={u.id}>{u.updater_type}</option>
+                            ))}
                         </Form.Select>
 
                         <Button variant="primary" type="submit">Создать</Button>
@@ -106,7 +107,7 @@ const Groups = ({ groups, handleCreateNewGroup, handleEditGroupPopupOpen, handle
                         <GroupTableRow 
                             key={group.id}
                             group={group} 
-                            redirectToProductsCreate={redirectToProductsCreate} 
+                            redirectTo={redirectTo} 
                             handleEditGroupPopupOpen={handleEditGroupPopupOpen} 
                             handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                             getUpdateGroup={getUpdateGroup}

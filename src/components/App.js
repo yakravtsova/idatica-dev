@@ -25,6 +25,7 @@ import * as auth from '../utils/auth';
 import * as groupsApi from '../utils/groupsApi';
 import * as productsApi from '../utils/productsApi';
 import * as updatersApi from '../utils/updatersApi';
+import * as regionsApi from '../utils/regionsApi';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
@@ -38,6 +39,7 @@ const App = () => {
     const [ defaultGroupId, setDefaultGroupId] = useState(null);
     const [ updaters, setUpdaters ] = useState([]);
     const [ clients, setClients ] = useState(clientsList);
+    const [ regions, setRegions ] = useState([]);
     const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
     const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
     const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
@@ -445,6 +447,12 @@ const App = () => {
     .catch(err => console.log(err));
   }
 
+  const setRegionsList = () => {
+    regionsApi.getRegions()
+    .then(data => setRegions(data))
+    .catch(err => console.log(err));
+  }
+
 
 
 
@@ -486,8 +494,10 @@ const App = () => {
                             group={updateGroup}
                             defaultGroupId={defaultGroupId}
                             groups={groups}
+                            regions={regions}
                             handleUpdateProduct={handleUpdateProduct} 
                             handleCreateNewProduct={handleCreateNewProduct} 
+                            setRegionsList={setRegionsList}
                         />
                     </ProtectedRoute>
                 }/>

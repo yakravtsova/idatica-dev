@@ -6,7 +6,7 @@ import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
-const ProductsCreate = ({ initData, group, groups, defaultGroupId, handleUpdateProduct, handleCreateNewProduct }) => {
+const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, setRegionsList }) => {
 //    const groups = useContext(GroupsContext);
     const navigate = useNavigate();
     const [ form, setForm ] = useState({
@@ -35,6 +35,7 @@ const ProductsCreate = ({ initData, group, groups, defaultGroupId, handleUpdateP
 
     useEffect(() => {
         console.log(groups);
+        setRegionsList();
         
         if (initData.id) {
     
@@ -161,9 +162,9 @@ const ProductsCreate = ({ initData, group, groups, defaultGroupId, handleUpdateP
                                 onChange={(e) => handleFormChange(i, e)}
                                 required>
                                     <option value=''>Регион *</option>
-                                    <option value="1">Санкт-Петербург и ЛО</option>
-                                    <option value="2">Москва</option>
-                                    <option value="3">ХМАО</option>
+                                    {regions.map((region, i) => (
+                                        <option key={region.id} value={region.id}>{region.name}</option>
+                                    ))}
                             </Form.Select>
 
                             <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendor_sku" value={form.product_urls[i].vendor_sku ? form.product_urls[i].vendor_sku : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>

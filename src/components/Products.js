@@ -13,10 +13,10 @@ const Products = ({ products, groups, setGroupProductsList, redirectTo, productD
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   
-  useEffect(() => {
+ /* useEffect(() => {
     setGroupProductsList();
   }
-  , [])
+  , [])*/
 
   const handleMode = () => {
     setView(!view);

@@ -10,7 +10,7 @@ const RegistrationInfoTooltip = ({ isOpen, onClose, isOk, redirect }) => {
         <p>
           {isOk ? 'На вашу почту придёт письмо с подтверждением активации аккаунта.' : 'Произошла ошибка! Проверьте свои регистрационные данные.'}
         </p>
-        {isOk && <Button onClick={redirect}>Перейти ко второму шагу регистрации</Button>}
+        {/*isOk && <Button onClick={redirect}>Перейти ко второму шагу регистрации</Button>*/}
       </Modal.Body>
     </Modal>
   )

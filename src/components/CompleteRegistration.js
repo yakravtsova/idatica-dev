@@ -20,10 +20,6 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
     })
   }
 
-  const setEmail = (e) => {
-    setField('email', e.target.value);
-  }
-
   const setName = (e) => {
     if (!e.target.validity.valid) {
       setNameError(e.target.validationMessage)
@@ -89,22 +85,11 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
           Пожалуйста, добавьте необходимые регистрационные данные.
         </p>
         <Form className="d-flex flex-column" onSubmit={handleSubmit} noValidate>
-          <Form.Group className="mb-2" controlId="email">
-            <Form.Control 
-              type="text" 
-              placeholder="Ваш email *" 
-              onChange={setEmail} 
-            //  isInvalid={errors.name}
-              required />
-          {/*  <Form.Control.Feedback type="invalid">
-              {errors.name}
-  </Form.Control.Feedback>*/}
-          </Form.Group>
           <Form.Group className="mb-2" controlId="name">
-            <Form.Control 
-              type="text" 
-              placeholder="Ваше имя *" 
-              onChange={setName} 
+            <Form.Control
+              type="text"
+              placeholder="Ваше имя *"
+              onChange={setName}
               isInvalid={errors.name}
               required />
             <Form.Control.Feedback type="invalid">
@@ -112,9 +97,9 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-2" controlId="phone">
-            <Form.Control 
-              type="phone" 
-              placeholder="Телефон" 
+            <Form.Control
+              type="phone"
+              placeholder="Телефон"
               onChange={setPhone}
               isInvalid={errors.phone} />
             <Form.Control.Feedback type="invalid">
@@ -122,10 +107,10 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-2" controlId="companyName">
-            <Form.Control 
-              type="text" 
-              placeholder="Компания *" 
-              onChange={setCompanyName} 
+            <Form.Control
+              type="text"
+              placeholder="Компания *"
+              onChange={setCompanyName}
               isInvalid={errors.companyName}
               required />
             <Form.Control.Feedback type="invalid">
@@ -133,9 +118,9 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-5">
-            <Form.Select  
-              value={form.tariffId} 
-              onChange={setTariffId} 
+            <Form.Select
+              value={form.tariffId}
+              onChange={setTariffId}
               isInvalid={errors.tariffId}
               required>
                 <option value=''>Тариф *</option>

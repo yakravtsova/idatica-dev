@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { Form, Modal } from "react-bootstrap";
@@ -7,26 +7,28 @@ import { Link } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Profile = ({ profile, handleUpdateProfile }) => {
+const Profile = ({ handleUpdateProfile }) => {
+    const currentUser = useContext(CurrentUserContext);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
-    const [profileState, setProfileState] = useState(profile);
     const [ form, setForm ] = useState({
         'name': '',
         'email': '',
         'phone': '',
-        'companyName': ''
+        'company_name': ''
       });
-    
+
+
     useEffect(() => {
-        if (profileState.name) {
-    
+        if (currentUser.name) {
+
             setForm({
                 ...form,
-                'name': profileState.name,
-                'email': profileState.email,
-                'phone': profileState.phone,
-                'companyName': profileState.companyName
+                'name': currentUser.name,
+                'email': currentUser.email,
+                'phone': currentUser.phone,
+                'company_name': currentUser.company_name
               });
         }
     },[]);
@@ -58,8 +60,8 @@ const Profile = ({ profile, handleUpdateProfile }) => {
         e.preventDefault();
         handleUpdateProfile(form);
         handleIsProfileFormDisabled();
-        setProfileState(profile);
-        console.log(profileState);
+      /*  setProfileState(profile);
+        console.log(profileState);*/
     }
 
     const handleIsProfileFormDisabled = () => {
@@ -112,10 +114,10 @@ const Profile = ({ profile, handleUpdateProfile }) => {
 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Имя</Form.Label>
-                                    <Form.Control 
-                                        disabled={isProfileFormDisabled} 
-                                        type="text" 
-                                        placeholder="Введите имя" 
+                                    <Form.Control
+                                        disabled={isProfileFormDisabled}
+                                        type="text"
+                                        placeholder="Введите имя"
                                         onChange={setName}
                                         value={form.name ? form.name : ''}
                                     />
@@ -142,10 +144,10 @@ const Profile = ({ profile, handleUpdateProfile }) => {
 
                                 <Form.Group className="mb-3">
                                     <Form.Label>Телефон</Form.Label>
-                                    <Form.Control 
-                                        disabled={isProfileFormDisabled} 
+                                    <Form.Control
+                                        disabled={isProfileFormDisabled}
                                         type="text"
-                                        placeholder="Введите телефон" 
+                                        placeholder="Введите телефон"
                                         onChange={setPhone}
                                         value={form.phone ? form.phone : ''}
                                     />
@@ -156,12 +158,12 @@ const Profile = ({ profile, handleUpdateProfile }) => {
                             <div className="col">
                                 <Form.Group className="mb-3">
                                     <Form.Label>Компания</Form.Label>
-                                    <Form.Control 
-                                        disabled={isProfileFormDisabled} 
+                                    <Form.Control
+                                        disabled={isProfileFormDisabled}
                                         type="text"
-                                        placeholder="Введите название компании" 
+                                        placeholder="Введите название компании"
                                         onChange={setCompanyName}
-                                        value={form.companyName ? form.companyName : ''} 
+                                        value={form.company_name ? form.company_name : ''}
                                     />
                                 </Form.Group>
                             </div>

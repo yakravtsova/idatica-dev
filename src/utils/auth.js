@@ -1,20 +1,7 @@
 import { BASE_URL, handleResponse } from "./handleResponse";
 
 export const register = (registerData) => {
-  return fetch(`${BASE_URL}users/registration/step1/`, {
-    //mode: "no-cors",
-    method: "POST",
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(registerData)
-    })
-    .then(res => handleResponse(res))
-}
-
-export const completeRegister = (registerData) => {
-  return fetch(`${BASE_URL}users/registration/step2/`, {
+  return fetch(`${BASE_URL}users/register/`, {
     //mode: "no-cors",
     method: "POST",
     headers: {
@@ -30,6 +17,34 @@ export const completeRegister = (registerData) => {
         return data;
       }
     })
+}
+
+export const confirmEmail = (confirmData) => {
+  return fetch(`${BASE_URL}users/confirm-email/`, {
+    //mode: "no-cors",
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(confirmData)
+    })
+    .then(res => handleResponse(res))
+}
+
+export const completeRegister = (registerData) => {
+  return fetch(`${BASE_URL}users/finish-registration/`, {
+    //mode: "no-cors",
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(registerData)
+    })
+    .then(res => handleResponse(res))
 }
 
 export function authorize(email, password) {

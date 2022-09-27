@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Form, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './Register.css';
+import { useAuth } from '../hooks/useAuth';
 
 const Register = ({ handleRegister }) => {
   const [ form, setForm ] = useState({});
   const [ errors, setErrors ] = useState({});
   const [ emailError, setEmailError ] = useState('');
   const [ passwordError, setPasswordError ] = useState('');
+  const { reg } = useAuth();
 
   const setField = (field, value) => {
     setForm({
@@ -69,19 +71,19 @@ const Register = ({ handleRegister }) => {
       setErrors(newErrors)
     }
     else {
-      handleRegister(form)
+      reg(form)
     }
   }
 
-    
+
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
       <Form className="d-flex flex-column form-width" onSubmit={handleSubmit} noValidate>
         <Form.Group className="mb-2" controlId="registerEmail">
-          <Form.Control 
-            type="email" 
-            placeholder="Почта *" 
-            onChange={setEmail} 
+          <Form.Control
+            type="email"
+            placeholder="Почта *"
+            onChange={setEmail}
             isInvalid={errors.email}
             required />
           <Form.Control.Feedback type="invalid">
@@ -89,10 +91,10 @@ const Register = ({ handleRegister }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-2" controlId="registerPassword">
-          <Form.Control 
-            type="password" 
-            placeholder="Пароль *" 
-            onChange={setPassword} 
+          <Form.Control
+            type="password"
+            placeholder="Пароль *"
+            onChange={setPassword}
             minLength={8}
             isInvalid={errors.password}
             required />
@@ -101,10 +103,10 @@ const Register = ({ handleRegister }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-2" controlId="registerConfirmPassword">
-          <Form.Control 
-            type="password" 
-            placeholder="Повторить пароль *" 
-            onChange={setConfirmPassword} 
+          <Form.Control
+            type="password"
+            placeholder="Повторить пароль *"
+            onChange={setConfirmPassword}
             isInvalid={errors.confirmPassword}
             required />
           <Form.Control.Feedback type="invalid">
@@ -112,9 +114,9 @@ const Register = ({ handleRegister }) => {
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Check className="mb-5">
-            <Form.Check.Input 
+            <Form.Check.Input
               required
-              type="checkbox" 
+              type="checkbox"
               onChange={handleAccept}
               isInvalid={errors.accepted}
             />

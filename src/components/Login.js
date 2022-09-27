@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Form, Container, Button } from 'react-bootstrap';
 import ResetPasswordPopup from './ResetPasswordPopup';
+import { useAuth } from '../hooks/useAuth';
 
-const Login = ({ handleAuthorization, handleReset }) => {
+const Login = ({ /*handleAuthorization,*/ handleReset }) => {
   const [ form, setForm ] = useState({});
   const [forgotPassword, setForgotPassword] = useState(false);
-  
+  const { login } = useAuth();
+
   const setField = (field, value) => {
     setForm({
       ...form,
@@ -35,7 +37,8 @@ const Login = ({ handleAuthorization, handleReset }) => {
     if (!form.email || !form.password) {
       return;
     }
-    handleAuthorization(form);
+    // handleAuthorization(form);
+    login(form);
   }
 
   const handleForgotPassword = () => {
@@ -47,25 +50,25 @@ const Login = ({ handleAuthorization, handleReset }) => {
       <Form className="d-flex flex-column" onSubmit={handleSubmit}>
         <Form.Group className="mb-2" controlId="registerEmail">
           <Form.Control
-            type="email" 
-            placeholder="Почта *" 
-            onChange={setEmail} 
+            type="email"
+            placeholder="Почта *"
+            onChange={setEmail}
             // isInvalid={errors.email}
             required
           />
         </Form.Group>
         <Form.Group className="mb-2" controlId="registerPassword">
           <Form.Control
-            type="password" 
-            placeholder="Пароль *" 
-            onChange={setPassword} 
+            type="password"
+            placeholder="Пароль *"
+            onChange={setPassword}
             // isInvalid={errors.password}
             required
           />
         </Form.Group>
         <Button type="submit" className="align-self-center m-3">Войти</Button>
       </Form>
-      <Button variant="link" onClick={handleForgotPassword}>забыл пароль</Button> 
+      <Button variant="link" onClick={handleForgotPassword}>забыл пароль</Button>
       <ResetPasswordPopup isOpen={forgotPassword} onClose={handleForgotPassword} handleReset={handleReset} />
     </Container>
   )

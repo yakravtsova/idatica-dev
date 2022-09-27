@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { Form, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 
 const ConfirmEmail = ({ handleConfirmEmail }) => {
   const [ form, setForm ] = useState({});
   const [ errors, setErrors ] = useState({});
   const [ emailError, setEmailError ] = useState('');
   const [ passwordError, setPasswordError ] = useState('');
+  const {confirm} = useAuth();
 
   const setField = (field, value) => {
     setForm({
@@ -38,12 +40,13 @@ const ConfirmEmail = ({ handleConfirmEmail }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    handleConfirmEmail(form);
+    confirm(form);
   }
 
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
+      <h1 className="h6">Спасибо за регистрацию! На вашу почту пришло письмо с кодом подтверждения. Введите его в форму ниже.</h1>
       <Form className="d-flex flex-column form-width" onSubmit={handleSubmit} noValidate>
         <Form.Group className="mb-2" controlId="confirmEmail">
           <Form.Control

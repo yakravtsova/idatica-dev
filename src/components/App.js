@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import './App.css';
 import StartPage from './StartPage';
@@ -21,13 +22,14 @@ import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
 import CreateLinkPopup from './CreateLinkPopup';
 import UpdateLinkPopup from './UpdateLinkPopup';
 import UpdateGroupPopup from './UpdateGroupPopup';
+import TariffInfoPopup from './TariffInfoPopup';
 import { productsList, clientsList, profileInfo } from '../utils/constants';
-import * as auth from '../utils/auth';
 import * as groupsApi from '../utils/groupsApi';
 import * as productsApi from '../utils/productsApi';
 import * as updatersApi from '../utils/updatersApi';
 import * as regionsApi from '../utils/regionsApi';
-import * as userInfoApi from '../utils/userInfoApi';
+import * as userApi from '../utils/userInfoApi';
+import * as tariffApi from '../utils/tariffApi';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
@@ -44,14 +46,16 @@ const App = () => {
     const [ updaters, setUpdaters ] = useState([]);
     const [ clients, setClients ] = useState(clientsList);
     const [ regions, setRegions ] = useState([]);
+    const [ tariffs, setTariffs ] = useState([]);
     const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
     const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
     const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
-    const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
-    const [loggedIn, setLoggedIn] = useState(/*() => {
+
+    const [ isTariffInfoPopupOpen, setIsTariffInfoPopupOpen ] = useState(false);
+    /*const [loggedIn, setLoggedIn] = useState(() => {
         const token = localStorage.getItem('token');
         return token !== null;
-    }*/ false);
+    } false);*/
     const [ updateProduct, setUpdateProduct ] = useState({});
     const [ updateGroup, setUpdateGroup ] = useState({});
     const [updateUrlId, setUpdateUrlId] = useState(null);
@@ -63,17 +67,16 @@ const App = () => {
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
     const [isDeleteGroupPopupOpen, setIsDeleteGroupPopupOpen] = useState(false);
     const [isSuperUser, setIsSuperUser] = useState(true);
-    const [profile, setProfile] = useState(profileInfo);
-    const [isRegisterFirstStepOk, setIsRegisterFirstStepOk] = useState(false);
+    const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen} = useAuth();
 
     const location = useLocation();
 
 
     const navigate = useNavigate();
 
-    const handleLoginOut = () => {
+  /*  const handleLoginOut = () => {
         setLoggedIn(false);
-    }
+    }*/
 
     const isSidebarShown = () => {
 
@@ -81,13 +84,13 @@ const App = () => {
       }
 
 
-    const tokenCheck = () => {
+/*    const tokenCheck = () => {
         const token = localStorage.getItem('token');
         isSidebarShown();
         if (token) {
           userInfoApi.getUserInfo()
             .then(data => {
-              if (data.name) {
+              if (data) {
                 setCurrentUser(data);
                 setLoggedIn(true);
               }
@@ -101,7 +104,7 @@ const App = () => {
             .then(data => {
                 setUpdaters(data);
             })
-            .catch(err => console.log(err));*/
+            .catch(err => console.log(err));
         }
         console.log(token);
         console.log(loggedIn);
@@ -119,11 +122,68 @@ const App = () => {
             setDefaultGroupId(defaultGroup.id);
         }
         console.log(defaultGroupId);
-    }, [groups]);
+    }, [groups]);*/
 
-    const handleUpdateProfile = (form) => {
-        setProfile(form);
-        console.log(profile);
+    useEffect(() => {
+      handleGetTariffs();
+      if (loggedIn) {
+        handleGetProfile();
+        handleGetUpdaters();
+        handleGetGroups();
+      }
+    }, [])
+
+    const handleGetGroups = () => {
+      groupsApi.getGroups()
+        .then(data => {
+          setGroups(data);
+        })
+        .catch(err => console.log(err));
+    }
+
+    const handleGetUpdaters = () => {
+      updatersApi.getUpdaters()
+        .then(data => {
+          setUpdaters(data);
+        })
+        .catch(err => console.log(err));
+    }
+
+    const handleGetProfile = (userData) => {
+      userApi.getUserInfo(userData)
+          .then(data => {
+            if (data) {
+              setCurrentUser(data)
+            }
+          })
+          .catch(err => console.log(err))
+    }
+
+    const handleUpdateProfile = (userData) => {
+        userApi.updateUserInfo(userData)
+          .then(data => {
+            if (data) {
+              setCurrentUser({
+                ...currentUser,
+                data
+              })
+            }
+          })
+          .catch(err => console.log(err))
+    }
+
+    const handleGetTariffs = () => {
+      tariffApi.getTariffs()
+        .then(data => {
+          if (data) {
+            setTariffs(data)
+          }
+        })
+        .catch(err => console.log(err))
+    }
+
+    const handleTariffInfoPopupOpen = () => {
+      setIsTariffInfoPopupOpen(!isTariffInfoPopupOpen);
     }
 
     const handleDeleteGroupPopupOpen = () => {
@@ -201,9 +261,9 @@ const App = () => {
         setProducts((state) => state.filter((p) => p.id !== id))
       }
 
-    const handleRegistrationInfoTooltipOpen = () => {
+  /*  const handleRegistrationInfoTooltipOpen = () => {
         setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
-    }
+    }*/
 
     const deleteLinkPopupOpen = () => {
         setIsDeleteLinkPopupOpen(!isDeleteLinkPopupOpen);
@@ -225,7 +285,7 @@ const App = () => {
         setUpdateProduct(productData);
     }
 
-    const handleRegister = ({ email, password }) => {
+  /*  const handleRegister = ({ email, password }) => {
         const registerData = {
             email: email,
             password: password
@@ -247,9 +307,9 @@ const App = () => {
             handleRegistrationInfoTooltipOpen();
             console.log(err)
         })
-    }
+    }*/
 
-    const handleConfirmEmail = (data) => {
+  /*  const handleConfirmEmail = (data) => {
       console.log(data);
       auth.confirmEmail(data)
       .then(res => {
@@ -263,8 +323,8 @@ const App = () => {
         console.log(err)
       })
     }
-
-    const handleCompleteRegister = ({ email, name, phone, companyName, tariffId }) => {
+*/
+  /*  const handleCompleteRegister = ({ email, name, phone, companyName, tariffId }) => {
         const registerData = {
             email: email,
             name: name,
@@ -276,11 +336,11 @@ const App = () => {
         auth.completeRegister(registerData)
         .then(data => {
             if (data.id) {
-                setLoggedIn(true);
+              //  setLoggedIn(true);
                 redirectTo('/groups', true);
               }
               else {
-                setIsRegisterFirstStepOk(false);
+              /*  setIsRegisterFirstStepOk(false);
                 handleRegistrationInfoTooltipOpen();
               }
             })
@@ -307,7 +367,7 @@ const App = () => {
                 handleRegistrationInfoTooltipOpen();
                 console.log(err);
             });
-    }
+    }*/
 
     const handleReset = (email) => {
         console.log(email);
@@ -354,11 +414,11 @@ const App = () => {
         .catch(err => console.log(err));
     }
 
-    const handleUpdatingEnabledGroup = (group) => {
+    const handleActivateGroup = (group) => {
         const newGroups = groups.map(g => {
             if (g.id === group.id) {
                 return {...g,
-                    isUpdatingEnabled: !group.isUpdatingEnabled}
+                    is_active: !group.is_active}
             }
             return g;
         })
@@ -487,10 +547,10 @@ const App = () => {
     //    <GroupsContext.Provider value={groups}>
       <CurrentUserContext.Provider value={currentUser}>
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
-            {loggedIn && <SideBar isSuperUser={isSuperUser} handleLoginOut={handleLoginOut} />}
+            {/*loggedIn*/ true && <SideBar />}
             <Routes>
                 <Route path="/products" element={
-                    <ProtectedRoute loggedIn={loggedIn}>
+                    <ProtectedRoute>
                         <Products
                             products={products}
                             setGroupProductsList={setGroupProductsList}
@@ -516,7 +576,7 @@ const App = () => {
                     </ProtectedRoute>
                 }/>
                 <Route path="/create-product" element={
-                    <ProtectedRoute loggedIn={loggedIn}>
+                    <ProtectedRoute>
                         <ProductsCreate
                             initData={updateProduct}
                             group={updateGroup}
@@ -532,7 +592,7 @@ const App = () => {
                 <Route
                     path="/groups"
                     element={
-                        <ProtectedRoute loggedIn={loggedIn}>
+                        <ProtectedRoute>
                             <Groups
                                 groups={groups}
                                 updaters={updaters}
@@ -541,7 +601,7 @@ const App = () => {
                                 handleEditGroupPopupOpen={handleEditGroupPopupOpen}
                                 handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                                 getUpdateGroup={getUpdateGroup}
-                                handleUpdatingEnabledGroup={handleUpdatingEnabledGroup}
+                                handleActivateGroup={handleActivateGroup}
                                 handleIsDefaultGroup={handleIsDefaultGroup} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
                             />
                         </ProtectedRoute>
@@ -549,30 +609,27 @@ const App = () => {
                 <Route
                     path="/profile"
                     element={
-                        <ProtectedRoute loggedIn={loggedIn}>
-                            <Profile handleUpdateProfile={handleUpdateProfile} />
+                        <ProtectedRoute>
+                            <Profile handleUpdateProfile={handleUpdateProfile} handleGetProfile={handleGetProfile} onTariffInfoPopupOpen={handleTariffInfoPopupOpen} />
                         </ProtectedRoute>} />
                 <Route
                     path="/clients"
                     element={
-                        <ProtectedRoute loggedIn={loggedIn}>
+                        <ProtectedRoute>
                             <Clients clients={clients}/>
                         </ProtectedRoute>} />
-                <Route path="/" element={<StartPage redirectTo={redirectTo} />}/>
-                <Route path="/register" element={<Register handleRegister={handleRegister} />} />
-                <Route path="/confirm-email" element={<ConfirmEmail handleConfirmEmail={handleConfirmEmail} />} />
-                <Route path="/finish-registration" element={<CompleteRegistration handleCompleteRegister={handleCompleteRegister} />} />
-                <Route path="/login" element={<Login handleAuthorization={handleAuthorization} handleReset={handleReset} />} />
+                <Route path="/start" element={<StartPage redirectTo={redirectTo} />}/>
+                <Route path="/register" element={<Register /*handleRegister={handleRegister}*/ />} />
+                <Route path="/confirm-email" element={<ConfirmEmail /*handleConfirmEmail={handleConfirmEmail}*/ />} />
+                <Route path="/finish-registration" element={<CompleteRegistration tariffs={tariffs} /*handleCompleteRegister={handleCompleteRegister}*/ />} />
+                <Route path="/login" element={<Login /*handleAuthorization={handleAuthorization}*/ handleReset={handleReset} />} />
                 <Route path="/rules" element={<Rules />} />
 
             </Routes>
             <RegistrationInfoTooltip
                 isOpen={isRegistrationInfoTooltipOpen}
                 onClose={handleRegistrationInfoTooltipOpen}
-                isOk={isRegisterFirstStepOk}
-                redirect={() => {
-                redirectTo('/accept');
-                handleRegistrationInfoTooltipOpen()}} />
+                isOk={isRegisterFirstStepOk} />
             <CreateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
             <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
@@ -580,6 +637,7 @@ const App = () => {
             <UpdateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
             <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} />
             <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
+            <TariffInfoPopup isOpen={isTariffInfoPopupOpen} onClose={handleTariffInfoPopupOpen} />
         </Container>
       </CurrentUserContext.Provider>
     //    </GroupsContext.Provider>

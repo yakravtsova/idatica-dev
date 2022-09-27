@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
+import { useAuth } from '../hooks/useAuth';
 
-const CompleteRegistration = ({ handleCompleteRegister }) => {
+const CompleteRegistration = ({ tariffs }) => {
   const [ form, setForm ] = useState({});
   const [ errors, setErrors ] = useState({});
   const [ nameError, setNameError ] = useState('');
   const [ phoneError, setPhoneError ] = useState('');
   const [ companyNameError, setCompanyNameError ] = useState('');
   const [ tariffIdError, setTariffIdError ] = useState('');
+
+  const {finishReg} = useAuth();
 
   const setField = (field, value) => {
     setForm({
@@ -72,7 +75,7 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
       setErrors(newErrors)
     }
     else {
-      handleCompleteRegister(form)
+      finishReg(form)
     }
   }
 
@@ -124,10 +127,9 @@ const CompleteRegistration = ({ handleCompleteRegister }) => {
               isInvalid={errors.tariffId}
               required>
                 <option value=''>Тариф *</option>
-                <option value="1">Дёшево</option>
-                <option value="2">Недорого</option>
-                <option value="3">Дорого</option>
-                <option value="4">Очень дорого</option>
+                {tariffs.map((t, i) => (
+                  <option key={t.id} value={t.id}>{t.name}</option>
+                ))}
             </Form.Select>
             <Form.Control.Feedback type="invalid">
               {errors.tariffId}

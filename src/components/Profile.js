@@ -9,8 +9,9 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 
-const Profile = ({ handleUpdateProfile }) => {
+const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen }) => {
     const currentUser = useContext(CurrentUserContext);
+    const [profileState, setProfileState] = useState(currentUser);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
     const [ form, setForm ] = useState({
         'name': '',
@@ -21,17 +22,16 @@ const Profile = ({ handleUpdateProfile }) => {
 
 
     useEffect(() => {
-        if (currentUser.name) {
-
-            setForm({
-                ...form,
-                'name': currentUser.name,
-                'email': currentUser.email,
-                'phone': currentUser.phone,
-                'company_name': currentUser.company_name
-              });
-        }
-    },[]);
+      if (currentUser.name) {
+        setForm({
+          ...form,
+          'name': currentUser.name,
+          'email': currentUser.email,
+          'phone': currentUser.phone,
+          'company_name': currentUser.company_name
+        });
+      }
+    },[currentUser]);
 
     const setField = (field, value) => {
         setForm({
@@ -53,12 +53,23 @@ const Profile = ({ handleUpdateProfile }) => {
     }
 
     const setCompanyName = (e) => {
-        setField('companyName', e.target.value);
+        setField('company_name', e.target.value);
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        handleUpdateProfile(form);
+        handleUpdateProfile({
+          name: form.name,
+          phone: form.phone,
+          company_name: form.company_name,
+        });
+        setForm({
+          ...form,
+          'name': currentUser.name,
+          'email': currentUser.email,
+          'phone': currentUser.phone,
+          'company_name': currentUser.company_name
+        });
         handleIsProfileFormDisabled();
       /*  setProfileState(profile);
         console.log(profileState);*/
@@ -129,7 +140,7 @@ const Profile = ({ handleUpdateProfile }) => {
                                 <Form.Group className="mb-3">
                                     <Form.Label>Email</Form.Label>
                                     <Form.Control
-                                        disabled={isProfileFormDisabled}
+                                        disabled={true}
                                         type="email"
                                         placeholder="Введите email"
                                         onChange={setEmail}
@@ -230,10 +241,33 @@ const Profile = ({ handleUpdateProfile }) => {
 
 
                 <h5>Тариф</h5>
-                <a href="#" onClick={() => setTariffModalShow(true)} className="link-primary">Тарифный план №3</a> <span
-                    className="m-5 mt-0 mb-0 text-muted">Осталось проверок: <u>100 312</u></span>
+                <Button variant="link" onClick={onTariffInfoPopupOpen}>{currentUser.tariff?.name}</Button>
+                <span className="m-5 mt-0 mb-0 text-muted">Осталось проверок: <u>100 312</u></span>
                 <br />
-                <Button variant="outline-primary" size="sm" className="mt-2">Сменить тариф</Button>
+                <OverlayTrigger
+                        rootClose
+                        trigger="click"
+                        placement="right"
+                        overlay={
+                            <Popover>
+                                <Popover.Body>
+                                    <p className='text-center'>
+                                        Для смены тарифа <br />отправьте <Link
+                                            to='#'
+                                            onClick={(e) => {
+                                                window.location.href = "mailto:manager@company.com";
+                                                e.preventDefault();
+                                            }}
+                                        >
+                                            запрос
+                                        </Link>
+                                    </p>
+                                </Popover.Body>
+                            </Popover>
+                        }>
+                        <Button variant="outline-primary" size="sm" className="mt-2">Сменить тариф</Button>
+                    </OverlayTrigger>
+
 
 
                 <div>&nbsp;</div>
@@ -280,33 +314,6 @@ const Profile = ({ handleUpdateProfile }) => {
                 </Table>
 
             </Container>
-
-            <Modal
-                size="lg"
-                show={tariffModalShow}
-                onHide={() => setTariffModalShow(false)}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>
-                        Тарифный план №3
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>
-                        Тари́ф (от араб. تعريف‎ — «определение») или та́кса (от нем. Тахе ← лат. taxare — «оценивать») —
-                        ставка или система ставок оплаты (платёж) за различные производственные и непроизводственные
-                        услуги, предоставляемые компаниями, организациями, фирмами и учреждениями. К категории тарифов
-                        относят также системы ставок оплаты труда.
-                    </p>
-
-                    <p>
-                        В русском языке слово «тариф» впервые встречается в Морском уставе 1724 года. Оно пришло через
-                        нем. Tarif или фр. tarif из итал. tariffa от араб. ta'rîf‎ — объявление о пошлинных сборах,
-                        сообщение, объявление, объявление, таблица.
-                    </p>
-                </Modal.Body>
-            </Modal>
-
 
             <Modal
                 size="lg"

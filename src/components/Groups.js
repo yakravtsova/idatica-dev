@@ -11,7 +11,7 @@ import GroupTableRow from './GroupTable Row';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
 
-const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleUpdatingEnabledGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleActivateGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
     const navigate = useNavigate();
 //    const groups = useContext(GroupsContext);
     const [ form, setForm ] = useState({
@@ -69,13 +69,8 @@ const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEdit
 
                         <Form.Select className="m-1" onChange={setUpdater} value={form.updater_id}>
                             <option defaultValue="selected">Частота проверки *</option>
-                            {/*<option value="2">Раз в день</option>
-                            <option value="3">Раз в неделю</option>
-                            <option value="4">Раз в две недели</option>
-                            <option value="5">Раз в три недели</option>
-    <option value="6">Раз в месяц</option>*/}
                             {updaters.map((u, i) => (
-                                <option key={u.id} value={u.id}>{u.updater_type}</option>
+                              <option key={u.id} value={u.id}>{u.name}</option>
                             ))}
                         </Form.Select>
 
@@ -87,7 +82,7 @@ const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEdit
 
             <div>&nbsp;</div>
 
-            
+
 
             <Table responsive bordered size="sm" className="small mt-3">
                 <thead>
@@ -104,24 +99,24 @@ const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEdit
                 </thead>
                 <tbody>
                     {groups.map((group, i) => (
-                        <GroupTableRow 
+                        <GroupTableRow
                             key={group.id}
-                            group={group} 
-                            redirectTo={redirectTo} 
-                            handleEditGroupPopupOpen={handleEditGroupPopupOpen} 
+                            group={group}
+                            redirectTo={redirectTo}
+                            handleEditGroupPopupOpen={handleEditGroupPopupOpen}
                             handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                             getUpdateGroup={getUpdateGroup}
-                            handleUpdatingEnabledGroup={handleUpdatingEnabledGroup}
+                            handleActivateGroup={handleActivateGroup}
                             handleIsDefaultGroup={handleIsDefaultGroup} />
                     ))}
                 </tbody>
             </Table>
-            <DeletePopup 
-                isOpen={isDeletePopupOpen} 
-                onClose={handleDeletePopupOpen} 
-                okButtonText="Удалить" 
-                cancelButtonText="Не удалять" 
-                bodyText="Группа удаляется со всеми товарами без возможности восстановления. Вы хотите удалить группу?" 
+            <DeletePopup
+                isOpen={isDeletePopupOpen}
+                onClose={handleDeletePopupOpen}
+                okButtonText="Удалить"
+                cancelButtonText="Не удалять"
+                bodyText="Группа удаляется со всеми товарами без возможности восстановления. Вы хотите удалить группу?"
             />
 
         </Container>

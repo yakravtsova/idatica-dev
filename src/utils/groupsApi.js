@@ -61,3 +61,27 @@ export const setDefaultGroup = (groupId) => {
   })
   .then(res => handleResponse(res))
 }
+
+export const activateGroup = (groupId) => {
+  return fetch(`${BASE_URL}groups/${groupId}/activate/`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+  .then(res => handleResponse(res))
+}
+
+export const deactivateGroup = (groupId) => {
+  return fetch(`${BASE_URL}groups/${groupId}/deactivate/`, {
+    method: 'PUT',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  })
+  .then(res => handleResponse(res))
+}

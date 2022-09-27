@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react'; 
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup }) => {
+const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup, updaters }) => {
   const [ form, setForm ] = useState({
     name: '',
+    updater_id: ''
   //  updateFrequency: ''
 });
 
   useEffect(() => {
-    
+    console.log(formData);
     if (formData.name) {
       setForm({
         ...form,
         'name': formData.name,
-      //  'updateFrequency': formData.updateFrequency,
+        'updater_id': formData.updater.id
       })
     }
   }, [isOpen]);
@@ -31,8 +32,8 @@ const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup }) => {
     setField('name', e.target.value);
 }
 
-const setFrequency = (e) => {
-    setField('updateFrequency', e.target.value);
+const setUpdater = (e) => {
+    setField('updater_id', e.target.value);
 }
 
 const handleSubmit = (e) => {
@@ -57,13 +58,11 @@ const handleSubmit = (e) => {
           />
         </Form.Group>
         <Form.Group className="m-2">
-          <Form.Select  aria-label="Периодичность" value={form.updateFrequency} onChange={setFrequency}>
+          <Form.Select  aria-label="Периодичность" value={form.updater_id} onChange={setUpdater}>
               <option>Периодичность</option>
-              <option value="1">Раз в день</option>
-              <option value="2">Раз в неделю</option>
-              <option value="3">Раз в две недели</option>
-              <option value="4">Раз в три недели</option>
-              <option value="5">Раз в месяц</option>
+              {updaters.map((u, i) => (
+                <option key={u.id} value={u.id}>{u.name}</option>
+              ))}
           </Form.Select>
         </Form.Group>
           <Button variant="secondary" className="m-2" type="submit">

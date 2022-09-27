@@ -16,11 +16,10 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         'group_id': '',
         'brand': '',
         'purchase_price': '',
-        'categoryName': '',
-        'product_urls': [{}]
+        'product_urls': []
       });
 
-    
+
     const redirectToProducts = () => {
         navigate('/products', {replace: true})
     }
@@ -31,14 +30,14 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
           [field]: value
         });
     }
-    
+
 
     useEffect(() => {
         console.log(groups);
         setRegionsList();
-        
+
         if (initData.id) {
-    
+
             setForm({
                 ...form,
                 'name': initData.name,
@@ -46,7 +45,6 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 'group_id': initData.group_id,
                 'brand': initData.brand,
                 'purchase_price': initData.purchase_price,
-                'categoryName': initData.categoryName,
                 'product_urls': initData.product_urls
               });
               return;
@@ -88,10 +86,10 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
     const setPurchasePrice = (e) => {
         setField('purchase_price', e.target.value);
     }
-
+/*
     const setCategoryName = (e) => {
         setField('categoryName', e.target.value);
-    }
+    }*/
 
     const addFields = () => {
         let newField = { url: '', region_id: '', vendor_sku: ''};
@@ -119,7 +117,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
             handleCreateNewProduct(form)
         }
     }
-    
+
 
     return (
         <Container fluid className="bg-white">
@@ -135,10 +133,10 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                     <Form.Control className="m-1" type="text" placeholder="Ваша цена" value={form.base_price ? form.base_price : ''} onChange={setBasePrice}></Form.Control>
                     <Form.Control className="m-1" type="text" placeholder="Ваш артикул" onChange={setOwnVendorCode}></Form.Control>
 
-                    <Form.Select 
-                        className="m-1"  
+                    <Form.Select
+                        className="m-1"
                         value={form.group_id ? form.group_id : ''}
-                        onChange={setGroupId} 
+                        onChange={setGroupId}
                         /*isInvalid={}*/
                         required>
                             <option value=''>Группа *</option>
@@ -155,10 +153,10 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                         <Form.Group key={i} className="d-flex align-items-center">
                             <Form.Control className="m-1" type="url" placeholder="Ссылка на товар" name="url" value={form.product_urls[i].url ? form.product_urls[i].url : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
 
-                            <Form.Select 
+                            <Form.Select
                                 className="m-1"
                                 name="region_id"
-                                value={form.product_urls[i].region_id ? form.product_urls[i].region_id : ''} 
+                                value={form.product_urls[i].region_id ? form.product_urls[i].region_id : ''}
                                 onChange={(e) => handleFormChange(i, e)}
                                 required>
                                     <option value=''>Регион *</option>
@@ -173,7 +171,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                     )
                 })}
 
-                <Button 
+                <Button
                     className="m-1"
                     variant="outline-primary"
                     onClick={addFields}>
@@ -188,7 +186,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                             <div className="d-flex align-items-center">
                                 <Form.Control className="m-1" type="text" placeholder="Бренд" onChange={setBrand}></Form.Control>
                                 <Form.Control className="m-1" type="text" placeholder="Закупочная цена" onChange={setPurchasePrice}></Form.Control>
-                                <Form.Control className="m-1" type="text" placeholder="Категория" onChange={setCategoryName}></Form.Control>
+                                {/*<Form.Control className="m-1" type="text" placeholder="Категория" onChange={setCategoryName}></Form.Control>*/}
                             </div>
 
                         </Accordion.Body>

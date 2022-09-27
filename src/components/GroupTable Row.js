@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Plus, PencilFill, TrashFill } from "react-bootstrap-icons";
 
-const GroupTableRow = ({ group, redirectTo, getUpdateGroup, handleActivateGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
+const GroupTableRow = ({ group, redirectTo, getUpdateGroup, handleChangeActivityGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
   const [groupState, setGroupState] = useState(group);
   const [isUpdatingAnabledState, setIsUpdatingAnabledState] = useState(group.isUpdatingAnabled);
 
@@ -10,16 +10,8 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, handleActivateGroup,
     setGroupState(group)
   }, [getUpdateGroup])
 
-  const updateFrequency={
-    2: "Раз в день",
-    3: "Раз в неделю",
-    4: "Раз в две недели",
-    5: "Раз в три недели",
-    6: "Раз в месяц"
-  }
-
-  const handleUpdateFrequencyChange = () => {
-    handleActivateGroup(groupState);
+  const handleChangeActivity = () => {
+    handleChangeActivityGroup(groupState);
     setGroupState({
       ...groupState,
       is_active: !groupState.is_active
@@ -65,12 +57,12 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, handleActivateGroup,
           onChange={handleIsDefaultChange}
           />
       </td>
-      <td>{updateFrequency[groupState.updater.id]}</td>
+      <td>{groupState.updater.name}</td>
       <td>
         <Form.Check
           checked={groupState.is_active}
           type="switch"
-          onChange={handleUpdateFrequencyChange}
+          onChange={handleChangeActivity}
           />
       </td>
       <td><Button className="text-center" size="sm" variant="light" onClick={handleCreateProduct}><Plus/></Button></td>

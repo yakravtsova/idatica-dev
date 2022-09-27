@@ -402,6 +402,7 @@ const App = () => {
                 if (g.id === data.id) {
                     return {...g,
                         name: data.name,
+                        updater: data.updater
                     //    updateFrequency: form.updateFrequency
                 }
                 }
@@ -414,17 +415,29 @@ const App = () => {
         .catch(err => console.log(err));
     }
 
-    const handleActivateGroup = (group) => {
-        const newGroups = groups.map(g => {
-            if (g.id === group.id) {
-                return {...g,
-                    is_active: !group.is_active}
-            }
-            return g;
-        })
-        setGroups(newGroups);
-        setUpdateGroup({});
-        console.log(newGroups)
+    const changeActivityGroup = (group) => {
+      const newGroups = groups.map(g => {
+        if (g.id === group.id) {
+            return {...g,
+                is_active: !group.is_active}
+        }
+        return g;
+      })
+      setGroups(newGroups);
+      console.log(newGroups)
+    }
+
+    const handleChangeActivityGroup = (group) => {
+      if (group.is_active) {
+        groupsApi.deactivateGroup(group.id)
+          .then(res => changeActivityGroup(group))
+          .catch(err => console.log(err))
+        }
+      else {
+        groupsApi.activateGroup(group.id)
+          .then(res => changeActivityGroup(group))
+          .catch(err => console.log(err))
+        }
     }
 
     const handleIsDefaultGroup = (group) => {
@@ -439,9 +452,9 @@ const App = () => {
                     is_default: false};
             })
             setGroups(newGroups);
-            setUpdateGroup({});
             console.log(newGroups)
         })
+        .catch(err => console.log(err))
     }
 
 
@@ -601,7 +614,7 @@ const App = () => {
                                 handleEditGroupPopupOpen={handleEditGroupPopupOpen}
                                 handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                                 getUpdateGroup={getUpdateGroup}
-                                handleActivateGroup={handleActivateGroup}
+                                handleChangeActivityGroup={handleChangeActivityGroup}
                                 handleIsDefaultGroup={handleIsDefaultGroup} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
                             />
                         </ProtectedRoute>
@@ -635,7 +648,7 @@ const App = () => {
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
             <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
             <UpdateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
-            <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} />
+            <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} updaters={updaters} />
             <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
             <TariffInfoPopup isOpen={isTariffInfoPopupOpen} onClose={handleTariffInfoPopupOpen} />
         </Container>

@@ -26,6 +26,7 @@ import TariffInfoPopup from './TariffInfoPopup';
 import { productsList, clientsList, profileInfo } from '../utils/constants';
 import * as groupsApi from '../utils/groupsApi';
 import * as productsApi from '../utils/productsApi';
+import * as urlsApi from '../utils/productUrlsApi';
 import * as updatersApi from '../utils/updatersApi';
 import * as regionsApi from '../utils/regionsApi';
 import * as userApi from '../utils/userInfoApi';
@@ -35,6 +36,7 @@ import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
 //import { GroupsContext } from '../contexts/GroupsContext';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { recoveryPassword } from '../utils/auth';
 
 
 const App = () => {
@@ -47,15 +49,12 @@ const App = () => {
     const [ clients, setClients ] = useState(clientsList);
     const [ regions, setRegions ] = useState([]);
     const [ tariffs, setTariffs ] = useState([]);
+    const [ isTariffActive, setIsTariffActive ] = useState(false);
     const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
     const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
     const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
 
     const [ isTariffInfoPopupOpen, setIsTariffInfoPopupOpen ] = useState(false);
-    /*const [loggedIn, setLoggedIn] = useState(() => {
-        const token = localStorage.getItem('token');
-        return token !== null;
-    } false);*/
     const [ updateProduct, setUpdateProduct ] = useState({});
     const [ updateGroup, setUpdateGroup ] = useState({});
     const [updateUrlId, setUpdateUrlId] = useState(null);
@@ -66,7 +65,6 @@ const App = () => {
     const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
     const [isDeleteGroupPopupOpen, setIsDeleteGroupPopupOpen] = useState(false);
-    const [isSuperUser, setIsSuperUser] = useState(true);
     const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen} = useAuth();
 
     const location = useLocation();
@@ -83,62 +81,44 @@ const App = () => {
         console.log(location.pathname);
       }
 
-
-/*    const tokenCheck = () => {
-        const token = localStorage.getItem('token');
-        isSidebarShown();
-        if (token) {
-          userInfoApi.getUserInfo()
-            .then(data => {
-              if (data) {
-                setCurrentUser(data);
-                setLoggedIn(true);
-              }
-            })
-          /*  groupsApi.getGroups()
-            .then(data => {
-                setGroups(data);
-            })
-            .catch(err => console.log(err));
-            updatersApi.getUpdaters()
-            .then(data => {
-                setUpdaters(data);
-            })
-            .catch(err => console.log(err));
-        }
-        console.log(token);
-        console.log(loggedIn);
-        console.log(groups);
-        console.log(updaters);
-      }
-
-    useEffect(() => {
-        tokenCheck();
-    }, []);
-
-    useEffect(() => {
-        if (groups.length) {
-            const defaultGroup = groups.find(g => g.is_default);
-            setDefaultGroupId(defaultGroup.id);
-        }
-        console.log(defaultGroupId);
-    }, [groups]);*/
-
     useEffect(() => {
       handleGetTariffs();
-      if (loggedIn) {
-        handleGetProfile();
-        handleGetUpdaters();
-        handleGetGroups();
-      }
     }, [])
+
+    useEffect(() => {
+      if (loggedIn) {
+        updatersApi.getUpdaters()
+        .then(data => {
+          setUpdaters(data);
+          setIsTariffActive(true);
+          handleGetProfile();
+          handleGetGroups();
+          setRegionsList();
+        })
+        .catch(err => {
+          console.log(err);
+
+        });
+      //  handleGetProfile();
+      //  handleGetUpdaters();
+      //  handleGetGroups();
+      //  setRegionsList();
+      //  getDefaultGroupId();
+      }
+    }, [loggedIn])
 
     const handleGetGroups = () => {
       groupsApi.getGroups()
         .then(data => {
           setGroups(data);
+          getDefaultGroupId(data);
         })
         .catch(err => console.log(err));
+    }
+
+    const getDefaultGroupId = (groups) => {
+      setDefaultGroupId(groups.find(g => g.is_default));
+
     }
 
     const handleGetUpdaters = () => {
@@ -227,20 +207,23 @@ const App = () => {
     }
 
     const newUrlListAfterDelete = () => {
-        let data = [...updateProduct.productUrls];
-        data.splice(indexOfProduct, 1);
+        let data = [...updateProduct.product_urls];
+        const pos = data.map(d => d.id).indexOf(indexOfProduct);
+        data.splice(pos, 1);
         setIndexOfProduct(null);
+        console.log(data);
         return data;
     }
 
     const newUrlListAfterCreate = (urlData) => {
-        let data = [...updateProduct.productUrls, handleCreateNewUrl(urlData)  ];
+        let data = [...updateProduct.product_urls, urlData  ];
         return data;
     }
 
     const newUrlListAfterUpdate = (urlData) => {
-        let data = [...updateProduct.productUrls];
-        data[indexOfProduct]=handleCreateNewUrl(urlData);
+        let data = [...updateProduct.product_urls];
+        const pos = data.map(d => d.id).indexOf(indexOfProduct);
+        data[pos] = urlData;
         console.log(data);
         return data;
     }
@@ -260,10 +243,6 @@ const App = () => {
     const deleteOneProduct = (id) => {
         setProducts((state) => state.filter((p) => p.id !== id))
       }
-
-  /*  const handleRegistrationInfoTooltipOpen = () => {
-        setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
-    }*/
 
     const deleteLinkPopupOpen = () => {
         setIsDeleteLinkPopupOpen(!isDeleteLinkPopupOpen);
@@ -285,113 +264,40 @@ const App = () => {
         setUpdateProduct(productData);
     }
 
-  /*  const handleRegister = ({ email, password }) => {
-        const registerData = {
-            email: email,
-            password: password
-        };
-        console.log(registerData);
-        auth.register(registerData)
-        .then(res => {
-            if (res) {
-                setIsRegisterFirstStepOk(true);
-                handleRegistrationInfoTooltipOpen();
-            } else {
-                setIsRegisterFirstStepOk(false);
-                handleRegistrationInfoTooltipOpen();
-            }
-            console.log(res)
-        })
-        .catch(err => {
-            setIsRegisterFirstStepOk(false);
-            handleRegistrationInfoTooltipOpen();
-            console.log(err)
-        })
-    }*/
 
-  /*  const handleConfirmEmail = (data) => {
-      console.log(data);
-      auth.confirmEmail(data)
-      .then(res => {
-        if (res.is_email_confirmed) {
-          redirectTo('/finish-registration');
-        }
-      })
-      .catch(err => {
-        setIsRegisterFirstStepOk(false);
-        handleRegistrationInfoTooltipOpen();
-        console.log(err)
-      })
-    }
-*/
-  /*  const handleCompleteRegister = ({ email, name, phone, companyName, tariffId }) => {
-        const registerData = {
-            email: email,
-            name: name,
-            phone: phone,
-            company_name: companyName,
-            tariffId: tariffId,
-        };
-        console.log(registerData);
-        auth.completeRegister(registerData)
-        .then(data => {
-            if (data.id) {
-              //  setLoggedIn(true);
-                redirectTo('/groups', true);
-              }
-              else {
-              /*  setIsRegisterFirstStepOk(false);
-                handleRegistrationInfoTooltipOpen();
-              }
-            })
-        .catch(err => {
-            setIsRegisterFirstStepOk(false);
-            handleRegistrationInfoTooltipOpen();
-            console.log(err);
-        })
-    }
-
-    const handleAuthorization = ({ email, password }) => {
-        auth.authorize(email, password)
-            .then(data => {
-                if (data.access_token) {
-                    setLoggedIn(true);
-                    navigate('/groups', {replace: true});
-                  }
-                  else {
-                    console.log('Авторизация не удалась');
-                  }
-                })
-            .catch(err => {
-                setIsRegisterFirstStepOk(false);
-                handleRegistrationInfoTooltipOpen();
-                console.log(err);
-            });
-    }*/
 
     const handleReset = (email) => {
-        console.log(email);
+      recoveryPassword(email)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => console.log(err));
     }
 
     const handleUpdateProduct = (form) => {
+      productsApi.updateProduct(updateProduct.id, form)
+      .then(res => {
         const newProducts = products.map(p => {
-            if (p.id === updateProduct.id) {
-                return {...p,
-                    name: form.name,
-                    basePrice: form.basePrice,
-                    ownVendorCode: form.ownVendorCode,
-                    groupId: form.groupId,
-                    brand: form.brand,
-                    purchasePrice: form.purchasePrice,
-                    categoryName: form.categoryName,
-                    productUrls: form.productUrls}
-            }
-            return p;
-        })
-        setProducts(newProducts);
-        setUpdateProduct({});
-        redirectTo('/products');
-        console.log(newProducts)
+          if (p.id === updateProduct.id) {
+              return {...p,
+                  name: form.name,
+                  base_price: form.base_price,
+                  own_vendor_code: form.own_vendor_code,
+                  //group_id: form.group_id,
+                  brand: form.brand,
+                  purchase_price: form.purchase_price,
+                  //categoryName: form.categoryName,
+                  //productUrls: form.productUrls
+                }
+          }
+          return p;
+      })
+      setProducts(newProducts);
+      setUpdateProduct({});
+      redirectTo('/products');
+      console.log(newProducts)
+      })
+
     }
 
     const handleUpdateGroup = (form) => {
@@ -403,7 +309,6 @@ const App = () => {
                     return {...g,
                         name: data.name,
                         updater: data.updater
-                    //    updateFrequency: form.updateFrequency
                 }
                 }
                 return g;
@@ -462,7 +367,7 @@ const App = () => {
         const newProducts = products.map(p => {
             if (p.id === updateProduct.id) {
                 return {...p,
-                    productUrls: newUrlList}
+                    product_urls: newUrlList}
             }
             return p;
         })
@@ -474,9 +379,11 @@ const App = () => {
     const handleCreateNewProduct = (form) => {
         productsApi.createProduct(form)
         .then(data => {
-            setProducts([data, ...products]);
+           /* const newData = {...data, product_urls: []};
+            setProducts([newData, ...products]);*/
             redirectTo('/products');
-        });
+        })
+        .catch(err => console.log(err));
     }
 
     const handleCreateNewGroup = (form) => {
@@ -494,9 +401,15 @@ const App = () => {
     }
 
   const handleDeleteOneProduct = () => {
-    deleteOneProduct(deleteProductId);
-    deleteProductPopupOpen();
-    setDeleteProductId(null);
+    productsApi.deleteProduct(deleteProductId)
+      .then(res => {
+        deleteOneProduct(deleteProductId);
+        deleteProductPopupOpen();
+        setDeleteProductId(null);
+        console.log(res);
+      })
+      .catch(err => console.log(err))
+
   }
 
   const handleDeleteCheckedProducts = () => {
@@ -506,20 +419,35 @@ const App = () => {
   }
 
   const removeUrl = () => {
-    console.log(newUrlListAfterDelete());
-    handleUpdateProductUrl(newUrlListAfterDelete());
-    deleteLinkPopupOpen()
+    const url = updateProduct.product_urls.find(item => item.id === indexOfProduct);
+    urlsApi.deleteProductUrl(url.id)
+    .then(res => {
+      if (res.success) {
+        handleUpdateProductUrl(newUrlListAfterDelete());
+        deleteLinkPopupOpen()
+      }
+    })
+    .catch(err => console.log(err));
   }
 
-  const createUrl = (urlData) => {
-    console.log(newUrlListAfterCreate(urlData));
-    handleUpdateProductUrl(newUrlListAfterCreate(urlData));
-    createLinkPopupOpen()
+  const createUrl = (formData) => {
+    const urlData = {...formData, product_id: updateProduct.id};
+    console.log(urlData);
+    urlsApi.createProductUrl(urlData)
+    .then(res => {
+      handleUpdateProductUrl(newUrlListAfterCreate(res));
+      createLinkPopupOpen()
+    })
+    .catch(err => console.log(err))
   }
 
   const updateUrl = (urlData) => {
-    console.log(newUrlListAfterUpdate(urlData));
-    handleUpdateProductUrl(newUrlListAfterUpdate(urlData));
+    const url = updateProduct.product_urls.find(item => item.id === indexOfProduct);
+    urlsApi.updateProductUrl(url.id, urlData)
+    .then(res => {
+      handleUpdateProductUrl(newUrlListAfterUpdate(res));
+    })
+    .catch(err => console.log(err));
     handleUpdateLinkPopupOpen()
   }
 
@@ -541,8 +469,14 @@ const App = () => {
   }
 
   const setGroupProductsList = () => {
-    productsApi.getProducts(updateGroup.id)
-    .then(data => setProducts(data))
+    productsApi.getProductsByGroup(updateGroup.id)
+    .then(data => setProducts(data.items))
+    .catch(err => console.log(err));
+  }
+
+  const setProductsList = () => {
+    productsApi.getAllProducts()
+    .then(data => setProducts(data.items))
     .catch(err => console.log(err));
   }
 
@@ -555,19 +489,21 @@ const App = () => {
 
 
 
+
     return (
 
     //    <GroupsContext.Provider value={groups}>
       <CurrentUserContext.Provider value={currentUser}>
         <Container fluid className="bg-light d-flex justify-content-start align-items-start">
-            {/*loggedIn*/ true && <SideBar />}
+            {loggedIn && <SideBar active={isTariffActive} />}
             <Routes>
                 <Route path="/products" element={
                     <ProtectedRoute>
                         <Products
                             products={products}
                             setGroupProductsList={setGroupProductsList}
-                            groups={groups}
+                            setProductsList={setProductsList}
+                            group={updateGroup}
                             redirectTo={redirectTo}
                             productDataForUpdate={updateProduct}
                             addProductIdToArr={addProductIdToArr}
@@ -598,7 +534,9 @@ const App = () => {
                             regions={regions}
                             handleUpdateProduct={handleUpdateProduct}
                             handleCreateNewProduct={handleCreateNewProduct}
-                            setRegionsList={setRegionsList}
+                            getDefaultGroupId={getDefaultGroupId}
+                            getUpdateGroup={getUpdateGroup}
+                            getUpdateProduct={getUpdateProduct}
                         />
                     </ProtectedRoute>
                 }/>
@@ -615,7 +553,8 @@ const App = () => {
                                 handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                                 getUpdateGroup={getUpdateGroup}
                                 handleChangeActivityGroup={handleChangeActivityGroup}
-                                handleIsDefaultGroup={handleIsDefaultGroup} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
+                                handleIsDefaultGroup={handleIsDefaultGroup}
+                                getUpdateProduct={getUpdateProduct} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
                             />
                         </ProtectedRoute>
                         } />
@@ -643,11 +582,11 @@ const App = () => {
                 isOpen={isRegistrationInfoTooltipOpen}
                 onClose={handleRegistrationInfoTooltipOpen}
                 isOk={isRegisterFirstStepOk} />
-            <CreateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
+            <CreateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
             <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
             <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
             <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
-            <UpdateLinkPopup initData={updateProduct} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
+            <UpdateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} handleCreateNewUrl={handleCreateNewUrl} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
             <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} updaters={updaters} />
             <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
             <TariffInfoPopup isOpen={isTariffInfoPopupOpen} onClose={handleTariffInfoPopupOpen} />

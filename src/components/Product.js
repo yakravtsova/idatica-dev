@@ -19,12 +19,13 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
+
   useEffect(() => {
     setProductState(productData)
   }, [getUpdateProduct])
-  
+
   const navigate = useNavigate();
-  
+
   const handleMenuPopupOpen = () => {
     setIsMenuPopupOpen(!isMenuPopupOpen);
   }
@@ -35,7 +36,7 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
 
   const redirectToProductsCreate = () => {
     getUpdateProduct(productState);
-    navigate("/products/create", {replace: false})
+    navigate("/create-product", {replace: false})
   }
 
   const handleCheck = () => {
@@ -65,36 +66,36 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
   const handleDeleteLinkPopupOpen = (index) => {
     handleIndexOfProduct(index);
     getUpdateProduct(productState);
-    deleteLinkPopupOpen(); 
+    deleteLinkPopupOpen();
   }
 
-  
+
   const handleCreateLinkPopupOpen = () => {
     getUpdateProduct(productState);
-    createLinkPopupOpen(); 
+    createLinkPopupOpen();
   }
 
   const updateLinkPopupOpen = (index) => {
     getUpdateProduct(productState);
     handleIndexOfProduct(index);
-    handleUpdateLinkPopupOpen(); 
+    handleUpdateLinkPopupOpen();
   }
-  
+
   const priceDifference = (i) => {
     const dif = (productState.basePrice-productState.productUrls[i].price)*100/productState.basePrice;
     return dif;
   }
-  
+
   const dif = (i) => priceDifference(i).toFixed(2);
   const isCheaper = (i) => (dif(i) >= 0);
 
   /////////////////////
 
-  
 
 
 
-  
+
+
 
   return(
     <Card className="m-1">
@@ -107,20 +108,36 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
           <Card.Body>
             <Card.Title>{productState.name}</Card.Title>
             <ListGroup variant="flush">
+              {productState.category && <ListGroup.Item>
+                Категория: {productState.category}
+              </ListGroup.Item>}
+              {productState.own_vendor_code &&
               <ListGroup.Item>
-                Категория: {productState.categoryName}
-              </ListGroup.Item>
+                Артикул: {productState.own_vendor_code}
+              </ListGroup.Item>}
+              {productState.brand &&
+              <ListGroup.Item>
+                Бренд: {productState.brand}
+              </ListGroup.Item>}
+              {productState.purchase_price &&
+              <ListGroup.Item>
+                Закупочная цена: {productState.purchase_price}&#8381;
+              </ListGroup.Item>}
+              {productState.group.name &&
+              <ListGroup.Item>
+                Группа: {productState.group.name}
+              </ListGroup.Item>}
             </ListGroup>
           </Card.Body>
         </Col>
         <Col md={2} className="flex-column justify-content-center align-self-center" style={{fontSize: "20px"}}>
           <Card.Text>Цена:</Card.Text>
-          <Card.Text>{productState.basePrice}&#8381;</Card.Text>
+          <Card.Text>{productState.base_price}&#8381;</Card.Text>
         </Col>
         <Col xs="auto">
-          <OverlayTrigger 
-            rootClose 
-            trigger="click" 
+          <OverlayTrigger
+            rootClose
+            trigger="click"
             placement="left"
             overlay={
               <Popover>
@@ -155,29 +172,29 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
          <tbody>
 
           {/*  {productState.productUrls.map((url, i) => (
-              <UrlTableRow 
-                key={url.id} 
+              <UrlTableRow
+                key={url.id}
                 basePrice={productState.basePrice}
-                productUrl={url} 
-                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
-                handleEditLinkPopupOpen={handleEditLinkPopupOpen} 
+                productUrl={url}
+                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}
+                handleEditLinkPopupOpen={handleEditLinkPopupOpen}
                 deleteLinkPopupOpen={deleteLinkPopupOpen}
                 handleDeleteUrlId={handleDeleteUrlId} />
           ))}*/}
-          {productState.product_urls.map((url, i) => (
+          {Boolean(productState.product_urls.length) && productState.product_urls.map((url, i) => (
             <tr key={url.id}>
               <td><a href={url.url}>{urlLabel(url.url)}</a></td>
               <td>{url.price}</td>
               <td>{url?.discount}%</td>
-              <td>{url.in_stock ? "Да" : "Нет"}</td>
+              <td>{url?.in_stock ? "Да" : "Нет"}</td>
               <td>{url?.last_collected_at}</td>
-              <td><span className={isCheaper(i) ? "text-danger" : "text-success"}>{(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> } {Math.abs(dif(i))}%</span></td>
-              <td>{url?.region.name}</td>
-              <td>{url.has_parsing_errors ? "Да" : "Нет"}</td>
+              <td><span /*className={isCheaper(i) ? "text-danger" : "text-success"}*/>{/*(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> */} {url.price_diff}%</span></td>
+              <td>{url.region ? url.region.name : url.custom_region}</td>
+              <td>{url?.has_parsing_errors ? "Да" : "Нет"}</td>
               <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td style={{wordWrap: "normal"}}>{url.vendor_sku}</td>
-              <td><Button size="sm" variant="light" onClick={() => updateLinkPopupOpen(i)}><PencilFill /></Button></td>
-              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(i)}><TrashFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={() => updateLinkPopupOpen(url.id)}><PencilFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(url.id)}><TrashFill /></Button></td>
             </tr>
           ))}
           </tbody>

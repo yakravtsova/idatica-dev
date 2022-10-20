@@ -6,7 +6,7 @@ import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
-const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, setRegionsList }) => {
+const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, getDefaultGroupId, getUpdateGroup }) => {
 //    const groups = useContext(GroupsContext);
     const navigate = useNavigate();
     const [ form, setForm ] = useState({
@@ -16,7 +16,8 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         'group_id': '',
         'brand': '',
         'purchase_price': '',
-        'product_urls': []
+        'category': '',
+        'product_urls': [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
       });
 
 
@@ -34,17 +35,19 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
 
     useEffect(() => {
         console.log(groups);
-        setRegionsList();
+      //  setRegionsList();
 
         if (initData.id) {
-
+            console.log(initData);
             setForm({
                 ...form,
                 'name': initData.name,
                 'base_price': initData.base_price,
-                'group_id': initData.group_id,
+                'own_vendor_code': initData.own_vendor_code,
+                'group_id': initData.group.id,
                 'brand': initData.brand,
                 'purchase_price': initData.purchase_price,
+                'category': initData.category,
                 'product_urls': initData.product_urls
               });
               return;
@@ -55,11 +58,18 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 'group_id': group.id
               });
               return;
-        } else {
+        } else if (defaultGroupId) {
             setForm({
                 ...form,
-                'group_id': defaultGroupId,
+                'group_id': defaultGroupId.id,
               });
+              return;
+        }
+        else {
+          setForm({
+            ...form,
+            'group_id': '',
+          });
         }
     },[groups]);
 
@@ -86,13 +96,13 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
     const setPurchasePrice = (e) => {
         setField('purchase_price', e.target.value);
     }
-/*
-    const setCategoryName = (e) => {
-        setField('categoryName', e.target.value);
-    }*/
+
+    const setCategory = (e) => {
+        setField('category', e.target.value);
+    }
 
     const addFields = () => {
-        let newField = { url: '', region_id: '', vendor_sku: ''};
+        let newField = { url: '', region_id: '', custom_region: '', vendor_sku: ''};
         setField('product_urls', [...form.product_urls, newField]);
     }
 
@@ -116,6 +126,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         else {
             handleCreateNewProduct(form)
         }
+        console.log(form)
     }
 
 
@@ -131,7 +142,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 <div className="d-flex align-items-center">
                     <Form.Control className="m-1" type="text" placeholder="Название *" value={form.name ? form.name : ''} required onChange={setName}></Form.Control>
                     <Form.Control className="m-1" type="text" placeholder="Ваша цена" value={form.base_price ? form.base_price : ''} onChange={setBasePrice}></Form.Control>
-                    <Form.Control className="m-1" type="text" placeholder="Ваш артикул" onChange={setOwnVendorCode}></Form.Control>
+                    <Form.Control className="m-1" type="text" placeholder="Ваш артикул" value={form.own_vendor_code ? form.own_vendor_code : ''} onChange={setOwnVendorCode}></Form.Control>
 
                     <Form.Select
                         className="m-1"
@@ -159,14 +170,22 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                                 value={form.product_urls[i].region_id ? form.product_urls[i].region_id : ''}
                                 onChange={(e) => handleFormChange(i, e)}
                                 required>
-                                    <option value=''>Регион *</option>
                                     {regions.map((region, i) => (
                                         <option key={region.id} value={region.id}>{region.name}</option>
                                     ))}
+                                    <option value=''>Другой регион</option>
                             </Form.Select>
-
+                            <Form.Control
+                              className="m-1"
+                              type="text"
+                              placeholder="Другой регион"
+                              name="custom_region"
+                              value={form.product_urls[i].custom_region ? form.product_urls[i].custom_region : null}
+                              onChange={(e) => handleFormChange(i, e)}
+                              disabled={!!(form.product_urls[i].region_id)}>
+                              </Form.Control>
                             <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendor_sku" value={form.product_urls[i].vendor_sku ? form.product_urls[i].vendor_sku : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
-                            <Button onClick={() => removeFields(i)}><TrashFill /></Button>
+                            {(i > 0) && <Button onClick={() => removeFields(i)}><TrashFill /></Button>}
                         </Form.Group>
                     )
                 })}
@@ -184,9 +203,9 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                         <Accordion.Body>
 
                             <div className="d-flex align-items-center">
-                                <Form.Control className="m-1" type="text" placeholder="Бренд" onChange={setBrand}></Form.Control>
-                                <Form.Control className="m-1" type="text" placeholder="Закупочная цена" onChange={setPurchasePrice}></Form.Control>
-                                {/*<Form.Control className="m-1" type="text" placeholder="Категория" onChange={setCategoryName}></Form.Control>*/}
+                                <Form.Control className="m-1" type="text" placeholder="Бренд" value={form.brand ? form.brand : ''} onChange={setBrand}></Form.Control>
+                                <Form.Control className="m-1" type="text" placeholder="Закупочная цена" value={form.purchase_price ? form.purchase_price : ''} onChange={setPurchasePrice}></Form.Control>
+                                <Form.Control className="m-1" type="text" placeholder="Категория" value={form.category ? form.category : ''} onChange={setCategory}></Form.Control>
                             </div>
 
                         </Accordion.Body>

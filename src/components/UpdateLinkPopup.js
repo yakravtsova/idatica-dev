@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import EditLinkPopup from './EditLinkPopup';
 
-const UpdateLinkPopup = ({ initData, index, isOpen, onClose, getUpdateProduct, handleIndexOfProduct, updateUrl }) => {
+const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateProduct, handleIndexOfProduct, updateUrl }) => {
   const [ urlForm, setUrlForm] = useState({
     url: '',
-    vendorCode: '',
-    regionName: ''
+    vendor_sku: '',
+    region_id: '',
+    custom_region: ''
   });
 
   const handleUrlForm = (data) => {
@@ -14,12 +15,15 @@ const UpdateLinkPopup = ({ initData, index, isOpen, onClose, getUpdateProduct, h
 
   useEffect(() => {
     if (initData.name) {
+      const url = initData.product_urls.find(item => item.id === index);
+      console.log(url);
       setUrlForm({
         ...urlForm,
-        url: initData.productUrls[index].url,
-        vendorCode: initData.productUrls[index].vendorCode,
-        regionName: initData.productUrls[index].regionName,
-      })  
+        url: url.url,
+        vendor_sku: url.vendor_sku,
+        region_id: url.region ? url.region.id : '',
+        custom_region: url.custom_region ? url.custom_region : ''
+      });
     }
   }, [index]);
 
@@ -30,8 +34,8 @@ const handleSubmit = (e) => {
   setUrlForm({
     ...urlForm,
     url: '',
-    vendorCode: '',
-    regionName: ''
+    vendor_sku: '',
+    region_id: ''
   });
   onClose();
 }
@@ -43,7 +47,7 @@ const handleClose = () => {
 }
 
   return (
-    <EditLinkPopup isOpen={isOpen} onClose={handleClose} title="Редактировать ссылку" okButtonAction={handleSubmit} urlForm={urlForm} handleUrlForm={handleUrlForm} />
+    <EditLinkPopup isOpen={isOpen} onClose={handleClose} regions={regions} title="Редактировать ссылку" okButtonAction={handleSubmit} urlForm={urlForm} handleUrlForm={handleUrlForm} />
   )
 }
 

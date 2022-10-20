@@ -3,7 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 
-const EditLinkPopup = ({ isOpen, onClose, title, okButtonAction, urlForm, handleUrlForm }) => {
+const EditLinkPopup = ({ isOpen, onClose, regions, title, okButtonAction, urlForm, handleUrlForm }) => {
+  useEffect(() => console.log(regions), [])
   const setField = (field, value) => {
     handleUrlForm({
       ...urlForm,
@@ -17,12 +18,17 @@ const setUrl = (e) => {
 }
 
 const setRegionName = (e) => {
-  setField('regionName', e.target.value);
+  setField('region_id', e.target.value);
+  console.log(urlForm)
+}
+
+const setCustomRegionName = (e) => {
+  setField('custom_region', e.target.value);
   console.log(urlForm)
 }
 
 const setVendorCode = (e) => {
-  setField('vendorCode', e.target.value);
+  setField('vendor_sku', e.target.value);
   console.log(urlForm)
 }
 
@@ -38,13 +44,20 @@ const setVendorCode = (e) => {
             <Form.Control type="url" name="url" placeholder="Ссылка" onChange={setUrl} value={urlForm.url ? urlForm.url : ''} />
           </Form.Group>
           <div className="d-flex">
-            <Form.Select className="m-2" aria-label="Регион" name="regionName" onChange={setRegionName} value={urlForm.regionName ? urlForm.regionName : ''}>
-              <option>Регион</option>
-              <option value="1">Санкт-Петербург</option>
-              <option value="2">Москва</option>
-              <option value="3">ХМАО</option>
+            <Form.Select className="m-2" aria-label="Регион" name="region_id" onChange={setRegionName} value={urlForm.region_id ? urlForm.region_id : ''}>
+              {regions.map((region, i) => (
+                <option key={region.id} value={region.id}>{region.name}</option>
+              ))}
+              <option value=''>Другой регион</option>
             </Form.Select>
-            <Form.Control className="m-2" placeholder="Артикул" name="vendorCode" onChange={setVendorCode} value={urlForm.vendorCode ? urlForm.vendorCode : ''} />
+            <Form.Control
+              className="m-2"
+              placeholder="Другой регион"
+              name="custom_region"
+              onChange={setCustomRegionName}
+              value={urlForm.custom_region ? urlForm.custom_region : ''}
+              disabled={!!(urlForm.region_id)} />
+            <Form.Control className="m-2" placeholder="Артикул" name="vendor_sku" onChange={setVendorCode} value={urlForm.vendor_sku ? urlForm.vendor_sku : ''} />
           </div>
           <div className="d-flex justify-content-end">
             <Button className="m-2" variant="secondary" type="submit">

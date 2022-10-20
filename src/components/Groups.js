@@ -11,7 +11,19 @@ import GroupTableRow from './GroupTable Row';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
 
-const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen, getUpdateGroup, handleChangeActivityGroup, handleIsDefaultGroup, isDeletePopupOpen, handleDeletePopupOpen }) => {
+const Groups = ({
+  groups,
+  updaters,
+  redirectTo,
+  handleCreateNewGroup,
+  handleEditGroupPopupOpen,
+  handleDeleteGroupPopupOpen,
+  getUpdateGroup,
+  handleChangeActivityGroup,
+  handleIsDefaultGroup,
+  isDeletePopupOpen,
+  handleDeletePopupOpen,
+  getUpdateProduct }) => {
     const navigate = useNavigate();
 //    const groups = useContext(GroupsContext);
     const [ form, setForm ] = useState({
@@ -106,6 +118,7 @@ const Groups = ({ groups, updaters, redirectTo, handleCreateNewGroup, handleEdit
                             handleEditGroupPopupOpen={handleEditGroupPopupOpen}
                             handleDeleteGroupPopupOpen={handleDeleteGroupPopupOpen}
                             getUpdateGroup={getUpdateGroup}
+                            getUpdateProduct={getUpdateProduct}
                             handleChangeActivityGroup={handleChangeActivityGroup}
                             handleIsDefaultGroup={handleIsDefaultGroup} />
                     ))}

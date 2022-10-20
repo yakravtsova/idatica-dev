@@ -8,15 +8,24 @@ import ReportingProblemPopup from './ReportingProblemPopup';
 import {Link} from "react-router-dom";
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
 
-const Products = ({ products, groups, setGroupProductsList, redirectTo, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, getUpdateGroup, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
+const Products = ({ products, group, setGroupProductsList, setProductsList, redirectTo, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, getUpdateGroup, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
   const [view, setView] = useState(true);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
-  
- /* useEffect(() => {
-    setGroupProductsList();
+  const [productsState, setProductsState] = useState([]);
+
+
+  useEffect(() => {
+    if (group.id) {
+      setGroupProductsList();
+    //  setProductsState(products);
+      getUpdateGroup({});
+      return;
+    }
+    setProductsList();
+  //  setProductsState(products);
   }
-  , [])*/
+  , [])
 
   const handleMode = () => {
     setView(!view);
@@ -31,7 +40,7 @@ const Products = ({ products, groups, setGroupProductsList, redirectTo, productD
     }
   }
 
-  
+
 
   const handleReportingProblemPopupOpen = () => {
     setIsReportingProblemPopupOpen(!isReportingProblemPopupOpen);
@@ -42,10 +51,11 @@ const Products = ({ products, groups, setGroupProductsList, redirectTo, productD
   }
 
   const handleAddProduct = () => {
+    getUpdateProduct({});
     redirectTo('/create-product')
   }
 
-  
+
 
   return(
     <Container fluid>
@@ -61,20 +71,20 @@ const Products = ({ products, groups, setGroupProductsList, redirectTo, productD
         <SortingBar />
         <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
       </div>
-      
+
       {products.map((product, i) => (
-              <Product 
-                key={product.id} 
-                productData={product} 
+              <Product
+                key={product.id}
+                productData={product}
                 productDataForUpdate={productDataForUpdate}
                 checkProduct={checkProduct}
                 handleDeleteProductId={handleDeleteProductId}
                 handleDeleteUrlId={handleDeleteUrlId}
-                view={view} 
-                deleteLinkPopupOpen={deleteLinkPopupOpen} 
+                view={view}
+                deleteLinkPopupOpen={deleteLinkPopupOpen}
                 deleteProductPopupOpen={deleteProductPopupOpen}
-                handleUpdateLinkPopupOpen={handleUpdateLinkPopupOpen}  
-                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen} 
+                handleUpdateLinkPopupOpen={handleUpdateLinkPopupOpen}
+                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}
                 getUpdateProduct={getUpdateProduct}
                 handleUpdateProduct={handleUpdateProduct}
                 handleIndexOfProduct={handleIndexOfProduct}
@@ -83,7 +93,7 @@ const Products = ({ products, groups, setGroupProductsList, redirectTo, productD
             ))}
 
 
-      
+
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
       <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>
     </Container>

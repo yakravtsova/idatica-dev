@@ -68,6 +68,19 @@ export function authorize(email, password) {
   })
 }
 
+export function recoveryPassword(email) {
+  const emailData = { email: email }
+  return fetch(`${BASE_URL}password-recovery/`, {
+    method: 'POST',
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(emailData)
+  })
+  .then(res => handleResponse(res))
+}
+
 export function getContent(token) {
   return fetch(`${BASE_URL}/users/me`, {
     method: 'GET',

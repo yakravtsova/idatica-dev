@@ -60,9 +60,8 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
-  const finishReg = ({ email, name, phone, companyName, tariffId }) => {
+  const finishReg = ({ name, phone, companyName, tariffId }) => {
     const registerData = {
-        email: email,
         name: name,
         phone: phone,
         company_name: companyName,
@@ -96,14 +95,12 @@ export const AuthProvider = ({ children }) => {
         if (data.access_token) {
           userInfo.getUserInfo()
             .then(info => {
-              if (info.name) {
+              if (info.name && info.company_name && info.tariff.id) {
                 setLoggedIn(true);
-              //  setUser(info.name);
                 navigate('/groups', {replace: true});
               }
               else {
                 setLoggedIn(false);
-              //  setUser(null);
                 navigate('/confirm-email', {replace: true});
               }
             })
@@ -118,6 +115,10 @@ export const AuthProvider = ({ children }) => {
         console.log(err);
       });
   };
+
+  const recoveryPass = (email) => {
+    console.log(email);
+  }
 
   const logout = () => {
     setLoggedIn(false);
@@ -136,6 +137,7 @@ export const AuthProvider = ({ children }) => {
       confirm,
       finishReg,
       login,
+      recoveryPass,
       logout
     }),
     [loggedIn, isRegistrationInfoTooltipOpen, isRegistrationInfoTooltipOpen]

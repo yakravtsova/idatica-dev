@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const ResetPasswordPopup = ({ isOpen, onClose, handleReset }) => {
   const [email, setEmail] = useState('');
-  
+
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
   }

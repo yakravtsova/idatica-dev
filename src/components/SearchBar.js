@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
@@ -8,19 +9,26 @@ import FilterForm from './FilterForm';
 import DownloadDataForm from './DownloadDataForm';
 
 const SearchBar = ({ handleMode, view }) => {
+  const [ searchString, setSearchString ] = useState('');
+
+  const handleSearchStringChange = (e) => {
+    setSearchString(e.target.value);
+  }
+
   return(
     <>
       <Form className="d-flex flex-fill p-2 align-items-center">
         <InputGroup  className="m-1 mt-2 mb-3">
           <Form.Control placeholder="Поиск"
-                        aria-label="Поиск" 
-                        aria-describedby="button-addon2" />
+                        aria-label="Поиск"
+                        aria-describedby="button-addon2"
+                        onChange={handleSearchStringChange} />
           <Button variant="outline-secondary">Найти</Button>
         </InputGroup>
       </Form>
       <Button variant={view ? "outline-secondary" : "secondary"} className="m-1 mt-2 mb-3" onClick={handleMode}><Search /></Button>
-      <OverlayTrigger rootClose 
-                      trigger="click" 
+      <OverlayTrigger rootClose
+                      trigger="click"
                       placement="auto"
                       overlay={<Popover>
                         <Popover.Body>
@@ -29,8 +37,8 @@ const SearchBar = ({ handleMode, view }) => {
                       </Popover>}>
         <Button variant="outline-secondary" className="m-1 mt-2 mb-3"><FunnelFill /></Button>
       </OverlayTrigger>
-      <OverlayTrigger rootClose 
-                      trigger="click" 
+      <OverlayTrigger rootClose
+                      trigger="click"
                       placement="auto"
                       overlay={<Popover>
                         <Popover.Body>

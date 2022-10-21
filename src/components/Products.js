@@ -4,16 +4,37 @@ import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/Button';
 import Product from './Product';
 import SortingBar from './SortingBar';
+import CreateLinkPopup from './CreateLinkPopup';
 import ReportingProblemPopup from './ReportingProblemPopup';
-import {Link} from "react-router-dom";
 import AddProductsFromFilePopup from './AddProductsFromFilePopup';
+import DeleteLinkPopup from './DeleteLinkPopup';
+import DeleteProductPopup from './DeleteProductPopup';
+import DeleteCheckedProductsPopup from './DeleteCheckedProductsPopup';
+import UpdateLinkPopup from './UpdateLinkPopup';
+import * as productsApi from '../utils/productsApi';
+import * as urlsApi from '../utils/productUrlsApi';
 
-const Products = ({ products, group, setGroupProductsList, setProductsList, redirectTo, productDataForUpdate, addProductIdToArr, removeProductIdFromArr, handleDeleteCheckedProductsPopupOpen, handleDeleteUrlId, handleDeleteProductId, getUpdateProduct, getUpdateGroup, deleteLinkPopupOpen, deleteProductPopupOpen, handleUpdateProduct, handleIndexOfProduct, createLinkPopupOpen, newUrlListAfterCreate, handleUpdateLinkPopupOpen }) => {
+const Products = ({
+  group,
+  groups,
+  regions,
+  redirectTo,
+  getUpdateGroup,
+  updateProduct,
+  getUpdateProduct }) => {
   const [view, setView] = useState(true);
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
+  const [ products, setProducts ] = useState([]);
+  const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
   const [productsState, setProductsState] = useState([]);
-
+  const [ deleteProductId, setDeleteProductId ] = useState(null);
+  const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
+  const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
+  const [isDeleteCheckedProductsPopupOpen, setIsDeleteCheckedProductsPopupOpen] = useState(false);
+  const [checkedProducts, setCheckedProducts] = useState([]);
+  const [ indexOfProduct, setIndexOfProduct ] = useState(null);
+  const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
 
   useEffect(() => {
     if (group.id) {
@@ -26,6 +47,215 @@ const Products = ({ products, group, setGroupProductsList, setProductsList, redi
   //  setProductsState(products);
   }
   , [])
+
+  //берём id удаляемого продукта
+  const handleDeleteProductId = (id) => {
+    setDeleteProductId(id)
+  }
+
+  //берём номер удаляемой ссылки
+  const handleIndexOfProduct = (index) => {
+    setIndexOfProduct(index);
+  }
+
+  //загрузить все продукты
+  const setProductsList = () => {
+    productsApi.getAllProducts()
+    .then(data => setProducts(data.items))
+    .catch(err => console.log(err));
+  }
+
+
+  //загрузить продукты из группы
+  const setGroupProductsList = () => {
+    productsApi.getProductsByGroup(group.id)
+    .then(data => setProducts(data.items))
+    .catch(err => console.log(err));
+  }
+
+  //открыть попап удаления продукта
+  const deleteProductPopupOpen = () => {
+    setIsDeleteProductPopupOpen(!isDeleteProductPopupOpen);
+  }
+
+  //Удалить один продукт из стейта
+  const deleteOneProduct = (id) => {
+    setProducts((state) => state.filter((p) => p.id !== id))
+  }
+
+  //Удалить один продукт
+  const handleDeleteOneProduct = () => {
+    productsApi.deleteProduct(deleteProductId)
+      .then(res => {
+        deleteOneProduct(deleteProductId);
+        deleteProductPopupOpen();
+        setDeleteProductId(null);
+        console.log(res);
+      })
+      .catch(err => console.log(err))
+  }
+
+  //открыть попап удаления нескольких продуктов
+  const handleDeleteCheckedProductsPopupOpen = () => {
+    setIsDeleteCheckedProductsPopupOpen(!isDeleteCheckedProductsPopupOpen);
+    console.log(checkedProducts)
+  }
+
+  //добавить id продукта в массив удаляемых продуктов
+  const addProductIdToArr = (id) => {
+    setCheckedProducts([id, ...checkedProducts])
+  }
+
+  //удалить id продукта из массива удаляемых продуктов
+  const removeProductIdFromArr = (id) => {
+    setCheckedProducts((state) => state.filter((i) => i !==  id))
+  }
+
+  //удалить выбранные продукты из стейта (не работает)
+  const deleteCheckedProducts = (checkedProducts) => {
+    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))))
+  }
+
+  //удалить выбранные продукты (не работает)
+  const handleDeleteCheckedProducts = () => {
+    deleteCheckedProducts(checkedProducts);
+    setCheckedProducts([]);
+    handleDeleteCheckedProductsPopupOpen();
+  }
+
+  //открыть попап создания ссылки
+  const createLinkPopupOpen = () => {
+    setIsCreateLinkPopupOpen(!isCreateLinkPopupOpen);
+}
+  //новый список ссылок после создания новой ссылки
+  const newUrlListAfterCreate = (urlData) => {
+    let data = [...updateProduct.product_urls, urlData  ];
+    return data;
+  }
+
+  //создать новую ссылку
+  const createUrl = (formData) => {
+    const urlData = {...formData, product_id: updateProduct.id};
+    console.log(urlData);
+    urlsApi.createProductUrl(urlData)
+    .then(res => {
+      handleUpdateProductUrl(newUrlListAfterCreate(res));
+      createLinkPopupOpen()
+    })
+    .catch(err => console.log(err))
+  }
+
+  //открыть попап редактирования ссылки
+  const handleUpdateLinkPopupOpen = () => {
+    setIsUpdateLinkPopupOpen(!isUpdateLinkPopupOpen);
+  }
+
+  //новый список ссылок после изменения одной
+  const newUrlListAfterUpdate = (urlData) => {
+    let data = [...updateProduct.product_urls];
+    const pos = data.map(d => d.id).indexOf(indexOfProduct);
+    data[pos] = urlData;
+    console.log(data);
+    return data;
+  }
+
+  //изменить стейт списка ссылок после редактирования или удаления одной
+  const handleUpdateProductUrl = (newUrlList) => {
+    const newProducts = products.map(p => {
+        if (p.id === updateProduct.id) {
+            return {...p,
+                product_urls: newUrlList}
+        }
+        return p;
+    })
+    setProducts(newProducts);
+    getUpdateProduct({});
+    console.log(newProducts)
+  }
+
+  //изменить ссылку
+  const updateUrl = (urlData) => {
+    const url = updateProduct.product_urls.find(item => item.id === indexOfProduct);
+    urlsApi.updateProductUrl(url.id, urlData)
+    .then(res => {
+      handleUpdateProductUrl(newUrlListAfterUpdate(res));
+    })
+    .catch(err => console.log(err));
+    handleUpdateLinkPopupOpen()
+  }
+
+  //открыть попап удаления ссылки
+  const deleteLinkPopupOpen = () => {
+    setIsDeleteLinkPopupOpen(!isDeleteLinkPopupOpen);
+  }
+
+  //новый список ссылок после удаления одной
+  const newUrlListAfterDelete = () => {
+    let data = [...updateProduct.product_urls];
+    const pos = data.map(d => d.id).indexOf(indexOfProduct);
+    data.splice(pos, 1);
+    setIndexOfProduct(null);
+    console.log(data);
+    return data;
+  }
+
+  //удалить ссылку
+  const removeUrl = () => {
+    const url = updateProduct.product_urls.find(item => item.id === indexOfProduct);
+    urlsApi.deleteProductUrl(url.id)
+    .then(res => {
+      if (res.success) {
+        handleUpdateProductUrl(newUrlListAfterDelete());
+        deleteLinkPopupOpen()
+      }
+    })
+    .catch(err => console.log(err));
+  }
+
+  //фильтрация стейта по строке
+  const filterProductsByName = (searchStr) => {
+    console.log(searchStr);
+    setProducts(state => state.filter(p => p.name.toLowerCase().includes(searchStr)));
+  }
+
+  //фильтрация стейта по группе
+  const filterProductsByGroup = (groupId) => {
+    setProducts(state => state.filter(p => (p.group.id.toString() === groupId)));
+  }
+
+  //фильтрация стейта по региону
+  const filterProductsByRegion = (regionId) => {
+    setProducts(state => state.filter(p => p.product_urls.find(u => u.region?.id.toString() === regionId)));
+  }
+
+  //фильтрация стейта по цене
+  const filterProductsByPrice = (min_price, max_price) => {
+    if (min_price && max_price === '') {
+      setProducts(state => state.filter(p => (p.base_price > min_price)));
+      return;
+    }
+    if (min_price === '' && max_price) {
+      setProducts(state => state.filter(p => (p.base_price < max_price)));
+      return;
+    } else {
+      setProducts(state => state.filter(p => (p.base_price > min_price && p.base_price < max_price)));
+      return;
+    }
+  }
+
+  //фильтрация стейта
+  const filterProductsAllTheWay = ({active, competitor, region_id, group_id, category, min_price, max_price}) => {
+    if (region_id !== '') {
+      filterProductsByRegion(region_id)
+    }
+    if (group_id !== '') {
+      filterProductsByGroup(group_id)
+    }
+    if (min_price || max_price) {
+      filterProductsByPrice(min_price, max_price)
+    }
+  }
+
 
   const handleMode = () => {
     setView(!view);
@@ -61,7 +291,7 @@ const Products = ({ products, group, setGroupProductsList, setProductsList, redi
     <Container fluid>
         <div className="d-flex align-items-center justify-content-between">
         <h2>Товары</h2>
-        <SearchBar handleMode={handleMode} view={view} />
+        <SearchBar handleMode={handleMode} view={view} groups={groups} regions={regions} filterProductsByName={filterProductsByName} filter={filterProductsAllTheWay} />
       </div>
       <div>
         <Button onClick={handleAddProduct} className="m-1">Добавить новый товар</Button>
@@ -76,17 +306,14 @@ const Products = ({ products, group, setGroupProductsList, setProductsList, redi
               <Product
                 key={product.id}
                 productData={product}
-                productDataForUpdate={productDataForUpdate}
                 checkProduct={checkProduct}
                 handleDeleteProductId={handleDeleteProductId}
-                handleDeleteUrlId={handleDeleteUrlId}
                 view={view}
                 deleteLinkPopupOpen={deleteLinkPopupOpen}
                 deleteProductPopupOpen={deleteProductPopupOpen}
                 handleUpdateLinkPopupOpen={handleUpdateLinkPopupOpen}
                 handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}
                 getUpdateProduct={getUpdateProduct}
-                handleUpdateProduct={handleUpdateProduct}
                 handleIndexOfProduct={handleIndexOfProduct}
                 createLinkPopupOpen={createLinkPopupOpen}
                 />
@@ -96,6 +323,12 @@ const Products = ({ products, group, setGroupProductsList, setProductsList, redi
 
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
       <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>
+      <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
+      <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
+      <CreateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
+      <UpdateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
+      <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
+
     </Container>
   )
 }

@@ -15,10 +15,12 @@ import Kyrt from '../images/kyrt.jpg';
 import { CaretUpFill, CaretDownFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, productDataForUpdate, view, checkProduct, handleDeleteUrlId, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, createLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct, handleUpdateProduct, handleIndexOfProduct, handleUpdateLinkPopupOpen }) => {
+const Product = ({ productData, view, checkProduct, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, createLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct, handleIndexOfProduct, handleUpdateLinkPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
+
+  const numOfUrls = productState.product_urls.length;
 
   useEffect(() => {
     setProductState(productData)
@@ -194,7 +196,7 @@ const Product = ({ productData, productDataForUpdate, view, checkProduct, handle
               <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td style={{wordWrap: "normal"}}>{url.vendor_sku}</td>
               <td><Button size="sm" variant="light" onClick={() => updateLinkPopupOpen(url.id)}><PencilFill /></Button></td>
-              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(url.id)}><TrashFill /></Button></td>
+              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(url.id)} disabled={numOfUrls === 1}><TrashFill /></Button></td>
             </tr>
           ))}
           </tbody>

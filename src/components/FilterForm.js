@@ -1,13 +1,50 @@
+import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Popover from 'react-bootstrap/Popover';
-import Row from 'react-bootstrap/Row';
 
-const FilterForm = () => {
+const FilterForm = ({ groups, regions, filter }) => {
+  const [ filterForm, setFilterForm ] = useState({
+    active: '',
+    competitor: '',
+    region_id: '',
+    group_id: '',
+    category: '',
+    min_price: '',
+    max_price: ''
+  });
+
+  const setField = (field, value) => {
+    setFilterForm({
+      ...filterForm,
+      [field]: value
+    });
+  }
+
+
+  const setRegionId = (e) => {
+    setField('region_id', e.target.value);
+  }
+
+  const setGroupId = (e) => {
+    setField('group_id', e.target.value);
+  }
+
+  const setMinPrice = (e) => {
+    setField('min_price', e.target.value);
+  }
+
+  const setMaxPrice = (e) => {
+    setField('max_price', e.target.value);
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    filter(filterForm);
+  }
+
   return(
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Form.Select className="mb-2">
-        <option>Активные/неактивные</option>
+        <option value=''>Активные/неактивные</option>
         <option value="1">Активные</option>
         <option value="2">Неактивные</option>
       </Form.Select>
@@ -17,17 +54,17 @@ const FilterForm = () => {
         <option value="2">vprok.ru</option>
         <option value="2">5ka.ru</option>
       </Form.Select>
-      <Form.Select className="mb-2">
-        <option>Регион</option>
-        <option value="1">Москва</option>
-        <option value="2">Санкт-Петербург</option>
-        <option value="2">Сызрань</option>
+      <Form.Select className="mb-2" onChange={setRegionId}>
+        <option value=''>Регион</option>
+        {regions.map((region, i) => (
+          <option key={region.id} value={region.id}>{region.name}</option>
+        ))}
       </Form.Select>
-      <Form.Select className="mb-2">
-        <option>Группа</option>
-        <option value="1">Продукты</option>
-        <option value="2">Строительные товары</option>
-        <option value="2">Косметика</option>
+      <Form.Select className="mb-2" onChange={setGroupId}>
+        <option value=''>Группа</option>
+        {groups.map((group, i) => (
+          <option key={group.id} value={group.id}>{group.name}</option>
+        ))}
       </Form.Select>
       <Form.Select className="mb-2">
         <option>Категория</option>
@@ -36,11 +73,11 @@ const FilterForm = () => {
       <div className="d-flex">
         <Form.Group className="p-2">
           <Form.Label>Цена от</Form.Label>
-          <Form.Control />
+          <Form.Control name="min_price" onChange={setMinPrice} />
         </Form.Group>
         <Form.Group className="p-2">
           <Form.Label>до</Form.Label>
-          <Form.Control />
+          <Form.Control name="max_price" onChange={setMaxPrice} />
         </Form.Group>
       </div>
       <Form.Check
@@ -64,7 +101,7 @@ const FilterForm = () => {
         id="parsing-error"
       />
       <div className="d-flex justify-content-center">
-        <Button className="m-2">Принять</Button>
+        <Button className="m-2" type="submit">Принять</Button>
         <Button variant="outline-primary" className="m-2">Очистить</Button>
       </div>
     </Form>

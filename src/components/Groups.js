@@ -1,19 +1,19 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import SearchBar from './SearchBar';
 import Button from 'react-bootstrap/Button';
 import DeletePopup from './DeletePopup';
-import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import GroupTableRow from './GroupTable Row';
+import SearchForm from './SearchForm';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
 
 const Groups = ({
   groups,
   updaters,
+  getGroups,
   redirectTo,
   handleCreateNewGroup,
   handleEditGroupPopupOpen,
@@ -57,20 +57,18 @@ const Groups = ({
         });
     }
 
+    //фильтрация стейта по строке
+  const filterGroupsByName = (searchStr) => {
+    getGroups(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
+  }
+
 
     return (
         <Container fluid className="bg-white">
             <div className="d-flex align-items-center justify-content-between">
 
                 <h2>Группы товаров</h2>
-                <Form className="d-flex flex-fill p-2 align-items-center">
-                    <InputGroup className="m-1 mt-2 mb-3">
-                        <Form.Control placeholder="Поиск"
-                                      aria-label="Поиск"
-                                      aria-describedby="button-addon2"/>
-                        <Button variant="outline-secondary">Найти</Button>
-                    </InputGroup>
-                </Form>
+                <SearchForm filterAction={filterGroupsByName} />
             </div>
 
             <Form onSubmit={handleSubmit}>

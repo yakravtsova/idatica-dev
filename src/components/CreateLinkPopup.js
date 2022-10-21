@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import EditLinkPopup from './EditLinkPopup';
 
-const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl, getUpdateProduct }) => {
+const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
   const [ urlForm, setUrlForm] = useState({
     url: '',
     vendor_sku: '',

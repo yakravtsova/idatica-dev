@@ -16,7 +16,6 @@ const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateP
   useEffect(() => {
     if (initData.name) {
       const url = initData.product_urls.find(item => item.id === index);
-      console.log(url);
       setUrlForm({
         ...urlForm,
         url: url.url,

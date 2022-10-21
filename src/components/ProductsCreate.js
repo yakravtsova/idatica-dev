@@ -180,7 +180,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                               type="text"
                               placeholder="Другой регион"
                               name="custom_region"
-                              value={form.product_urls[i].custom_region ? form.product_urls[i].custom_region : null}
+                              value={form.product_urls[i].custom_region ? form.product_urls[i].custom_region : ''}
                               onChange={(e) => handleFormChange(i, e)}
                               disabled={!!(form.product_urls[i].region_id)}>
                               </Form.Control>

@@ -26,8 +26,8 @@ const Products = ({
   const [isReportingProblemPopupOpen, setIsReportingProblemPopupOpen] = useState(false);
   const [isAddProductsFromFilePopupOpen, setIsAddProductsFromFilePopupOpen] = useState(false);
   const [ products, setProducts ] = useState([]);
+  const [ productsState, setProductsState ] = useState([]);
   const [isCreateLinkPopupOpen, setIsCreateLinkPopupOpen] = useState(false);
-  const [productsState, setProductsState] = useState([]);
   const [ deleteProductId, setDeleteProductId ] = useState(null);
   const [isDeleteLinkPopupOpen, setIsDeleteLinkPopupOpen] = useState(false);
   const [isDeleteProductPopupOpen, setIsDeleteProductPopupOpen] = useState(false);
@@ -61,7 +61,11 @@ const Products = ({
   //загрузить все продукты
   const setProductsList = () => {
     productsApi.getAllProducts()
-    .then(data => setProducts(data.items))
+    .then(data => {
+      const items = data.items;
+      setProducts(items);
+      setProductsState(items);
+    })
     .catch(err => console.log(err));
   }
 
@@ -69,7 +73,11 @@ const Products = ({
   //загрузить продукты из группы
   const setGroupProductsList = () => {
     productsApi.getProductsByGroup(group.id)
-    .then(data => setProducts(data.items))
+    .then(data => {
+      const items = data.items;
+      setProducts(items);
+      setProductsState(items);
+    })
     .catch(err => console.log(err));
   }
 
@@ -80,7 +88,8 @@ const Products = ({
 
   //Удалить один продукт из стейта
   const deleteOneProduct = (id) => {
-    setProducts((state) => state.filter((p) => p.id !== id))
+    setProducts((state) => state.filter((p) => p.id !== id));
+    setProductsState(products);
   }
 
   //Удалить один продукт
@@ -113,7 +122,8 @@ const Products = ({
 
   //удалить выбранные продукты из стейта (не работает)
   const deleteCheckedProducts = (checkedProducts) => {
-    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))))
+    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))));
+    setProductsState(products);
   }
 
   //удалить выбранные продукты (не работает)
@@ -169,6 +179,7 @@ const Products = ({
         return p;
     })
     setProducts(newProducts);
+    setProductsState(newProducts);
     getUpdateProduct({});
     console.log(newProducts)
   }
@@ -215,30 +226,30 @@ const Products = ({
   //фильтрация стейта по строке
   const filterProductsByName = (searchStr) => {
     console.log(searchStr);
-    setProducts(state => state.filter(p => p.name.toLowerCase().includes(searchStr)));
+    setProductsState(state => state.filter(p => p.name.toLowerCase().includes(searchStr)));
   }
 
   //фильтрация стейта по группе
   const filterProductsByGroup = (groupId) => {
-    setProducts(state => state.filter(p => (p.group.id.toString() === groupId)));
+    setProductsState(state => state.filter(p => (p.group.id.toString() === groupId)));
   }
 
   //фильтрация стейта по региону
   const filterProductsByRegion = (regionId) => {
-    setProducts(state => state.filter(p => p.product_urls.find(u => u.region?.id.toString() === regionId)));
+    setProductsState(state => state.filter(p => p.product_urls.find(u => u.region?.id.toString() === regionId)));
   }
 
   //фильтрация стейта по цене
   const filterProductsByPrice = (min_price, max_price) => {
     if (min_price && max_price === '') {
-      setProducts(state => state.filter(p => (p.base_price > min_price)));
+      setProductsState(state => state.filter(p => (p.base_price > min_price)));
       return;
     }
     if (min_price === '' && max_price) {
-      setProducts(state => state.filter(p => (p.base_price < max_price)));
+      setProductsState(state => state.filter(p => (p.base_price < max_price)));
       return;
     } else {
-      setProducts(state => state.filter(p => (p.base_price > min_price && p.base_price < max_price)));
+      setProductsState(state => state.filter(p => (p.base_price > min_price && p.base_price < max_price)));
       return;
     }
   }
@@ -256,6 +267,65 @@ const Products = ({
     }
   }
 
+  //отменить фильтрацию
+  const unfilterProducts = () => {
+    console.log('dfgh');
+    setProductsState(products);
+  }
+
+  const byField = (field) => {
+    return (a, b) => {
+      if (a[field] > b[field]) {
+        return 1;
+      }
+      if (a[field] < b[field]) {
+        return -1;
+      }
+      return 0;
+    }
+  }
+
+  const byFieldDown = (field) => {
+    return (a, b) => {
+      if (a[field] < b[field]) {
+        return 1;
+      }
+      if (a[field] > b[field]) {
+        return -1;
+      }
+      return 0;
+    }
+  }
+
+  const sortByName = (mode) => {
+    if (mode === 1) {
+      setProductsState(state => state.slice().sort(byField('id')));
+      return;
+    }
+    if (mode === 2) {
+      setProductsState(state => state.slice().sort(byField('name')));
+      return;
+    }
+    if (mode === 0) {
+      setProductsState(state => state.slice().sort(byFieldDown('name')));
+      return;
+    }
+  }
+
+  const sortByBasePrice = (mode) => {
+    if (mode === 1) {
+      setProductsState(state => state.slice().sort(byField('id')));
+      return;
+    }
+    if (mode === 2) {
+      setProductsState(state => state.slice().sort(byField('base_price')));
+      return;
+    }
+    if (mode === 0) {
+      setProductsState(state => state.slice().sort(byFieldDown('base_price')));
+      return;
+    }
+  }
 
   const handleMode = () => {
     setView(!view);
@@ -291,18 +361,18 @@ const Products = ({
     <Container fluid>
         <div className="d-flex align-items-center justify-content-between">
         <h2>Товары</h2>
-        <SearchBar handleMode={handleMode} view={view} groups={groups} regions={regions} filterProductsByName={filterProductsByName} filter={filterProductsAllTheWay} />
+        <SearchBar handleMode={handleMode} view={view} groups={groups} regions={regions} filterProductsByName={filterProductsByName} filter={filterProductsAllTheWay} unFilter={unfilterProducts} />
       </div>
       <div>
         <Button onClick={handleAddProduct} className="m-1">Добавить новый товар</Button>
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <SortingBar />
+        <SortingBar sortByName={sortByName} sortByBasePrice={sortByBasePrice} />
         <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
       </div>
 
-      {products.map((product, i) => (
+      {productsState.map((product, i) => (
               <Product
                 key={product.id}
                 productData={product}

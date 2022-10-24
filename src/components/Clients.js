@@ -1,7 +1,17 @@
+import { useEffect, useState } from "react";
 import { Container, Form, InputGroup, Button, Table } from "react-bootstrap";
 import { TrashFill } from "react-bootstrap-icons";
+import ClientsTableRow from "./ClientsTableRow";
+// import * as clientsApi from '../utils/clientsApi';
 
-const Clients = ({ clients }) => {
+const Clients = ({clients}) => {
+  const [ clientsState, setClientsState ] = useState(clients);
+//  const [ clients, setClients ] = useState([]);
+ useEffect(() => {
+  setClientsState(clients);
+  console.log(clients);
+}, [clients])
+
   return(
     <Container fluid className="bg-white">
       <div className="d-flex align-items-center justify-content-between">
@@ -36,24 +46,13 @@ const Clients = ({ clients }) => {
             <th>Активно</th>
             <th>Номер договора</th>
             <th>Платёжные реквизиты</th>
+            <th>Редактировать</th>
             <th>Удалить</th>
           </tr>
         </thead>
         <tbody>
           {clients.map((client, i) => (
-            <tr key={client.id}>
-              <td>{client.companyName}</td>
-              <td>{client.tariffName}</td>
-              <td>{client.tariffExpirationDate}</td>
-              <td>
-                <Form.Check
-                  checked={client.isActive}
-                  type="switch"
-                /></td>
-              <td>{client.contractNumber}</td>
-              <td>{client.paymentDetails}</td>
-              <td><Button size="sm" variant="light"><TrashFill /></Button></td>
-            </tr>
+            <ClientsTableRow key={client.id} client={client} />
           ))}
         </tbody>
       </Table>

@@ -18,13 +18,14 @@ import ConfirmEmail from './ConfirmEmail';
 import CompleteRegistration from './CompleteRegistration';
 import UpdateGroupPopup from './UpdateGroupPopup';
 import TariffInfoPopup from './TariffInfoPopup';
-import { productsList, clientsList, profileInfo } from '../utils/constants';
+import ExpiredTariff from './ExpiredTariff';
 import * as productsApi from '../utils/productsApi';
 import * as groupsApi from '../utils/groupsApi';
 import * as updatersApi from '../utils/updatersApi';
 import * as regionsApi from '../utils/regionsApi';
 import * as userApi from '../utils/userInfoApi';
 import * as tariffApi from '../utils/tariffApi';
+import * as clientsApi from '../utils/clientsApi';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
@@ -37,9 +38,9 @@ const App = () => {
 
     const [ currentUser, setCurrentUser ] = useState({});
     const [ groups, setGroups ] = useState([]);
+    const [ clients, setClients ] = useState([]);
     const [ defaultGroupId, setDefaultGroupId] = useState(null);
     const [ updaters, setUpdaters ] = useState([]);
-    const [ clients, setClients ] = useState(clientsList);
     const [ regions, setRegions ] = useState([]);
     const [ tariffs, setTariffs ] = useState([]);
     const [ isTariffActive, setIsTariffActive ] = useState(false);
@@ -66,18 +67,26 @@ const App = () => {
 
     useEffect(() => {
       if (loggedIn) {
+        handleGetProfile();
         updatersApi.getUpdaters()
         .then(data => {
           setUpdaters(data);
           setIsTariffActive(true);
-          handleGetProfile();
           handleGetGroups();
           setRegionsList();
         })
         .catch(err => {
+          clientsApi.getClients()
+  .then(data => {
+    setClients(data.items);
+    console.log(data.items);
+  })
+  .catch(err => console.log(err));
           console.log(err);
 
         });
+
+
       //  handleGetProfile();
       //  handleGetUpdaters();
       //  handleGetGroups();
@@ -104,11 +113,11 @@ const App = () => {
 
     }
 
-    const handleGetProfile = (userData) => {
-      userApi.getUserInfo(userData)
+    const handleGetProfile = () => {
+      userApi.getUserInfo()
           .then(data => {
             if (data) {
-              setCurrentUser(data)
+              setCurrentUser(data);
             }
           })
           .catch(err => console.log(err))
@@ -394,7 +403,7 @@ const handleUpdateProduct = (form) => {
                     path="/groups"
                     element={
                         <ProtectedRoute>
-                            <Groups
+                            {(new Date().toJSON() < currentUser.tariff_expiration_date) ? <Groups
                                 groups={groups}
                                 updaters={updaters}
                                 redirectTo={redirectTo}
@@ -406,20 +415,25 @@ const handleUpdateProduct = (form) => {
                                 handleChangeActivityGroup={handleChangeActivityGroup}
                                 handleIsDefaultGroup={handleIsDefaultGroup}
                                 getUpdateProduct={getUpdateProduct} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
-                            />
+                            /> : <ExpiredTariff />}
                         </ProtectedRoute>
                         } />
                 <Route
                     path="/profile"
                     element={
                         <ProtectedRoute>
-                            <Profile handleUpdateProfile={handleUpdateProfile} handleGetProfile={handleGetProfile} onTariffInfoPopupOpen={handleTariffInfoPopupOpen} />
+                            <Profile
+                              handleUpdateProfile={handleUpdateProfile}
+                              handleGetProfile={handleGetProfile}
+                              onTariffInfoPopupOpen={handleTariffInfoPopupOpen}
+                              groups={groups}
+                              getUpdateGroup={getUpdateGroup} />
                         </ProtectedRoute>} />
                 <Route
                     path="/clients"
                     element={
                         <ProtectedRoute>
-                            <Clients clients={clients}/>
+                            <Clients clients={clients} />
                         </ProtectedRoute>} />
                 <Route path="/start" element={<StartPage redirectTo={redirectTo} />}/>
                 <Route path="/register" element={<Register /*handleRegister={handleRegister}*/ />} />

@@ -1,13 +1,12 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import DeletePopup from './DeletePopup';
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
-import GroupTableRow from './GroupTable Row';
+import GroupTableRow from './GroupTableRow';
 import SearchForm from './SearchForm';
-//import { GroupsContext } from '../contexts/GroupsContext';
+import { useEffect } from 'react';
 
 
 const Groups = ({
@@ -24,8 +23,11 @@ const Groups = ({
   isDeletePopupOpen,
   handleDeletePopupOpen,
   getUpdateProduct }) => {
-    const navigate = useNavigate();
-//    const groups = useContext(GroupsContext);
+
+    useEffect(() => {
+      console.log(new Date().toJSON())
+    }, [])
+
     const [ form, setForm ] = useState({
         name: '',
         updater_id: '',

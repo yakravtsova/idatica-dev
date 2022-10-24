@@ -95,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         if (data.access_token) {
           userInfo.getUserInfo()
             .then(info => {
-              if (info.name && info.company_name && info.tariff.id) {
+              if (info.name /* && info.company_name && info.tariff.id*/) {
                 setLoggedIn(true);
                 navigate('/groups', {replace: true});
               }

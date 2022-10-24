@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-const FilterForm = ({ groups, regions, filter }) => {
+const FilterForm = ({ groups, regions, filter, unFilter }) => {
   const [ filterForm, setFilterForm ] = useState({
     active: '',
     competitor: '',
@@ -41,6 +41,19 @@ const FilterForm = ({ groups, regions, filter }) => {
     filter(filterForm);
   }
 
+  const handleUnfilter = () => {
+    setFilterForm({
+      active: '',
+      competitor: '',
+      region_id: '',
+      group_id: '',
+      category: '',
+      min_price: '',
+      max_price: ''
+    });
+    unFilter();
+  }
+
   return(
     <Form onSubmit={handleSubmit}>
       <Form.Select className="mb-2">
@@ -54,13 +67,13 @@ const FilterForm = ({ groups, regions, filter }) => {
         <option value="2">vprok.ru</option>
         <option value="2">5ka.ru</option>
       </Form.Select>
-      <Form.Select className="mb-2" onChange={setRegionId}>
+      <Form.Select className="mb-2" onChange={setRegionId} value={filterForm.region_id ? filterForm.region_id : ''} >
         <option value=''>Регион</option>
         {regions.map((region, i) => (
           <option key={region.id} value={region.id}>{region.name}</option>
         ))}
       </Form.Select>
-      <Form.Select className="mb-2" onChange={setGroupId}>
+      <Form.Select className="mb-2" onChange={setGroupId} value={filterForm.group_id ? filterForm.group_id : ''}>
         <option value=''>Группа</option>
         {groups.map((group, i) => (
           <option key={group.id} value={group.id}>{group.name}</option>
@@ -102,7 +115,7 @@ const FilterForm = ({ groups, regions, filter }) => {
       />
       <div className="d-flex justify-content-center">
         <Button className="m-2" type="submit">Принять</Button>
-        <Button variant="outline-primary" className="m-2">Очистить</Button>
+        <Button variant="outline-primary" className="m-2" onClick={handleUnfilter}>Очистить</Button>
       </div>
     </Form>
   )

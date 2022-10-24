@@ -8,8 +8,9 @@ import Table from "react-bootstrap/Table";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import ProfileTableRow from './ProfileTableRow';
 
-const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen }) => {
+const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup }) => {
     const currentUser = useContext(CurrentUserContext);
     const [profileState, setProfileState] = useState(currentUser);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
@@ -285,6 +286,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen }) => {
                     <thead>
                         <tr className="align-middle">
                             <th>Название группы</th>
+                            <th>Название апдейтера</th>
                             <th>Частота проверки</th>
                             <th>Время начала</th>
                             <th></th>
@@ -292,24 +294,9 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen }) => {
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td><Link to="/groups/id">Коррозия Металла</Link></td>
-                            <td>Раз в день</td>
-                            <td>00:00</td>
-                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
-                        </tr>
-                        <tr>
-                            <td><Link to="/groups/id">ВИА Песняры</Link></td>
-                            <td>Раз в день</td>
-                            <td>23:59</td>
-                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
-                        </tr>
-                        <tr>
-                            <td><Link to="/groups/id">Комбинация</Link></td>
-                            <td>Раз в неделю</td>
-                            <td>14:00</td>
-                            <td><a className="link-dark" href="#"><PencilFill /></a></td>
-                        </tr>
+                        {groups.map((group, i) => (
+                          <ProfileTableRow key={group.id} group={group} getUpdateGroup={getUpdateGroup} />
+                    ))}
                     </tbody>
                 </Table>
 

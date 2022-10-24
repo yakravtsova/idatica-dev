@@ -6,7 +6,8 @@ const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateP
     url: '',
     vendor_sku: '',
     region_id: '',
-    custom_region: ''
+    custom_region: '',
+    id: ''
   });
 
   const handleUrlForm = (data) => {
@@ -14,17 +15,19 @@ const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateP
   }
 
   useEffect(() => {
+    console.log(initData);
     if (initData.name) {
       const url = initData.product_urls.find(item => item.id === index);
       setUrlForm({
         ...urlForm,
-        url: url.url,
-        vendor_sku: url.vendor_sku,
-        region_id: url.region ? url.region.id : '',
-        custom_region: url.custom_region ? url.custom_region : ''
+        url: url?.url,
+        vendor_sku: url?.vendor_sku,
+        region_id: url?.region?.id,
+        custom_region: url?.custom_region,
+        product_id: initData?.id
       });
     }
-  }, [index]);
+  }, [index, initData]);
 
 const handleSubmit = (e) => {
   e.preventDefault();
@@ -34,7 +37,9 @@ const handleSubmit = (e) => {
     ...urlForm,
     url: '',
     vendor_sku: '',
-    region_id: ''
+    region_id: '',
+    custom_region: '',
+    id: ''
   });
   onClose();
 }

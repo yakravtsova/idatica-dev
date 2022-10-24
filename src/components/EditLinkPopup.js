@@ -17,13 +17,19 @@ const setUrl = (e) => {
   console.log(urlForm)
 }
 
-const setRegionName = (e) => {
-  setField('region_id', e.target.value);
+const setCustomRegionName = (e) => {
+  setField('custom_region', e?.target?.value);
   console.log(urlForm)
 }
 
-const setCustomRegionName = (e) => {
-  setField('custom_region', e.target.value);
+const setRegionName = (e) => {
+  handleUrlForm({
+    ...urlForm,
+    region_id: e.target.value,
+    custom_region: ''
+  });
+/*  setField('region_id', e.target.value);
+  setRegionName('');*/
   console.log(urlForm)
 }
 

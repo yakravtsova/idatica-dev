@@ -17,7 +17,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         'brand': '',
         'purchase_price': '',
         'category': '',
-        'product_urls': [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
+        'product_urls': [{ url: '', region_id: '', custom_region: '', vendor_sku: '', id: ''}]
       });
 
 
@@ -39,6 +39,15 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
 
         if (initData.id) {
             console.log(initData);
+            const urls = initData.product_urls.map(u => {
+              const container = {};
+              container['url'] = u.url;
+              container['region_id'] = u.region?.id;
+              container['custom_region'] = u.custom_region;
+              container['vendor_sku'] = u.vendor_sku;
+              container['id'] = u.id;
+              return container;
+            });
             setForm({
                 ...form,
                 'name': initData.name,
@@ -48,7 +57,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 'brand': initData.brand,
                 'purchase_price': initData.purchase_price,
                 'category': initData.category,
-                'product_urls': initData.product_urls
+                'product_urls': urls
               });
               return;
         }
@@ -118,6 +127,13 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         setField('product_urls', data);
     }
 
+    const setRegion = (i, e) => {
+      let data = [...form.product_urls];
+      data[i]['region_id'] = e.target.value;
+      data[i]['custom_region'] = '';
+      setField('product_urls', data);
+  }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (initData.id) {
@@ -168,7 +184,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                                 className="m-1"
                                 name="region_id"
                                 value={form.product_urls[i].region_id ? form.product_urls[i].region_id : ''}
-                                onChange={(e) => handleFormChange(i, e)}
+                                onChange={(e) => setRegion(i, e)}
                                 required>
                                     {regions.map((region, i) => (
                                         <option key={region.id} value={region.id}>{region.name}</option>
@@ -185,7 +201,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                               disabled={!!(form.product_urls[i].region_id)}>
                               </Form.Control>
                             <Form.Control className="m-1" type="text" placeholder="Артикул" name="vendor_sku" value={form.product_urls[i].vendor_sku ? form.product_urls[i].vendor_sku : ''} onChange={(e) => handleFormChange(i, e)}></Form.Control>
-                            {(i > 0) && <Button onClick={() => removeFields(i)}><TrashFill /></Button>}
+                            {(form.product_urls.length > 1) && <Button onClick={() => removeFields(i)}><TrashFill /></Button>}
                         </Form.Group>
                     )
                 })}

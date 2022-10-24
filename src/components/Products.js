@@ -37,6 +37,7 @@ const Products = ({
   const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
 
   useEffect(() => {
+    getUpdateProduct({});
     if (group.id) {
       setGroupProductsList();
     //  setProductsState(products);

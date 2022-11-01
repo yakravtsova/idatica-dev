@@ -7,12 +7,10 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Container from 'react-bootstrap/Container';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
-import Kyrt from '../images/kyrt.jpg';
-import { CaretUpFill, CaretDownFill, ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
+import { ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
 import UrlTableRow from './UrlTableRow';
 
 const Product = ({ productData, view, checkProduct, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, createLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct, handleIndexOfProduct, handleUpdateLinkPopupOpen }) => {
@@ -30,10 +28,6 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
 
   const handleMenuPopupOpen = () => {
     setIsMenuPopupOpen(!isMenuPopupOpen);
-  }
-
-  const handleProductState = (newProductState) => {
-    setProductState(newProductState);
   }
 
   const redirectToProductsCreate = () => {
@@ -132,9 +126,43 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
             </ListGroup>
           </Card.Body>
         </Col>
-        <Col md={2} className="flex-column justify-content-center align-self-center" style={{fontSize: "20px"}}>
-          <Card.Text>Цена:</Card.Text>
-          <Card.Text>{productState.base_price}&#8381;</Card.Text>
+        <Col md="auto" className="flex-column justify-content-center align-self-center" style={{fontSize: "20px"}}>
+          {view ? <div>
+            <Card.Text>Цена:</Card.Text>
+            <Card.Text>{productState.base_price}&#8381;</Card.Text>
+          </div> :
+          <div>
+            <Table responsive bordered size="sm" className="small mt-3">
+              <thead>
+                <tr>
+                  <th>Цена</th>
+                  <th>Ссылок</th>
+                  <th>В наличии</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>{productState.base_price}</td>
+                  <td>{productState.product_urls.length}</td>
+                  <td></td>
+                </tr>
+              </tbody>
+              <thead>
+                <tr>
+                  <th>Мин</th>
+                  <th>Макс</th>
+                  <th>Средняя</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td> </td>
+                  <td> </td>
+                  <td> </td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>}
         </Col>
         <Col xs="auto">
           <OverlayTrigger

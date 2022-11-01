@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from 'react-bootstrap';
 import { PencilFill } from 'react-bootstrap-icons';
 
-const ProfileTableRow = ({ group, getUpdateGroup }) => {
+const ProfileTableRow = ({ group, getUpdateGroup, onChangeButtonClick }) => {
   const [ groupState, setGroupState ] = useState(group);
   useEffect(() => {
     setGroupState(group)
@@ -14,7 +14,7 @@ const ProfileTableRow = ({ group, getUpdateGroup }) => {
       <td>{groupState.updater.name}</td>
       <td>{groupState.updater.updater_type}</td>
       <td>{groupState.updater.update_time}</td>
-      <td><Button size="sm" variant="light"><PencilFill/></Button></td>
+      <td><Button size="sm" variant="light" onClick={onChangeButtonClick}><PencilFill/></Button></td>
     </tr>
   );
 }

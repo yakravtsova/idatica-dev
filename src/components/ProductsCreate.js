@@ -9,6 +9,7 @@ import { TrashFill } from 'react-bootstrap-icons';
 const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, getDefaultGroupId, getUpdateGroup }) => {
 //    const groups = useContext(GroupsContext);
     const navigate = useNavigate();
+    const [ isProductActive, setIsProductActive ] = useState(true);
     const [ form, setForm ] = useState({
         'name': '',
         'base_price': '',
@@ -16,6 +17,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         'group_id': '',
         'brand': '',
         'purchase_price': '',
+        'is_active': isProductActive,
         'category': '',
         'product_urls': [{ url: '', region_id: '', custom_region: '', vendor_sku: '', id: ''}]
       });
@@ -30,6 +32,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
           ...form,
           [field]: value
         });
+        console.log(form)
     }
 
 
@@ -57,6 +60,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 'brand': initData.brand,
                 'purchase_price': initData.purchase_price,
                 'category': initData.category,
+                'is_active': initData.is_active,
                 'product_urls': urls
               });
               return;
@@ -109,6 +113,11 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
     const setCategory = (e) => {
         setField('category', e.target.value);
     }
+
+    const setIsActive = (e) => {
+      setField('is_active', e.target.checked);
+      setIsProductActive(!isProductActive);
+  }
 
     const addFields = () => {
         let newField = { url: '', region_id: '', custom_region: '', vendor_sku: ''};
@@ -172,7 +181,14 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                             ))}
                     </Form.Select>
 
-                    <Form.Check defaultChecked className="m-1"></Form.Check>
+                    <Form.Check className="m-1">
+                      <Form.Check.Input
+                        value={form.is_active ? form.is_active : true}
+                        type="checkbox"
+                        onChange={setIsActive}
+                        checked={isProductActive}
+                      />
+                    </Form.Check>
                 </div>
 
                 {form.product_urls.map((item ,i) => {

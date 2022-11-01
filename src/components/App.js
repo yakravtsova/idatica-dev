@@ -50,6 +50,7 @@ const App = () => {
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
     const [isDeleteGroupPopupOpen, setIsDeleteGroupPopupOpen] = useState(false);
     const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen} = useAuth();
+    const [ isSuperuser, setIsSuperuser] = useState(false);
 
     const location = useLocation();
 
@@ -68,23 +69,26 @@ const App = () => {
     useEffect(() => {
       if (loggedIn) {
         handleGetProfile();
-        updatersApi.getUpdaters()
-        .then(data => {
-          setUpdaters(data);
-          setIsTariffActive(true);
-          handleGetGroups();
-          setRegionsList();
-        })
-        .catch(err => {
+        if (isSuperuser) {
           clientsApi.getClients()
-  .then(data => {
-    setClients(data.items);
-    console.log(data.items);
-  })
-  .catch(err => console.log(err));
-          console.log(err);
+          .then(data => {
+            setClients(data.items);
+            console.log(data.items);
+          })
+          .catch(err => console.log(err));
+          }
+        else {
+          updatersApi.getUpdaters()
+          .then(data => {
+            setUpdaters(data);
+            handleGetGroups();
+            setRegionsList();
+          })
+          .catch(err => {console.log(err)})
+        }
 
-        });
+
+        };
 
 
       //  handleGetProfile();
@@ -93,7 +97,7 @@ const App = () => {
       //  setRegionsList();
       //  getDefaultGroupId();
       }
-    }, [loggedIn])
+    , [loggedIn, isSuperuser])
 
     const getGroups = (groupsList) => {
       setGroups(groupsList)
@@ -118,6 +122,8 @@ const App = () => {
           .then(data => {
             if (data) {
               setCurrentUser(data);
+              setIsTariffActive((new Date().toJSON() < data.tariff_expiration_date));
+              setIsSuperuser(data.is_superuser);
             }
           })
           .catch(err => console.log(err))
@@ -403,7 +409,7 @@ const handleUpdateProduct = (form) => {
                     path="/groups"
                     element={
                         <ProtectedRoute>
-                            {(new Date().toJSON() < currentUser.tariff_expiration_date) ? <Groups
+                            {(isTariffActive) ? <Groups
                                 groups={groups}
                                 updaters={updaters}
                                 redirectTo={redirectTo}
@@ -427,7 +433,8 @@ const handleUpdateProduct = (form) => {
                               handleGetProfile={handleGetProfile}
                               onTariffInfoPopupOpen={handleTariffInfoPopupOpen}
                               groups={groups}
-                              getUpdateGroup={getUpdateGroup} />
+                              getUpdateGroup={getUpdateGroup}
+                              updaters={updaters} />
                         </ProtectedRoute>} />
                 <Route
                     path="/clients"

@@ -45,6 +45,7 @@ const Products = ({
       return;
     }
     setProductsList();
+    getUpdateGroup({});
   //  setProductsState(products);
   }
   , [])
@@ -89,8 +90,9 @@ const Products = ({
 
   //Удалить один продукт из стейта
   const deleteOneProduct = (id) => {
-    setProducts((state) => state.filter((p) => p.id !== id));
-    setProductsState(products);
+    const newProducts = products.filter((p) => p.id !== id);
+    setProducts(newProducts);
+    setProductsState(newProducts);
   }
 
   //Удалить один продукт
@@ -370,7 +372,7 @@ const Products = ({
       </div>
       <div className="d-flex align-items-center justify-content-between">
         <SortingBar sortByName={sortByName} sortByBasePrice={sortByBasePrice} />
-        <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
+        <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen} disabled>Удалить выбранные</Button>
       </div>
 
       {productsState.map((product, i) => (

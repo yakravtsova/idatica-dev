@@ -2,18 +2,20 @@ import { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { Form, Modal } from "react-bootstrap";
-import { EnvelopeOpenFill, PencilFill } from "react-bootstrap-icons";
+import { EnvelopeOpenFill } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import ProfileTableRow from './ProfileTableRow';
+import CreateUpdaterPopup from './CreateUpdaterPopup';
 
-const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup }) => {
+const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters }) => {
     const currentUser = useContext(CurrentUserContext);
-    const [profileState, setProfileState] = useState(currentUser);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
+    const [isCreateUpdaterPopupOpen, setIsCreateUpdaterPopupOpen] = useState(false);
+
     const [ form, setForm ] = useState({
         'name': '',
         'email': '',
@@ -32,7 +34,13 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
           'company_name': currentUser.company_name
         });
       }
-    },[currentUser]);
+    },[currentUser, handleUpdateProfile]);
+
+    const getDataString = () => {
+      const date = new Date(Date.parse(currentUser.tariff_expiration_date));
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      return `${date.getDate()} ${months[date.getMonth()]}`;
+    }
 
     const setField = (field, value) => {
         setForm({
@@ -64,20 +72,15 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
           phone: form.phone,
           company_name: form.company_name,
         });
-        setForm({
-          ...form,
-          'name': currentUser.name,
-          'email': currentUser.email,
-          'phone': currentUser.phone,
-          'company_name': currentUser.company_name
-        });
         handleIsProfileFormDisabled();
-      /*  setProfileState(profile);
-        console.log(profileState);*/
     }
 
     const handleIsProfileFormDisabled = () => {
         setIsProfileFormDisabled(!isProfileFormDisabled);
+    }
+
+    const handleCreateUpdaterPopupOpen = () => {
+      setIsCreateUpdaterPopupOpen(!isCreateUpdaterPopupOpen);
     }
 
     const [tariffModalShow, setTariffModalShow] = useState(false);
@@ -115,7 +118,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
                     </OverlayTrigger>
                 </div>
 
-                <span className="text-decoration-underline">Аккаунт активен до: 20 сентября</span>
+                <span className="text-decoration-underline">Аккаунт активен до: {getDataString()}</span>
 
                 <div>&nbsp;</div>
 
@@ -295,7 +298,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
 
                     <tbody>
                         {groups.map((group, i) => (
-                          <ProfileTableRow key={group.id} group={group} getUpdateGroup={getUpdateGroup} />
+                          <ProfileTableRow key={group.id} group={group} getUpdateGroup={getUpdateGroup} onChangeButtonClick={handleCreateUpdaterPopupOpen} />
                     ))}
                     </tbody>
                 </Table>
@@ -329,6 +332,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
                     </p>
                 </Modal.Body>
             </Modal>
+            <CreateUpdaterPopup onClose={handleCreateUpdaterPopupOpen} isOpen={isCreateUpdaterPopupOpen} updaters={updaters} />
         </>
     )
 }

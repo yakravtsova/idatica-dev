@@ -221,10 +221,10 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
               <td><span /*className={isCheaper(i) ? "text-danger" : "text-success"}*/>{/*(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> */} {url.price_diff}%</span></td>
               <td>{url.region ? url.region.name : url.custom_region}</td>
               <td>{url?.has_parsing_errors ? "Да" : "Нет"}</td>
-              <td><Button size="sm" variant="light" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td style={{wordWrap: "normal"}}>{url.vendor_sku}</td>
+              <td><Button size="sm" variant="light" className="text-warning" onClick={handleReportingProblemPopupOpen}><ExclamationTriangleFill /></Button></td>
               <td><Button size="sm" variant="light" onClick={() => updateLinkPopupOpen(url.id)}><PencilFill /></Button></td>
-              <td><Button size="sm" variant="light" onClick={() => handleDeleteLinkPopupOpen(url.id)} disabled={numOfUrls === 1}><TrashFill /></Button></td>
+              <td><Button size="sm" variant="light" className="text-danger" onClick={() => handleDeleteLinkPopupOpen(url.id)} disabled={numOfUrls === 1}><TrashFill /></Button></td>
             </tr>
           ))}
           </tbody>

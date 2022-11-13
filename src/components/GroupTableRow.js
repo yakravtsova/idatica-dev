@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Plus, PencilFill, TrashFill } from "react-bootstrap-icons";
+import { useNavigateSearch } from '../hooks/useNavigateSearch';
 
 const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, handleChangeActivityGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
   const [groupState, setGroupState] = useState(group);
   const [isUpdatingAnabledState, setIsUpdatingAnabledState] = useState(group.isUpdatingAnabled);
+  const navigateSearch = useNavigateSearch();
 
   useEffect(() => {
     setGroupState(group)
@@ -41,8 +43,9 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, ha
   }
 
   const handleGroupProductsOutput = () => {
-    getUpdateGroup(groupState);
-    redirectTo('/products');
+  //  getUpdateGroup(groupState);
+  //  redirectTo('/products');
+    navigateSearch('/products', { group_id: groupState.id })
   }
 
 

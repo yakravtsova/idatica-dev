@@ -1,52 +1,66 @@
 import { useState } from 'react';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 import { ArrowDownUp, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
+import { ButtonGroup, Button } from 'react-bootstrap';
+import { useEffect } from 'react';
 
 
-const SortingBar = ({ sortByName, sortByBasePrice }) => {
-  const [ nameLinkState, setNameLinkState ] = useState(2);
-  const [ diffLinkState, setDiffLinkState ] = useState(2);
-  const [ priceLinkState, setPriceLinkState ] = useState(2);
-  const [ lastCheckLinkState, setLastCheckLinkState ] = useState(0);
-  const [ activityLinkState, setActivityLinkState ] = useState(0);
+const SortingBar = ({ setSearchParams, removeSearchParams }) => {
+  const UNSORTED = 2;
+  const ASC = 0;
+  const DESC = 1;
+  const [ sortLinksList, setSortLinksList ] = useState({});
 
-  const handleNameLinkState = () => {
-    sortByName(nameLinkState);
-    setNameLinkState((nameLinkState < 2) ? nameLinkState + 1 : nameLinkState - 2);
+  const linkListBlank = {
+    name: UNSORTED,
+    is_active: UNSORTED,
+    last_collected: UNSORTED,
+    price: UNSORTED,
+    price_diff: UNSORTED
   }
 
-  const handleDiffLinkState = () => {
-    setDiffLinkState((diffLinkState < 2) ? diffLinkState + 1 : diffLinkState - 2);
+  useEffect(() => {
+    setSortLinksList(linkListBlank)
+  }, [])
+
+  useEffect(() => {
+    for (let key in sortLinksList) {
+      if (sortLinksList[key] === ASC) {
+        setSearchParams({ sort_by: key, sort_order: 'asc' });
+        return;
+      }
+      if (sortLinksList[key] === DESC) {
+        setSearchParams({ sort_by: key, sort_order: 'desc' });
+        return;
+      }
+    }
+    removeSearchParams(['sort_by', 'sort_order']);
+  }, [sortLinksList])
+
+  const toggleLinkState = (link) => {
+    const newState = {...linkListBlank, [link]: (sortLinksList[link] + 1) % 3};
+    setSortLinksList(newState);
   }
 
-  const handlePriceLinkState = () => {
-    sortByBasePrice(priceLinkState);
-    setPriceLinkState((priceLinkState < 2) ? priceLinkState + 1 : priceLinkState - 2);
+
+  const iconState = (state) => {
+    if (state === UNSORTED) {
+      return <ArrowDownUp />;
+    }
+    else if (state === ASC) {
+      return <ArrowDown />
+    }
+    else return <ArrowUp />
   }
-
-  const handleLastCheckLinkState = () => {
-    setLastCheckLinkState((lastCheckLinkState < 2) ? lastCheckLinkState + 1 : lastCheckLinkState - 2);
-  }
-
-  const handleActivityLinkState = () => {
-    setActivityLinkState((activityLinkState < 2) ? activityLinkState + 1 : activityLinkState - 2);
-  }
-
-
-
-
 
   return(
-      <Navbar>
-        <Nav>
-          <Nav.Link onClick={handleNameLinkState}>{nameLinkState === 2 && <ArrowDownUp />}{nameLinkState === 0 && <ArrowDown />}{nameLinkState === 1 && <ArrowUp />} Название</Nav.Link>
-          <Nav.Link onClick={handleDiffLinkState}>{diffLinkState === 2 && <ArrowDownUp />}{diffLinkState === 0 && <ArrowDown />}{diffLinkState === 1 && <ArrowUp />} Разница %</Nav.Link>
-          <Nav.Link onClick={handlePriceLinkState}>{priceLinkState === 2 && <ArrowDownUp />}{priceLinkState === 0 && <ArrowDown />}{priceLinkState === 1 && <ArrowUp />} Цена</Nav.Link>
-          <Nav.Link onClick={handleLastCheckLinkState}>{lastCheckLinkState === 0 && <ArrowDownUp />}{lastCheckLinkState === 1 && <ArrowDown />}{lastCheckLinkState === 2 && <ArrowUp />} Последняя проверка</Nav.Link>
-          <Nav.Link onClick={handleActivityLinkState}>{activityLinkState === 0 && <ArrowDownUp />}{activityLinkState === 1 && <ArrowDown />}{activityLinkState === 2 && <ArrowUp />} Активно</Nav.Link>
-        </Nav>
-      </Navbar>
+    <ButtonGroup>
+      <Button onClick={() => toggleLinkState('name')}>{iconState(sortLinksList.name)} Название</Button>
+      <Button onClick={() => toggleLinkState('price_diff')}>{iconState(sortLinksList.price_diff)} Разница</Button>
+      <Button onClick={() => toggleLinkState('price')}>{iconState(sortLinksList.price)} Цена</Button>
+      <Button onClick={() => toggleLinkState('last_collected')}>{iconState(sortLinksList.last_collected)} Последняя проверка</Button>
+      <Button onClick={() => toggleLinkState('is_active')}>{iconState(sortLinksList.is_active)} Активно</Button>
+    </ButtonGroup>
+
   )
 }
 

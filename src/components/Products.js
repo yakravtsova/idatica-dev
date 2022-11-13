@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import Container from 'react-bootstrap/Container';
+import { useSearchParams } from 'react-router-dom';
+import { useNavigateSearch } from '../hooks/useNavigateSearch';
+import { Container, Button, Pagination } from 'react-bootstrap';
 import SearchBar from './SearchBar';
-import Button from 'react-bootstrap/Button';
 import Product from './Product';
 import SortingBar from './SortingBar';
 import CreateLinkPopup from './CreateLinkPopup';
@@ -35,20 +36,27 @@ const Products = ({
   const [checkedProducts, setCheckedProducts] = useState([]);
   const [ indexOfProduct, setIndexOfProduct ] = useState(null);
   const [isUpdateLinkPopupOpen, setIsUpdateLinkPopupOpen] = useState(false);
+  const [searchParams] = useSearchParams();
+  const [numOfPages, setNumOfPages] = useState();
+  const [params, setParams] = useState({});
+  const navigateSearch = useNavigateSearch();
 
   useEffect(() => {
     getUpdateProduct({});
-    if (group.id) {
+    const paramsObj = Object.fromEntries([...searchParams]);
+    setParams(paramsObj);
+  //  console.log(Object.fromEntries([...searchParams]));
+  /*  if (group.id) {
       setGroupProductsList();
     //  setProductsState(products);
       getUpdateGroup({});
       return;
-    }
-    setProductsList();
+    }*/
+    setProductsList(paramsObj);
     getUpdateGroup({});
   //  setProductsState(products);
   }
-  , [])
+  , [searchParams]);
 
   //берём id удаляемого продукта
   const handleDeleteProductId = (id) => {
@@ -61,10 +69,13 @@ const Products = ({
   }
 
   //загрузить все продукты
-  const setProductsList = () => {
-    productsApi.getAllProducts()
+  const setProductsList = (params) => {
+    productsApi.getAllProducts(params)
     .then(data => {
-      const items = data.items;
+      const {items, size, total} = data;
+      console.log(total);
+    //  const items = data.items;
+      setNumOfPages(Math.ceil(total/size));
       setProducts(items);
       setProductsState(items);
     })
@@ -358,20 +369,56 @@ const Products = ({
     redirectTo('/create-product')
   }
 
+  const setSearchParams = (newParams) => {
+  //  const paramsObj = {...params, newParams};
+    const paramsObj = Object.assign(params, newParams);
+    console.log(paramsObj);
+    setParams(paramsObj);
+    navigateSearch('/products', paramsObj);
+  }
 
+  const removeSearchParams = (arrOfParams) => {
+    let paramsObj = params;
+    for (let i = 0; i < arrOfParams.length; i++) {
+      delete paramsObj[arrOfParams[i]]
+    }
+    setParams(paramsObj);
+    navigateSearch('/products', paramsObj);
+  }
+
+  const goToPage = (num) => {
+    setSearchParams({page: num})
+  }
+
+  const paginationList = () => {
+    let pages = [];
+    for (let i = 0; i < numOfPages; i++) {
+      pages.push(<Pagination.Item key={i} onClick={() => goToPage(i + 1)}>{i + 1}</Pagination.Item>)
+    }
+    return pages;
+  }
 
   return(
     <Container fluid>
         <div className="d-flex align-items-center justify-content-between">
         <h2>Товары</h2>
-        <SearchBar handleMode={handleMode} view={view} groups={groups} regions={regions} filterProductsByName={filterProductsByName} filter={filterProductsAllTheWay} unFilter={unfilterProducts} />
+        <SearchBar
+          handleMode={handleMode}
+          view={view}
+          groups={groups}
+          regions={regions}
+          setSearchParams={setSearchParams}
+          params={params}
+          filterProductsByName={filterProductsByName}
+          filter={filterProductsAllTheWay}
+          unFilter={unfilterProducts} />
       </div>
       <div>
         <Button onClick={handleAddProduct} className="m-1">Добавить новый товар</Button>
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <SortingBar sortByName={sortByName} sortByBasePrice={sortByBasePrice} />
+        <SortingBar sortByName={sortByName} sortByBasePrice={sortByBasePrice} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
         <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen} disabled>Удалить выбранные</Button>
       </div>
 
@@ -392,7 +439,11 @@ const Products = ({
                 />
             ))}
 
-
+      <Pagination>
+        <Pagination.First />
+        {paginationList()}
+        <Pagination.Last />
+      </Pagination>
 
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />
       <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>

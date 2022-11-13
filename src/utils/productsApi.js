@@ -12,8 +12,10 @@ export const getProductsByGroup = (groupId) => {
   .then(res => handleResponse(res))
 }
 
-export const getAllProducts = () => {
-  return fetch(`${BASE_URL}products/`, {
+export const getAllProducts = (params) => {
+  const queryString = (new URLSearchParams(params)).toString();
+  const request = queryString ? `?${queryString}` : '';
+  return fetch(`${BASE_URL}products/${request}`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',

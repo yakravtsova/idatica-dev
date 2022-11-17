@@ -24,15 +24,18 @@ const Groups = ({
   handleDeletePopupOpen,
   getUpdateProduct }) => {
 
-    useEffect(() => {
-      console.log(new Date().toJSON())
-    }, [])
-
     const [ form, setForm ] = useState({
         name: '',
         updater_id: '',
         is_default: true,
     });
+
+    const [ groupsState, setGroupsState ] = useState([]);
+
+    useEffect(() => {
+      console.log(new Date().toJSON());
+      setGroupsState(groups)
+    }, [groups])
 
     const setField = (field, value) => {
         setForm({
@@ -61,7 +64,8 @@ const Groups = ({
 
     //фильтрация стейта по строке
   const filterGroupsByName = (searchStr) => {
-    getGroups(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
+  //  getGroups(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
+    setGroupsState(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
   }
 
 
@@ -110,7 +114,7 @@ const Groups = ({
                 </tr>
                 </thead>
                 <tbody>
-                    {groups.map((group, i) => (
+                    {groupsState.map((group, i) => (
                         <GroupTableRow
                             key={group.id}
                             group={group}

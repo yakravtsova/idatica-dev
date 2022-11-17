@@ -6,7 +6,7 @@ import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
 //import { GroupsContext } from '../contexts/GroupsContext';
 
-const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, getDefaultGroupId, getUpdateGroup }) => {
+const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, handleCreateCategoryAndProduct, handleUpdateCategoryAndProduct, categories }) => {
 //    const groups = useContext(GroupsContext);
     const navigate = useNavigate();
     const [ isProductActive, setIsProductActive ] = useState(true);
@@ -18,10 +18,13 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         'brand': '',
         'purchase_price': '',
         'is_active': isProductActive,
-        'category': '',
+        'category_id': '',
         'product_urls': [{ url: '', region_id: '', custom_region: '', vendor_sku: '', id: ''}]
       });
 
+    const [ category, setCategory ] = useState({
+        'name': ''
+    });
 
     const redirectToProducts = () => {
         navigate('/products', {replace: true})
@@ -32,7 +35,6 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
           ...form,
           [field]: value
         });
-        console.log(form)
     }
 
 
@@ -59,7 +61,7 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                 'group_id': initData.group.id,
                 'brand': initData.brand,
                 'purchase_price': initData.purchase_price,
-                'category': initData.category,
+                'category_id': initData?.category?.id,
                 'is_active': initData.is_active,
                 'product_urls': urls
               });
@@ -110,8 +112,14 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
         setField('purchase_price', e.target.value);
     }
 
-    const setCategory = (e) => {
-        setField('category', e.target.value);
+    const setCategoryId = (e) => {
+      setField('category_id', e.target.value);
+      setCategory({...category, name: ''});
+      console.log(form.category_id)
+    }
+
+    const handleCategory = (e) => {
+      setCategory({...category, 'name': e.target.value});
     }
 
     const setIsActive = (e) => {
@@ -146,10 +154,22 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
     const handleSubmit = (e) => {
         e.preventDefault();
         if (initData.id) {
+          if (category.name) {
+            handleUpdateCategoryAndProduct(category, form);
+          }
+          else {
             handleUpdateProduct(form)
+          }
         }
         else {
-            handleCreateNewProduct(form)
+            if (category.name) {
+              handleCreateCategoryAndProduct(category, form);
+            }
+            else {
+              handleCreateNewProduct(form)
+            }
+
+          //  handleCreateNewProduct(form)
         }
         console.log(form)
     }
@@ -237,8 +257,27 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
                             <div className="d-flex align-items-center">
                                 <Form.Control className="m-1" type="text" placeholder="Бренд" value={form.brand ? form.brand : ''} onChange={setBrand}></Form.Control>
                                 <Form.Control className="m-1" type="text" placeholder="Закупочная цена" value={form.purchase_price ? form.purchase_price : ''} onChange={setPurchasePrice}></Form.Control>
-                                <Form.Control className="m-1" type="text" placeholder="Категория" value={form.category ? form.category : ''} onChange={setCategory}></Form.Control>
-                            </div>
+                                <Form.Select
+                                className="m-1"
+                                name="category_id"
+                                value={form.category_id ? form.category_id : ''}
+                                onChange={setCategoryId}
+                                required>
+                                    {categories.map((category, i) => (
+                                        <option key={category.id} value={category.id}>{category.name}</option>
+                                    ))}
+                                    <option value=''>Другая категория</option>
+                                </Form.Select>
+                                <Form.Control
+                                  className="m-1"
+                                  type="text"
+                                  placeholder="Другая категория"
+                                  name="category"
+                                  value={category.name ? category.name : ''}
+                                  onChange={handleCategory}
+                                  disabled={!!(form.category_id)}>
+                                </Form.Control>
+                                </div>
 
                         </Accordion.Body>
                     </Accordion.Item>

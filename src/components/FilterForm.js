@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigateSearch } from '../hooks/useNavigateSearch';
 
-const FilterForm = ({ groups, regions, filter, unFilter, setSearchParams, params }) => {
+const FilterForm = ({ groups, regions, categories, filter, unFilter, setSearchParams, params }) => {
   const formControl = useForm(params);
   const navigateSearch = useNavigateSearch();
 
@@ -44,7 +44,9 @@ const FilterForm = ({ groups, regions, filter, unFilter, setSearchParams, params
       </Form.Select>
       <Form.Select className="mb-2" name="category_id" onChange={formControl.handleChange}  value={formControl?.values?.category_id || ''} >
         <option>Категория</option>
-        <option value="1">Продукты</option>
+        {categories.map((category, i) => (
+          <option key={category.id} value={category.id}>{category.name}</option>
+        ))}
       </Form.Select>
       <div className="d-flex">
         <Form.Group className="p-2">

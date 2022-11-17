@@ -105,7 +105,7 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
             <Card.Title>{productState.name}</Card.Title>
             <ListGroup variant="flush">
               {productState.category && <ListGroup.Item>
-                Категория: {productState.category}
+                Категория: {productState?.category?.name}
               </ListGroup.Item>}
               {productState.own_vendor_code &&
               <ListGroup.Item>
@@ -193,8 +193,8 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
               <th>Разница %</th>
               <th>Регион</th>
               <th>Ошибки парсинга</th>
-              <th>Сообщить о проблеме</th>
               <th>Артикул</th>
+              <th>Сообщить о проблеме</th>
               <th>Изменить ссылку</th>
               <th>Удалить</th>
             </tr>

@@ -61,7 +61,7 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, ha
           onChange={handleIsDefaultChange}
           />
       </td>
-      <td>{groupState.updater.name}</td>
+      <td>{groupState.updater?.name}</td>
       <td>
         <Form.Check
           checked={groupState.is_active}

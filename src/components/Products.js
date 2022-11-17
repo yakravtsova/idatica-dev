@@ -18,6 +18,7 @@ import * as urlsApi from '../utils/productUrlsApi';
 const Products = ({
   group,
   groups,
+  categories,
   regions,
   redirectTo,
   getUpdateGroup,
@@ -126,12 +127,14 @@ const Products = ({
 
   //добавить id продукта в массив удаляемых продуктов
   const addProductIdToArr = (id) => {
-    setCheckedProducts([id, ...checkedProducts])
+    setCheckedProducts([id, ...checkedProducts]);
+    console.log(checkedProducts)
   }
 
   //удалить id продукта из массива удаляемых продуктов
   const removeProductIdFromArr = (id) => {
     setCheckedProducts((state) => state.filter((i) => i !==  id))
+    console.log(checkedProducts)
   }
 
   //удалить выбранные продукты из стейта (не работает)
@@ -407,6 +410,7 @@ const Products = ({
           view={view}
           groups={groups}
           regions={regions}
+          categories={categories}
           setSearchParams={setSearchParams}
           params={params}
           filterProductsByName={filterProductsByName}
@@ -418,7 +422,7 @@ const Products = ({
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <SortingBar sortByName={sortByName} sortByBasePrice={sortByBasePrice} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
+        <SortingBar view={view} sortByName={sortByName} sortByBasePrice={sortByBasePrice} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
         <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen} disabled>Удалить выбранные</Button>
       </div>
 
@@ -441,7 +445,7 @@ const Products = ({
 
       <Pagination>
         <Pagination.First />
-        {paginationList()}
+          {paginationList()}
         <Pagination.Last />
       </Pagination>
 

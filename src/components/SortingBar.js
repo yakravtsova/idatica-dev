@@ -4,7 +4,7 @@ import { ButtonGroup, Button } from 'react-bootstrap';
 import { useEffect } from 'react';
 
 
-const SortingBar = ({ setSearchParams, removeSearchParams }) => {
+const SortingBar = ({ setSearchParams, removeSearchParams, view }) => {
   const UNSORTED = 2;
   const ASC = 0;
   const DESC = 1;
@@ -41,7 +41,6 @@ const SortingBar = ({ setSearchParams, removeSearchParams }) => {
     setSortLinksList(newState);
   }
 
-
   const iconState = (state) => {
     if (state === UNSORTED) {
       return <ArrowDownUp />;
@@ -52,13 +51,20 @@ const SortingBar = ({ setSearchParams, removeSearchParams }) => {
     else return <ArrowUp />
   }
 
+  const buttonVariant = (linkState) => {
+    return linkState === UNSORTED ? 'secondary_outline' : 'secondary';
+  }
+
   return(
     <ButtonGroup>
-      <Button onClick={() => toggleLinkState('name')}>{iconState(sortLinksList.name)} Название</Button>
-      <Button onClick={() => toggleLinkState('price_diff')}>{iconState(sortLinksList.price_diff)} Разница</Button>
-      <Button onClick={() => toggleLinkState('price')}>{iconState(sortLinksList.price)} Цена</Button>
-      <Button onClick={() => toggleLinkState('last_collected')}>{iconState(sortLinksList.last_collected)} Последняя проверка</Button>
-      <Button onClick={() => toggleLinkState('is_active')}>{iconState(sortLinksList.is_active)} Активно</Button>
+      <Button variant={buttonVariant(sortLinksList.name)} onClick={() => toggleLinkState('name')}>{iconState(sortLinksList.name)} Название</Button>
+      <Button variant={buttonVariant(sortLinksList.price_diff)} onClick={() => toggleLinkState('price_diff')}>{iconState(sortLinksList.price_diff)} Разница</Button>
+      <Button variant={buttonVariant(sortLinksList.price)} onClick={() => toggleLinkState('price')}>{iconState(sortLinksList.price)} Цена</Button>
+      {view &&
+      <>
+        <Button variant={buttonVariant(sortLinksList.last_collected)} onClick={() => toggleLinkState('last_collected')}>{iconState(sortLinksList.last_collected)} Последняя проверка</Button>
+        <Button variant={buttonVariant(sortLinksList.is_active)} onClick={() => toggleLinkState('is_active')}>{iconState(sortLinksList.is_active)} Активно</Button>
+      </>}
     </ButtonGroup>
 
   )

@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import { Form, Modal } from "react-bootstrap";
-import { EnvelopeOpenFill } from "react-bootstrap-icons";
+import { Form, ListGroup, Modal } from "react-bootstrap";
+import { EnvelopeOpenFill, TrashFill } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
@@ -10,8 +10,10 @@ import Popover from 'react-bootstrap/Popover';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import ProfileTableRow from './ProfileTableRow';
 import CreateUpdaterPopup from './CreateUpdaterPopup';
+import * as updatersApi from '../utils/updatersApi';
+import SchedulesAvailable from './SchedulesAvailable';
 
-const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters }) => {
+const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters, handleUpdateGroupUpdater, getUpdaters }) => {
     const currentUser = useContext(CurrentUserContext);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
     const [isCreateUpdaterPopupOpen, setIsCreateUpdaterPopupOpen] = useState(false);
@@ -81,6 +83,16 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
 
     const handleCreateUpdaterPopupOpen = () => {
       setIsCreateUpdaterPopupOpen(!isCreateUpdaterPopupOpen);
+    }
+
+    const handleDeleteUpdater = (updaterId) => {
+      updatersApi.deleteUpdater(updaterId)
+        .then(res => {
+          const newUpdaters = updaters.filter(u => u.id !== updaterId);
+          getUpdaters(newUpdaters)
+        }
+        )
+        .catch(err => console.log(err))
     }
 
     const [tariffModalShow, setTariffModalShow] = useState(false);
@@ -285,8 +297,8 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
 
                 <h5>Расписание проверки цен</h5>
 
-                <Table responsive bordered size="sm" className="small mt-3">
-                    <thead>
+                <Table responsive bordered size="sm" className="small mt-3 w-50">
+                  {/*  <thead>
                         <tr className="align-middle">
                             <th>Название группы</th>
                             <th>Название апдейтера</th>
@@ -294,14 +306,19 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
                             <th>Время начала</th>
                             <th></th>
                         </tr>
-                    </thead>
+                      </thead>*/}
 
                     <tbody>
                         {groups.map((group, i) => (
-                          <ProfileTableRow key={group.id} group={group} getUpdateGroup={getUpdateGroup} onChangeButtonClick={handleCreateUpdaterPopupOpen} />
+                          <ProfileTableRow
+                            key={group.id}
+                            group={group}
+                            updaters={updaters}
+                            handleUpdateGroupUpdater={handleUpdateGroupUpdater} />
                     ))}
                     </tbody>
                 </Table>
+                <SchedulesAvailable updaters={updaters} handleDeleteUpdater={handleDeleteUpdater} />
 
             </Container>
 

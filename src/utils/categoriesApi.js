@@ -1,7 +1,7 @@
 import { BASE_URL, handleResponse } from "./handleResponse";
 
-export const getUpdaters = () => {
-  return fetch(`${BASE_URL}updaters/`, {
+export const getCategories = () => {
+  return fetch(`${BASE_URL}categories/`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',
@@ -12,8 +12,8 @@ export const getUpdaters = () => {
   .then(res => handleResponse(res))
 }
 
-export const createUpdater = (data) => {
-  return fetch(`${BASE_URL}updaters/`, {
+export const createCategory = (data) => {
+  return fetch(`${BASE_URL}categories/`, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
@@ -21,18 +21,6 @@ export const createUpdater = (data) => {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
     body: JSON.stringify(data),
-  })
-  .then(res => handleResponse(res))
-}
-
-export const deleteUpdater = (updaterId) => {
-  return fetch(`${BASE_URL}updaters/${updaterId}/`, {
-    method: 'DELETE',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
-    },
   })
   .then(res => handleResponse(res))
 }

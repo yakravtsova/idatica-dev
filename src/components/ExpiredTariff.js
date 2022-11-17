@@ -17,7 +17,7 @@ const ExpiredTariff = () => {
                         overlay={
                             <Popover>
                                 <Popover.Body>
-                                    <p className='text-center'>
+                                    <div className="d-flex flex-column align-items-center">
                                         <Link
                                             to='#'
                                             onClick={(e) => {
@@ -34,9 +34,9 @@ const ExpiredTariff = () => {
                                                 e.preventDefault();
                                             }}
                                         >
-                                            Написать менеджеру
+                                            Позвонить
                                         </Link>
-                                    </p>
+                                    </div>
                                 </Popover.Body>
                             </Popover>
                         }>

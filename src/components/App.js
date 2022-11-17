@@ -26,6 +26,7 @@ import * as regionsApi from '../utils/regionsApi';
 import * as userApi from '../utils/userInfoApi';
 import * as tariffApi from '../utils/tariffApi';
 import * as clientsApi from '../utils/clientsApi';
+import * as categoriesApi from '../utils/categoriesApi';
 import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
@@ -42,6 +43,7 @@ const App = () => {
     const [ defaultGroupId, setDefaultGroupId] = useState(null);
     const [ updaters, setUpdaters ] = useState([]);
     const [ regions, setRegions ] = useState([]);
+    const [ categories, setCategories ] = useState([]);
     const [ tariffs, setTariffs ] = useState([]);
     const [ isTariffActive, setIsTariffActive ] = useState(false);
     const [ updateProduct, setUpdateProduct ] = useState({});
@@ -82,6 +84,7 @@ const App = () => {
           .then(data => {
             setUpdaters(data);
             handleGetGroups();
+            handleGetCategories();
             setRegionsList();
           })
           .catch(err => {console.log(err)})
@@ -103,6 +106,10 @@ const App = () => {
       setGroups(groupsList)
     }
 
+    const getUpdaters = (updatersList) => {
+      setUpdaters(updatersList)
+    }
+
     const handleGetGroups = () => {
       groupsApi.getGroups()
         .then(data => {
@@ -110,6 +117,14 @@ const App = () => {
           getDefaultGroupId(data);
         })
         .catch(err => console.log(err));
+    }
+
+    const handleGetCategories = () => {
+      categoriesApi.getCategories()
+        .then(res => {
+          setCategories(res);
+        })
+        .catch(err => console.log(err))
     }
 
     const getDefaultGroupId = (groups) => {
@@ -184,51 +199,30 @@ const handleCreateNewProduct = (form) => {
 const handleUpdateProduct = (form) => {
   productsApi.updateProduct(updateProduct.id, form)
   .then(res => {
-    /*const newProducts = products.map(p => {
-      if (p.id === updateProduct.id) {
-          return {...p,
-              name: form.name,
-              base_price: form.base_price,
-              own_vendor_code: form.own_vendor_code,
-              //group_id: form.group_id,
-              brand: form.brand,
-              purchase_price: form.purchase_price,
-              //categoryName: form.categoryName,
-              //productUrls: form.productUrls
-            }
-      }
-      return p;
-  })
-  setProducts(newProducts);*/
   setUpdateProduct({});
   redirectTo('/products');
-//  console.log(newProducts)
   })
 }
 
+//создать категорию и продукт
+const handleCreateCategoryAndProduct = (category, form) => {
+  categoriesApi.createCategory(category)
+    .then(res => {
+      const newForm = {...form, category_id: res.id};
+      handleCreateNewProduct(newForm);
+    })
+    .catch(err => console.log(err))
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//создать категорию и редактировать продукт
+const handleUpdateCategoryAndProduct = (category, form) => {
+  categoriesApi.createCategory(category)
+    .then(res => {
+      const newForm = {...form, category_id: res.id};
+      handleUpdateProduct(newForm);
+    })
+    .catch(err => console.log(err))
+}
 
     const redirectTo = (path, bool = false) => {
         navigate(path, {replace: bool})
@@ -265,6 +259,24 @@ const handleUpdateProduct = (form) => {
             });
             setGroups(newGroups);
             setUpdateGroup({});
+            console.log(newGroups)
+        })
+        .catch(err => console.log(err));
+    }
+
+    const handleUpdateGroupUpdater = (groupId, form) => {
+      groupsApi.updateGroup(groupId, form)
+        .then(data => {
+          const newGroups = groups.map(g => {
+            if (g.id === data.id) {
+              return {...g,
+                        name: data.name,
+                        updater: data.updater
+                }
+                }
+                return g;
+            });
+            setGroups(newGroups);
             console.log(newGroups)
         })
         .catch(err => console.log(err));
@@ -382,6 +394,7 @@ const handleUpdateProduct = (form) => {
                             group={updateGroup}
                             groups={groups}
                             regions={regions}
+                            categories={categories}
                             redirectTo={redirectTo}
                             getUpdateGroup={getUpdateGroup}
                             updateProduct={updateProduct}
@@ -402,6 +415,9 @@ const handleUpdateProduct = (form) => {
                             getDefaultGroupId={getDefaultGroupId}
                             getUpdateGroup={getUpdateGroup}
                             getUpdateProduct={getUpdateProduct}
+                            handleCreateCategoryAndProduct={handleCreateCategoryAndProduct}
+                            handleUpdateCategoryAndProduct={handleUpdateCategoryAndProduct}
+                            categories={categories}
                         />
                     </ProtectedRoute>
                 }/>
@@ -434,7 +450,9 @@ const handleUpdateProduct = (form) => {
                               onTariffInfoPopupOpen={handleTariffInfoPopupOpen}
                               groups={groups}
                               getUpdateGroup={getUpdateGroup}
-                              updaters={updaters} />
+                              handleUpdateGroupUpdater={handleUpdateGroupUpdater}
+                              updaters={updaters}
+                              getUpdaters={getUpdaters} />
                         </ProtectedRoute>} />
                 <Route
                     path="/clients"

@@ -1,7 +1,7 @@
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Button } from "react-bootstrap";
 import UpdaterRow from "./UpdaterRow";
 
-const SchedulesAvailable = ({ updaters, handleDeleteUpdater }) => {
+const SchedulesAvailable = ({ updaters, handleDeleteUpdater, handleCreateUpdaterPopupOpen }) => {
   return(
     <>
       <h5>Доступные расписания</h5>
@@ -10,6 +10,7 @@ const SchedulesAvailable = ({ updaters, handleDeleteUpdater }) => {
           <UpdaterRow key={updater.id} updater={updater} handleDeleteUpdater={handleDeleteUpdater} />
         ))}
       </ListGroup>
+      <Button onClick={handleCreateUpdaterPopupOpen}>Создать новое</Button>
     </>
   )
 }

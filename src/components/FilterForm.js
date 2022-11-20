@@ -3,13 +3,14 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigateSearch } from '../hooks/useNavigateSearch';
 
-const FilterForm = ({ groups, regions, categories, filter, unFilter, setSearchParams, params }) => {
+const FilterForm = ({ groups, regions, categories, setSearchParams, params }) => {
   const formControl = useForm(params);
   const navigateSearch = useNavigateSearch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSearchParams({...formControl.values, page: 1});
+    let params = formControl.values;
+    setSearchParams({...params, page: 1});
   }
 
   const handleUnfilter = () => {
@@ -43,7 +44,7 @@ const FilterForm = ({ groups, regions, categories, filter, unFilter, setSearchPa
         ))}
       </Form.Select>
       <Form.Select className="mb-2" name="category_id" onChange={formControl.handleChange}  value={formControl?.values?.category_id || ''} >
-        <option>Категория</option>
+        <option value=''>Категория</option>
         {categories.map((category, i) => (
           <option key={category.id} value={category.id}>{category.name}</option>
         ))}

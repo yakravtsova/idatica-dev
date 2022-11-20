@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import './App.css';
 import StartPage from './StartPage';
 import Products from './Products';
@@ -27,7 +27,6 @@ import * as userApi from '../utils/userInfoApi';
 import * as tariffApi from '../utils/tariffApi';
 import * as clientsApi from '../utils/clientsApi';
 import * as categoriesApi from '../utils/categoriesApi';
-import { isLabelWithInternallyDisabledControl } from '@testing-library/user-event/dist/utils';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
 //import { GroupsContext } from '../contexts/GroupsContext';
@@ -54,15 +53,8 @@ const App = () => {
     const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen} = useAuth();
     const [ isSuperuser, setIsSuperuser] = useState(false);
 
-    const location = useLocation();
-
 
     const navigate = useNavigate();
-
-  /*  const handleLoginOut = () => {
-        setLoggedIn(false);
-    }*/
-
 
     useEffect(() => {
       handleGetTariffs();
@@ -70,35 +62,32 @@ const App = () => {
 
     useEffect(() => {
       if (loggedIn) {
-        handleGetProfile();
-        if (isSuperuser) {
-          clientsApi.getClients()
+        userApi.getUserInfo()
           .then(data => {
-            setClients(data.items);
-            console.log(data.items);
-          })
-          .catch(err => console.log(err));
-          }
-        else {
-          updatersApi.getUpdaters()
-          .then(data => {
-            setUpdaters(data);
-            handleGetGroups();
-            handleGetCategories();
-            setRegionsList();
-          })
-          .catch(err => {console.log(err)})
-        }
-
-
-        };
-
-
-      //  handleGetProfile();
-      //  handleGetUpdaters();
-      //  handleGetGroups();
-      //  setRegionsList();
-      //  getDefaultGroupId();
+            if (data) {
+              setCurrentUser(data);
+              setIsTariffActive((new Date().toJSON() < data.tariff_expiration_date));
+              setIsSuperuser(data.is_superuser);
+              if (data.is_superuser) {
+                clientsApi.getClients()
+                .then(data => {
+                  setClients(data.items);
+                  console.log(data.items);
+                })
+                .catch(err => console.log(err));
+                }
+              else {
+                updatersApi.getUpdaters()
+                .then(data => {
+                  setUpdaters(data);
+                  handleGetGroups();
+                  handleGetCategories();
+                  setRegionsList();
+                })
+            }
+          }})
+          .catch(err => console.log(err))
+      };
       }
     , [loggedIn, isSuperuser])
 
@@ -200,7 +189,7 @@ const handleUpdateProduct = (form) => {
   productsApi.updateProduct(updateProduct.id, form)
   .then(res => {
   setUpdateProduct({});
-  redirectTo('/products');
+    navigate(-1);
   })
 }
 

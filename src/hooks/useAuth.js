@@ -95,13 +95,21 @@ export const AuthProvider = ({ children }) => {
         if (data.access_token) {
           userInfo.getUserInfo()
             .then(info => {
-              if (info.name /* && info.company_name && info.tariff.id*/) {
+              if (info.is_superuser) {
                 setLoggedIn(true);
-                navigate('/groups', {replace: true});
+                navigate('/clients', {replace: true});
+                console.log('clients')
               }
               else {
-                setLoggedIn(false);
-                navigate('/confirm-email', {replace: true});
+                if (info.name /* && info.company_name && info.tariff.id*/) {
+                  setLoggedIn(true);
+                  navigate('/groups', {replace: true});
+                  console.log('groups')
+                }
+                else {
+                  setLoggedIn(false);
+                  navigate('/confirm-email', {replace: true});
+                }
               }
             })
         }

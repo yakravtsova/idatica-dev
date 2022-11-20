@@ -6,7 +6,7 @@ import FilterForm from './FilterForm';
 import SearchForm from './SearchForm';
 import DownloadDataForm from './DownloadDataForm';
 
-const SearchBar = ({ handleMode, view, groups, regions, categories, filterProductsByName, filter, unFilter, setSearchParams, params }) => {
+const SearchBar = ({ handleMode, view, groups, regions, categories, filterProductsByName, setSearchParams, params }) => {
 
   return(
     <>
@@ -17,7 +17,7 @@ const SearchBar = ({ handleMode, view, groups, regions, categories, filterProduc
                       placement="auto"
                       overlay={<Popover>
                         <Popover.Body>
-                          <FilterForm groups={groups} regions={regions} categories={categories} filter={filter} unFilter={unFilter} setSearchParams={setSearchParams} params={params} />
+                          <FilterForm groups={groups} regions={regions} categories={categories} setSearchParams={setSearchParams} params={params} />
                         </Popover.Body>
                       </Popover>}>
         <Button variant="outline-secondary" className="m-1 mt-2 mb-3"><FunnelFill /></Button>

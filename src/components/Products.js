@@ -83,18 +83,6 @@ const Products = ({
     .catch(err => console.log(err));
   }
 
-
-  //загрузить продукты из группы
-  const setGroupProductsList = () => {
-    productsApi.getProductsByGroup(group.id)
-    .then(data => {
-      const items = data.items;
-      setProducts(items);
-      setProductsState(items);
-    })
-    .catch(err => console.log(err));
-  }
-
   //открыть попап удаления продукта
   const deleteProductPopupOpen = () => {
     setIsDeleteProductPopupOpen(!isDeleteProductPopupOpen);
@@ -251,104 +239,6 @@ const Products = ({
     setProductsState(state => state.filter(p => p.name.toLowerCase().includes(searchStr)));
   }
 
-  //фильтрация стейта по группе
-  const filterProductsByGroup = (groupId) => {
-    setProductsState(state => state.filter(p => (p.group.id.toString() === groupId)));
-  }
-
-  //фильтрация стейта по региону
-  const filterProductsByRegion = (regionId) => {
-    setProductsState(state => state.filter(p => p.product_urls.find(u => u.region?.id.toString() === regionId)));
-  }
-
-  //фильтрация стейта по цене
-  const filterProductsByPrice = (min_price, max_price) => {
-    if (min_price && max_price === '') {
-      setProductsState(state => state.filter(p => (p.base_price > min_price)));
-      return;
-    }
-    if (min_price === '' && max_price) {
-      setProductsState(state => state.filter(p => (p.base_price < max_price)));
-      return;
-    } else {
-      setProductsState(state => state.filter(p => (p.base_price > min_price && p.base_price < max_price)));
-      return;
-    }
-  }
-
-  //фильтрация стейта
-  const filterProductsAllTheWay = ({active, competitor, region_id, group_id, category, min_price, max_price}) => {
-    if (region_id !== '') {
-      filterProductsByRegion(region_id)
-    }
-    if (group_id !== '') {
-      filterProductsByGroup(group_id)
-    }
-    if (min_price || max_price) {
-      filterProductsByPrice(min_price, max_price)
-    }
-  }
-
-  //отменить фильтрацию
-  const unfilterProducts = () => {
-    console.log('dfgh');
-    setProductsState(products);
-  }
-
-  const byField = (field) => {
-    return (a, b) => {
-      if (a[field] > b[field]) {
-        return 1;
-      }
-      if (a[field] < b[field]) {
-        return -1;
-      }
-      return 0;
-    }
-  }
-
-  const byFieldDown = (field) => {
-    return (a, b) => {
-      if (a[field] < b[field]) {
-        return 1;
-      }
-      if (a[field] > b[field]) {
-        return -1;
-      }
-      return 0;
-    }
-  }
-
-  const sortByName = (mode) => {
-    if (mode === 1) {
-      setProductsState(state => state.slice().sort(byField('id')));
-      return;
-    }
-    if (mode === 2) {
-      setProductsState(state => state.slice().sort(byField('name')));
-      return;
-    }
-    if (mode === 0) {
-      setProductsState(state => state.slice().sort(byFieldDown('name')));
-      return;
-    }
-  }
-
-  const sortByBasePrice = (mode) => {
-    if (mode === 1) {
-      setProductsState(state => state.slice().sort(byField('id')));
-      return;
-    }
-    if (mode === 2) {
-      setProductsState(state => state.slice().sort(byField('base_price')));
-      return;
-    }
-    if (mode === 0) {
-      setProductsState(state => state.slice().sort(byFieldDown('base_price')));
-      return;
-    }
-  }
-
   const handleMode = () => {
     setView(!view);
   }
@@ -380,6 +270,11 @@ const Products = ({
   const setSearchParams = (newParams) => {
   //  const paramsObj = {...params, newParams};
     const paramsObj = Object.assign(params, newParams);
+    for (let key in paramsObj) {
+      if (!paramsObj[key]) {
+        delete params[key]
+      }
+    }
     console.log(paramsObj);
     setParams(paramsObj);
     navigateSearch('/products', paramsObj);
@@ -418,16 +313,14 @@ const Products = ({
           categories={categories}
           setSearchParams={setSearchParams}
           params={params}
-          filterProductsByName={filterProductsByName}
-          filter={filterProductsAllTheWay}
-          unFilter={unfilterProducts} />
+          filterProductsByName={filterProductsByName} />
       </div>
       <div>
         <Button onClick={handleAddProduct} className="m-1">Добавить новый товар</Button>
         <Button onClick={handleAddProductsFromFilePopupOpen} className="m-1">Добавить товары из файла</Button>
       </div>
       <div className="d-flex align-items-center justify-content-between">
-        <SortingBar view={view} sortByName={sortByName} sortByBasePrice={sortByBasePrice} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
+        <SortingBar view={view} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
         <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
       </div>
 
@@ -458,8 +351,15 @@ const Products = ({
       <AddProductsFromFilePopup isOpen={isAddProductsFromFilePopupOpen} onClose={handleAddProductsFromFilePopupOpen}/>
       <DeleteProductPopup isOpen={isDeleteProductPopupOpen} onClose={deleteProductPopupOpen} okButtonAction={handleDeleteOneProduct} />
       <DeleteCheckedProductsPopup isOpen={isDeleteCheckedProductsPopupOpen} onClose={handleDeleteCheckedProductsPopupOpen} okButtonAction={handleDeleteCheckedProducts} />
-      <CreateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} handleIndexOfProduct={handleIndexOfProduct} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct} />
-      <UpdateLinkPopup initData={updateProduct} regions={regions} index={indexOfProduct} isOpen={isUpdateLinkPopupOpen} onClose={handleUpdateLinkPopupOpen} handleIndexOfProduct={handleIndexOfProduct} updateUrl={updateUrl} getUpdateProduct={getUpdateProduct}  />
+      <CreateLinkPopup regions={regions} isOpen={isCreateLinkPopupOpen} onClose={createLinkPopupOpen} createUrl={createUrl} />
+      <UpdateLinkPopup
+        initData={updateProduct}
+        regions={regions}
+        index={indexOfProduct}
+        isOpen={isUpdateLinkPopupOpen}
+        onClose={handleUpdateLinkPopupOpen}
+        handleIndexOfProduct={handleIndexOfProduct}
+        updateUrl={updateUrl} />
       <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
 
     </Container>

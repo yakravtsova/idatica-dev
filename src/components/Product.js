@@ -11,9 +11,19 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import { ExclamationTriangleFill, PencilFill, TrashFill, ThreeDots, Plus } from 'react-bootstrap-icons';
-import UrlTableRow from './UrlTableRow';
 
-const Product = ({ productData, view, checkProduct, handleDeleteProductId, deleteLinkPopupOpen, deleteProductPopupOpen, createLinkPopupOpen, handleReportingProblemPopupOpen, getUpdateProduct, handleIndexOfProduct, handleUpdateLinkPopupOpen }) => {
+const Product = ({
+  productData,
+  view,
+  checkProduct,
+  handleDeleteProductId,
+  deleteLinkPopupOpen,
+  deleteProductPopupOpen,
+  createLinkPopupOpen,
+  handleReportingProblemPopupOpen,
+  getUpdateProduct,
+  handleIndexOfProduct,
+  handleUpdateLinkPopupOpen }) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
@@ -76,22 +86,6 @@ const Product = ({ productData, view, checkProduct, handleDeleteProductId, delet
     handleIndexOfProduct(index);
     handleUpdateLinkPopupOpen();
   }
-
-  const priceDifference = (i) => {
-    const dif = (productState.basePrice-productState.productUrls[i].price)*100/productState.basePrice;
-    return dif;
-  }
-
-  const dif = (i) => priceDifference(i).toFixed(2);
-  const isCheaper = (i) => (dif(i) >= 0);
-
-  /////////////////////
-
-
-
-
-
-
 
   return(
     <Card className="m-1">

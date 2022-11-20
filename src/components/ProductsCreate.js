@@ -4,11 +4,9 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import {Accordion, Form} from "react-bootstrap";
 import { TrashFill } from 'react-bootstrap-icons';
-//import { GroupsContext } from '../contexts/GroupsContext';
 
 const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, handleUpdateProduct, handleCreateNewProduct, handleCreateCategoryAndProduct, handleUpdateCategoryAndProduct, categories }) => {
-//    const groups = useContext(GroupsContext);
-    const navigate = useNavigate();
+
     const [ isProductActive, setIsProductActive ] = useState(true);
     const [ form, setForm ] = useState({
         'name': '',
@@ -25,10 +23,6 @@ const ProductsCreate = ({ initData, group, groups, regions, defaultGroupId, hand
     const [ category, setCategory ] = useState({
         'name': ''
     });
-
-    const redirectToProducts = () => {
-        navigate('/products', {replace: true})
-    }
 
     const setField = (field, value) => {
         setForm({

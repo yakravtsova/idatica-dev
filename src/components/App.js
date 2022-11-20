@@ -264,8 +264,9 @@ const handleUpdateCategoryAndProduct = (category, form) => {
         .catch(err => console.log(err));
     }
 
-    const handleUpdateGroupUpdater = (groupId, form) => {
-      groupsApi.updateGroup(groupId, form)
+    const handleUpdateGroupUpdater = (group, form) => {
+      const oldUpdaterId = group.updater.id;
+      groupsApi.updateGroup(group.id, form)
         .then(data => {
           const newGroups = groups.map(g => {
             if (g.id === data.id) {
@@ -276,8 +277,22 @@ const handleUpdateCategoryAndProduct = (category, form) => {
                 }
                 return g;
             });
-            setGroups(newGroups);
-            console.log(newGroups)
+          setGroups(newGroups);
+          const newUpdaters = updaters.map(u => {
+            if (u.id === oldUpdaterId) {
+              return {
+                ...u, num_groups: u.num_groups - 1
+              }
+            }
+            if (u.id === data.updater.id) {
+              return {
+                ...u, num_groups: u.num_groups + 1
+              }
+            }
+            return u;
+          })
+          setUpdaters(newUpdaters);
+            console.log(newUpdaters)
         })
         .catch(err => console.log(err));
     }

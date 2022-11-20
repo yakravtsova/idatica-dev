@@ -12,11 +12,13 @@ import ProfileTableRow from './ProfileTableRow';
 import CreateUpdaterPopup from './CreateUpdaterPopup';
 import * as updatersApi from '../utils/updatersApi';
 import SchedulesAvailable from './SchedulesAvailable';
+import DeleteUpdaterInfoTooltip from './DeleteUpdaterInfoTooltip';
 
 const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters, handleUpdateGroupUpdater, getUpdaters }) => {
     const currentUser = useContext(CurrentUserContext);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
     const [isCreateUpdaterPopupOpen, setIsCreateUpdaterPopupOpen] = useState(false);
+    const [isDeleteUpdaterInfoPopupOpen, setIsDeleteUpdaterInfoPopupOpen] = useState(false);
 
     const [ form, setForm ] = useState({
         'name': '',
@@ -37,6 +39,10 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
         });
       }
     },[currentUser, handleUpdateProfile]);
+
+    const handleDeleteUpdaterInfoPopupOpen = () => {
+      setIsDeleteUpdaterInfoPopupOpen(!isDeleteUpdaterInfoPopupOpen);
+    }
 
     const getDataString = () => {
       const date = new Date(Date.parse(currentUser.tariff_expiration_date));
@@ -279,7 +285,11 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
               ))}
             </tbody>
           </Table>
-          <SchedulesAvailable updaters={updaters} handleDeleteUpdater={handleDeleteUpdater} handleCreateUpdaterPopupOpen={handleCreateUpdaterPopupOpen} />
+          <SchedulesAvailable
+            updaters={updaters}
+            handleDeleteUpdater={handleDeleteUpdater}
+            handleCreateUpdaterPopupOpen={handleCreateUpdaterPopupOpen}
+            groups={groups}  />
         </Container>
         <Modal
           size="lg"

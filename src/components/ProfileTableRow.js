@@ -26,7 +26,7 @@ const ProfileTableRow = ({ group, updaters, handleUpdateGroupUpdater }) => {
         name: group.name,
         updater_id: e.target.value
       }
-      handleUpdateGroupUpdater(group.id, form)
+      handleUpdateGroupUpdater(group, form)
     }
   }
 

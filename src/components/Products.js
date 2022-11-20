@@ -139,15 +139,20 @@ const Products = ({
 
   //удалить выбранные продукты из стейта (не работает)
   const deleteCheckedProducts = (checkedProducts) => {
-    setProducts((state) => state.filter((p) => !(checkedProducts.includes(p.id))));
-    setProductsState(products);
+    const newProducts = products.filter((p) => !(checkedProducts.includes(p.id)));
+    setProducts(newProducts);
+    setProductsState(newProducts);
   }
 
   //удалить выбранные продукты (не работает)
   const handleDeleteCheckedProducts = () => {
-    deleteCheckedProducts(checkedProducts);
-    setCheckedProducts([]);
-    handleDeleteCheckedProductsPopupOpen();
+    productsApi.deleteProducts(checkedProducts)
+      .then(res => {
+        deleteCheckedProducts(checkedProducts);
+        setCheckedProducts([]);
+        handleDeleteCheckedProductsPopupOpen();
+      })
+      .catch(err => console.log(err))
   }
 
   //открыть попап создания ссылки
@@ -423,7 +428,7 @@ const Products = ({
       </div>
       <div className="d-flex align-items-center justify-content-between">
         <SortingBar view={view} sortByName={sortByName} sortByBasePrice={sortByBasePrice} setSearchParams={setSearchParams} removeSearchParams={removeSearchParams} />
-        <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen} disabled>Удалить выбранные</Button>
+        <Button variant="link" onClick={handleDeleteCheckedProductsPopupOpen}>Удалить выбранные</Button>
       </div>
 
       {productsState.map((product, i) => (

@@ -63,15 +63,16 @@ export const deleteProduct = (productId) => {
   })
   .then(res => handleResponse(res))
 }
-/*
-export const setDefaultGroup = (groupId, token) => {
-  return fetch(`${BASE_URL}groups/${groupId}/set-default/`, {
-    method: 'PUT',
+
+export const deleteProducts = (arrOfId) => {
+  return fetch(`${BASE_URL}products/`, {
+    method: 'DELETE',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
     },
+    body: JSON.stringify(arrOfId),
   })
   .then(res => handleResponse(res))
-}*/
+}

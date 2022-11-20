@@ -33,14 +33,12 @@ const CreateUpdaterPopup = ({ isOpen, onClose, updaters, handleCreateUpdater }) 
   }
 
   const handleWeekDayChange = (val) => {
-  //  setWeekDays(val);
     setField('weekdays', val);
     console.log(form)
   }
 
   const handleMonthDayChange = (val) => {
     setField('days', val);
-  //  setMonthDays(val);
     console.log(form)
   }
 

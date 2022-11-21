@@ -5,11 +5,18 @@ import { PencilFill, TrashFill } from 'react-bootstrap-icons';
 const ClientsTableRow = ({ client }) => {
   const [ clientState, setClientState ] = useState(client);
 
+
+const getDataString = (jsonDate) => {
+  const date = new Date(Date.parse(jsonDate));
+  const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  return date.toLocaleDateString();
+}
+
   return(
     <tr>
       <td><Button variant="link">{clientState.name}</Button></td>
       <td>{clientState.tariff?.name}</td>
-      <td>{clientState?.tariff_expiration_date}</td>
+      <td>{clientState.tariff_expiration_date ? getDataString(clientState?.tariff_expiration_date) : 'Нет данных'}</td>
       <td>
                 <Form.Check
                   checked={clientState.tariff?.is_active}

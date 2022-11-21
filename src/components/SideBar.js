@@ -18,18 +18,21 @@ const SideBar = ({ active }) => {
         {currentUser.is_superuser && <Nav.Item>
           <Nav.Link className="border nav-link m-2" aria-current="clients" as={Link} to="/clients"><PersonCircle /> Клиенты</Nav.Link>
         </Nav.Item>}
-        <Nav.Item>
-          <Nav.Link className="border nav-link m-2" aria-current="profile" as={Link} to="/profile" disabled={!active}><PersonCircle /> Личный кабинет</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link className="border nav-link m-2" as={Link} to="/groups" disabled={!active}><Stack /> Группы</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link className="border nav-link m-2" as={Link} to="/products" disabled={!active}><Basket2Fill /> Мои товары</Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link className="border nav-link m-2" as={Link} to="/reports" disabled={!active}><PieChartFill /> Отчёты</Nav.Link>
-        </Nav.Item>
+        {!currentUser.is_superuser &&
+        <>
+          <Nav.Item>
+            <Nav.Link className="border nav-link m-2" aria-current="profile" as={Link} to="/profile" disabled={!active}><PersonCircle /> Личный кабинет</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link className="border nav-link m-2" as={Link} to="/groups" disabled={!active}><Stack /> Группы</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link className="border nav-link m-2" as={Link} to="/products" disabled={!active}><Basket2Fill /> Мои товары</Nav.Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Nav.Link className="border nav-link m-2" as={Link} to="/reports" disabled={!active}><PieChartFill /> Отчёты</Nav.Link>
+          </Nav.Item>
+        </>}
       </Nav>
       <Button className="m-3" onClick={logout}>Выйти</Button>
     </Container>

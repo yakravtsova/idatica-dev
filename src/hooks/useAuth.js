@@ -15,6 +15,10 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [isRegisterFirstStepOk, setIsRegisterFirstStepOk] = useState(false);
   const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
+  const [ errTitle, setErrTitle ] = useState('');
+  const [ errMessage, setErrMessage ] = useState('');
+  const errTitleUnautorized = 'Ошибка авторизации';
+  const errMessageWrongCredentials = 'Неправильные логин или пароль. Проверьте свои регистрационные данные';
 
   const handleRegistrationInfoTooltipOpen = () => {
     setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
@@ -113,12 +117,11 @@ export const AuthProvider = ({ children }) => {
               }
             })
         }
-        else {
-          console.log('Авторизация не удалась');
-        }
       })
       .catch(err => {
         setIsRegisterFirstStepOk(false);
+        setErrTitle(errTitleUnautorized);
+        setErrMessage(errMessageWrongCredentials);
         handleRegistrationInfoTooltipOpen();
         console.log(err);
       });
@@ -140,6 +143,8 @@ export const AuthProvider = ({ children }) => {
       loggedIn,
       isRegisterFirstStepOk,
       isRegistrationInfoTooltipOpen,
+      errTitle,
+      errMessage,
       handleRegistrationInfoTooltipOpen,
       reg,
       confirm,

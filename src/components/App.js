@@ -50,7 +50,7 @@ const App = () => {
     const [ updateGroup, setUpdateGroup ] = useState({});
     const [isEditGroupPopupOpen, setIsEditGroupPopupOpen] = useState(false);
     const [isDeleteGroupPopupOpen, setIsDeleteGroupPopupOpen] = useState(false);
-    const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen} = useAuth();
+    const {loggedIn, isRegisterFirstStepOk, isRegistrationInfoTooltipOpen, handleRegistrationInfoTooltipOpen, errTitle, errMessage} = useAuth();
     const [ isSuperuser, setIsSuperuser] = useState(false);
 
 
@@ -475,7 +475,9 @@ const handleUpdateCategoryAndProduct = (category, form) => {
             <RegistrationInfoTooltip
                 isOpen={isRegistrationInfoTooltipOpen}
                 onClose={handleRegistrationInfoTooltipOpen}
-                isOk={isRegisterFirstStepOk} />
+                isOk={isRegisterFirstStepOk}
+                errTitle={errTitle}
+                errMessage={errMessage} />
             <UpdateGroupPopup isOpen={isEditGroupPopupOpen} onClose={handleEditGroupPopupOpen} formData={updateGroup} handleUpdateGroup={handleUpdateGroup} updaters={updaters} />
             <DeleteGroupPopup isOpen={isDeleteGroupPopupOpen} onClose={handleDeleteGroupPopupOpen} okButtonAction={handleDeleteGroup} />
             <TariffInfoPopup isOpen={isTariffInfoPopupOpen} onClose={handleTariffInfoPopupOpen} />

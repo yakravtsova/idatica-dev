@@ -56,7 +56,6 @@ const Clients = ({clients}) => {
           ))}
         </tbody>
       </Table>
-      <Button>Сохранить изменения</Button>
     </Container>
   )
 }

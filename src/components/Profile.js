@@ -40,10 +40,6 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
       }
     },[currentUser, handleUpdateProfile]);
 
-    const handleDeleteUpdaterInfoPopupOpen = () => {
-      setIsDeleteUpdaterInfoPopupOpen(!isDeleteUpdaterInfoPopupOpen);
-    }
-
     const getDataString = () => {
       const date = new Date(Date.parse(currentUser.tariff_expiration_date));
       const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];

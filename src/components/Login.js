@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { Form, Container, Button } from 'react-bootstrap';
 import ResetPasswordPopup from './ResetPasswordPopup';
 import { useAuth } from '../hooks/useAuth';
+import { useFormWithValidation } from '../hooks/useFormWithValidation';
+import './Login.css';
 
-const Login = ({ /*handleAuthorization,*/ handleReset }) => {
-  const [ form, setForm ] = useState({});
+const Login = ({ handleReset }) => {
   const [forgotPassword, setForgotPassword] = useState(false);
   const { login } = useAuth();
+  const formControl = useFormWithValidation();
+  const { email, password } = formControl.errors;
+/*  const [ form, setForm ] = useState({});
 
   const setField = (field, value) => {
     setForm({
@@ -16,29 +20,16 @@ const Login = ({ /*handleAuthorization,*/ handleReset }) => {
   }
 
   const setEmail = (e) => {
-    /*if (!isValidEmail(e.target.value)) {
-      setEmailError('Адрес электронной почты содержит ошибку');
-    } else {
-      setEmailError(null);
-    }*/
     setField('email', e.target.value);
   }
 
   const setPassword = (e) => {
-   /* if (!e.target.validity.valid) {
-      setPasswordError(e.target.validationMessage)
-    }
-    else setPasswordError(null)*/
     setField('password', e.target.value);
-  }
+  }*/
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.email || !form.password) {
-      return;
-    }
-    // handleAuthorization(form);
-    login(form);
+    login(formControl.values);
   }
 
   const handleForgotPassword = () => {
@@ -47,26 +38,38 @@ const Login = ({ /*handleAuthorization,*/ handleReset }) => {
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
-      <Form className="d-flex flex-column" onSubmit={handleSubmit}>
-        <Form.Group className="mb-2" controlId="registerEmail">
+      <Form className="d-flex flex-column form-width" onSubmit={handleSubmit} noValidate>
+        <Form.Group className="mb-4 position-relative" controlId="registerEmail">
           <Form.Control
             type="email"
+            name="email"
             placeholder="Почта *"
-            onChange={setEmail}
-            // isInvalid={errors.email}
+            onChange={formControl.handleEmailChange}
+            value={formControl?.values?.email || ''}
+            isInvalid={email}
             required
           />
+          <Form.Control.Feedback type="invalid" tooltip>
+            {email}
+          </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-2" controlId="registerPassword">
+        <Form.Group className="mb-4 position-relative" controlId="registerPassword">
           <Form.Control
             type="password"
+            name="password"
             placeholder="Пароль *"
-            onChange={setPassword}
-            // isInvalid={errors.password}
+            onChange={formControl.handleChange}
+            value={formControl?.values?.password || ''}
+            isInvalid={password}
+            minLength={8}
+            maxLength={30}
             required
           />
+          <Form.Control.Feedback type="invalid" tooltip>
+            {password}
+          </Form.Control.Feedback>
         </Form.Group>
-        <Button type="submit" className="align-self-center m-3">Войти</Button>
+        <Button type="submit" className="align-self-center m-3" disabled={!formControl.isValid}>Войти</Button>
       </Form>
       <Button variant="link" onClick={handleForgotPassword}>забыл пароль</Button>
       <ResetPasswordPopup isOpen={forgotPassword} onClose={handleForgotPassword} handleReset={handleReset} />

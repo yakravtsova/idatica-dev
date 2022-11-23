@@ -14,7 +14,7 @@ export function useFormWithValidation(initData) {
   const handleChange = (e) => {
     const target = e.target;
     const name = target.name;
-    const value = target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
     setIsValid(target.closest("form").checkValidity());
@@ -26,7 +26,7 @@ export function useFormWithValidation(initData) {
     const value = target.value;
     const isError = validator.isEmail(value);
     setValues({...values, [name]: value});
-    setErrors({...errors, [name]: !isError && 'Email некорректен' });
+    setErrors({...errors, [name]: !isError ? 'Email некорректен' : '' });
     setIsValid(target.closest("form").checkValidity());
   }
 

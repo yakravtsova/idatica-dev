@@ -3,127 +3,102 @@ import { Form, Container, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './Register.css';
 import { useAuth } from '../hooks/useAuth';
+import { useFormWithValidation } from '../hooks/useFormWithValidation';
 
-const Register = ({ handleRegister }) => {
-  const [ form, setForm ] = useState({});
-  const [ errors, setErrors ] = useState({});
-  const [ emailError, setEmailError ] = useState('');
-  const [ passwordError, setPasswordError ] = useState('');
+const Register = () => {
   const { reg } = useAuth();
+  const formControl = useFormWithValidation();
+  const [ errors, setErrors ] = useState({});
+  const [ firstFocused, setFirstFocused ] = useState({});
+  const [ confirmPasswordError, setConfirmPasswordError ] = useState(false);
 
-  const setField = (field, value) => {
-    setForm({
-      ...form,
-      [field]: value
-    });
-    if ( errors[field] ) setErrors({
-      ...errors,
-      [field]: null
-    })
-  }
-
-  const isValidEmail = (email) => {
-    return /\S+@\S+\.\S+/.test(email);
-  }
-
-  const setEmail = (e) => {
-    if (!isValidEmail(e.target.value)) {
-      setEmailError('Адрес электронной почты содержит ошибку');
-    } else {
-      setEmailError(null);
+  const showErrors = (e) => {
+    const name = e.target.name;
+    if (name === 'confirmPassword') {
+      setErrors({...errors, [name]: confirmPasswordError ? 'Пароли не совпадают' : ''});
     }
-    setField('email', e.target.value);
-  }
-
-  const setPassword = (e) => {
-    if (!e.target.validity.valid) {
-      setPasswordError(e.target.validationMessage)
+    else {
+      setErrors(formControl.errors);
     }
-    else setPasswordError(null)
-    setField('password', e.target.value);
+    setFirstFocused({...firstFocused, [name]: true});
   }
 
-  const setConfirmPassword = (e) => {
-    setField('confirmPassword', e.target.value);
-  }
-
-  const handleAccept = (e) => {
-    setField('accepted', e.target.value);
-  }
-
-  const findFormErrors = () => {
-    const { email, password, confirmPassword, accepted } = form;
-    const newErrors = {};
-    if (!email || email === '') newErrors.email = 'Введите адрес электронной почты'
-    else if (emailError) {newErrors.email = emailError}
-    if (!password || password === '') newErrors.password = 'Введите пароль'
-    else if (passwordError) {newErrors.password = passwordError}
-    if (!confirmPassword || confirmPassword === '') newErrors.confirmPassword = 'Введите пароль ещё раз'
-    else if (confirmPassword !== password) newErrors.confirmPassword = 'Пароли не совпадают'
-    if (!accepted) newErrors.accepted = 'Чтобы зарегистрироваться, примите правила использования сервиса!'
-    return newErrors
+  const handleConfirmPasswordChange = (e) => {
+    formControl.handleChange(e);
+    if (formControl?.values?.password !== e.target.value) {
+      setConfirmPasswordError(true)
+    }
+    else setConfirmPasswordError(false);
   }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = findFormErrors();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-    }
-    else {
-      reg(form)
-    }
+    reg(formControl.values);
   }
 
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
       <Form className="d-flex flex-column form-width" onSubmit={handleSubmit} noValidate>
-        <Form.Group className="mb-2" controlId="registerEmail">
+        <Form.Group className="mb-2 position-relative" controlId="registerEmail">
           <Form.Control
             type="email"
+            name="email"
             placeholder="Почта *"
-            onChange={setEmail}
-            isInvalid={errors.email}
+            onBlur={showErrors}
+            onChange={formControl.handleEmailChange}
+            value={formControl?.values?.email || ''}
+            isInvalid={firstFocused.email ? formControl.errors.email : errors.email}
             required />
-          <Form.Control.Feedback type="invalid">
-            {errors.email}
+          <Form.Control.Feedback type="invalid" tooltip>
+            {firstFocused.email ? formControl.errors.email : errors.email}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-2" controlId="registerPassword">
+        <Form.Group className="mb-2 position-relative" controlId="registerPassword">
           <Form.Control
             type="password"
+            name="password"
             placeholder="Пароль *"
-            onChange={setPassword}
+            onBlur={showErrors}
+            onChange={formControl.handleChange}
+            value={formControl?.values?.password || ''}
             minLength={8}
-            isInvalid={errors.password}
+            maxLength={30}
+            isInvalid={firstFocused.password ? formControl.errors.password : errors.password}
             required />
-          <Form.Control.Feedback type="invalid">
-            {errors.password}
+          <Form.Control.Feedback type="invalid" tooltip>
+            {firstFocused.password ? formControl.errors.password : errors.password}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Group className="mb-2" controlId="registerConfirmPassword">
+        <Form.Group className="mb-2 position-relative" controlId="registerConfirmPassword">
           <Form.Control
             type="password"
+            name="confirmPassword"
             placeholder="Повторить пароль *"
-            onChange={setConfirmPassword}
-            isInvalid={errors.confirmPassword}
+            onBlur={showErrors}
+            onChange={handleConfirmPasswordChange}
+            value={formControl?.values?.confirmPassword || ''}
+            isInvalid={firstFocused.confirmPassword ? confirmPasswordError && 'Пароли не совпадают' : errors.confirmPassword}
             required />
-          <Form.Control.Feedback type="invalid">
-            {errors.confirmPassword}
+          <Form.Control.Feedback type="invalid" tooltip>
+            {firstFocused.confirmPassword ? confirmPasswordError && 'Пароли не совпадают' : errors.confirmPassword}
           </Form.Control.Feedback>
         </Form.Group>
-        <Form.Check className="mb-5">
+        <Form.Check className="mb-5 position-relative">
             <Form.Check.Input
               required
               type="checkbox"
-              onChange={handleAccept}
-              isInvalid={errors.accepted}
+              name="accept"
+              onBlur={showErrors}
+              onChange={formControl.handleChange}
+              isInvalid={formControl.errors.accept}
             />
             <Form.Check.Label>Согласен с <Link to="/rules" target="_blank" rel="noopener noreferrer">правилами использования сервиса</Link></Form.Check.Label>
-            <Form.Control.Feedback type="invalid">{errors.accepted}</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid"  tooltip>
+              {formControl.errors.accept}
+            </Form.Control.Feedback>
           </Form.Check>
-        <Button type="submit" className="align-self-center">Зарегистрироваться</Button>
+        <Button type="submit" className="align-self-center" disabled={!formControl.isValid}>Зарегистрироваться</Button>
       </Form>
     </Container>
   )

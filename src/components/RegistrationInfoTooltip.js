@@ -10,7 +10,6 @@ const RegistrationInfoTooltip = ({ isOpen, onClose, isOk, errTitle, errMessage }
         <p>
           {isOk ? 'На вашу почту придёт письмо с подтверждением активации аккаунта.' : errMessage}
         </p>
-        {/*isOk && <Button onClick={redirect}>Перейти ко второму шагу регистрации</Button>*/}
       </Modal.Body>
     </Modal>
   )

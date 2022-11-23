@@ -19,6 +19,8 @@ export const AuthProvider = ({ children }) => {
   const [ errMessage, setErrMessage ] = useState('');
   const errTitleUnautorized = 'Ошибка авторизации';
   const errMessageWrongCredentials = 'Неправильные логин или пароль. Проверьте свои регистрационные данные';
+  const errTitleWrongCode = 'Ошибка подтверждения';
+  const errMessageWrongCode = 'Неверный код'
 
   const handleRegistrationInfoTooltipOpen = () => {
     setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
@@ -59,6 +61,8 @@ export const AuthProvider = ({ children }) => {
     })
     .catch(err => {
       setIsRegisterFirstStepOk(false);
+      setErrTitle(errTitleWrongCode);
+      setErrMessage(errMessageWrongCode);
       handleRegistrationInfoTooltipOpen();
       console.log(err)
     })

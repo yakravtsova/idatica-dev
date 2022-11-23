@@ -1,46 +1,24 @@
 import { useState } from 'react';
 import { Form, Container, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useFormWithValidation } from '../hooks/useFormWithValidation';
 
-const ConfirmEmail = ({ handleConfirmEmail }) => {
-  const [ form, setForm ] = useState({});
-  const [ errors, setErrors ] = useState({});
-  const [ emailError, setEmailError ] = useState('');
-  const [ passwordError, setPasswordError ] = useState('');
+const ConfirmEmail = () => {
   const {confirm} = useAuth();
 
-  const setField = (field, value) => {
-    setForm({
-      ...form,
-      [field]: value
-    });
-    if ( errors[field] ) setErrors({
-      ...errors,
-      [field]: null
-    })
-  }
+  const formControl = useFormWithValidation();
+  const [ errors, setErrors ] = useState({});
+  const [ firstFocused, setFirstFocused ] = useState({});
 
-  const setConfirmCode = (e) => {
-    setField('confirm_code', e.target.value);
+  const showErrors = (e) => {
+    const name = e.target.name;
+    setErrors(formControl.errors);
+    setFirstFocused({...firstFocused, [name]: true});
   }
-/*
-  const findFormErrors = () => {
-    const { email, password, confirmPassword, accepted } = form;
-    const newErrors = {};
-    if (!email || email === '') newErrors.email = 'Введите адрес электронной почты'
-    else if (emailError) {newErrors.email = emailError}
-    if (!password || password === '') newErrors.password = 'Введите пароль'
-    else if (passwordError) {newErrors.password = passwordError}
-    if (!confirmPassword || confirmPassword === '') newErrors.confirmPassword = 'Введите пароль ещё раз'
-    else if (confirmPassword !== password) newErrors.confirmPassword = 'Пароли не совпадают'
-    if (!accepted) newErrors.accepted = 'Чтобы зарегистрироваться, примите правила использования сервиса!'
-    return newErrors
-  }*/
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    confirm(form);
+    confirm(formControl.values);
   }
 
 
@@ -48,18 +26,22 @@ const ConfirmEmail = ({ handleConfirmEmail }) => {
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
       <h1 className="h6">Спасибо за регистрацию! На вашу почту пришло письмо с кодом подтверждения. Введите его в форму ниже.</h1>
       <Form className="d-flex flex-column form-width" onSubmit={handleSubmit} noValidate>
-        <Form.Group className="mb-2" controlId="confirmEmail">
+        <Form.Group className="mb-2 position-relative" controlId="confirmEmail">
           <Form.Control
             type="text"
+            name="confirm_code"
             placeholder="Код подтверждения *"
-            onChange={setConfirmCode}
-          /*  isInvalid={errors.email}*/
+            onBlur={showErrors}
+            onChange={formControl.handleChange}
+            minLength={8}
+            maxLength={8}
+            isInvalid={firstFocused.confirm_code ? formControl.errors.confirm_code : errors.confirm_code}
             required />
-          <Form.Control.Feedback type="invalid">
-            {/*errors.email*/}
+          <Form.Control.Feedback type="invalid" tooltip>
+            {firstFocused.confirm_code ? formControl.errors.confirm_code : errors.confirm_code}
           </Form.Control.Feedback>
         </Form.Group>
-        <Button type="submit" className="align-self-center">Отправить</Button>
+        <Button type="submit" className="align-self-center" disabled={!formControl.isValid}>Отправить</Button>
       </Form>
     </Container>
   )

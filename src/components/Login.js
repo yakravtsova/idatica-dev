@@ -10,22 +10,14 @@ const Login = ({ handleReset }) => {
   const { login } = useAuth();
   const formControl = useFormWithValidation();
   const { email, password } = formControl.errors;
-/*  const [ form, setForm ] = useState({});
+  const [ errors, setErrors ] = useState({});
+  const [ firstFocused, setFirstFocused ] = useState({});
 
-  const setField = (field, value) => {
-    setForm({
-      ...form,
-      [field]: value
-    });
+  const showErrors = (e) => {
+    const name = e.target.name;
+    setErrors(formControl.errors);
+    setFirstFocused({...firstFocused, [name]: true});
   }
-
-  const setEmail = (e) => {
-    setField('email', e.target.value);
-  }
-
-  const setPassword = (e) => {
-    setField('password', e.target.value);
-  }*/
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -44,13 +36,14 @@ const Login = ({ handleReset }) => {
             type="email"
             name="email"
             placeholder="Почта *"
+            onBlur={showErrors}
             onChange={formControl.handleEmailChange}
             value={formControl?.values?.email || ''}
-            isInvalid={email}
+            isInvalid={firstFocused.email ? email : errors.email}
             required
           />
           <Form.Control.Feedback type="invalid" tooltip>
-            {email}
+            {firstFocused.email ? email : errors.email}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4 position-relative" controlId="registerPassword">
@@ -61,8 +54,6 @@ const Login = ({ handleReset }) => {
             onChange={formControl.handleChange}
             value={formControl?.values?.password || ''}
             isInvalid={password}
-            minLength={8}
-            maxLength={30}
             required
           />
           <Form.Control.Feedback type="invalid" tooltip>

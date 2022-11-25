@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Button, Form, Table, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Container, Button, Form, Table, OverlayTrigger, Popover, FormGroup } from 'react-bootstrap';
 import DeletePopup from './DeletePopup';
 import GroupTableRow from './GroupTableRow';
 import SearchForm from './SearchForm';
@@ -24,50 +24,33 @@ const Groups = ({
                   getUpdateProduct
                 }) => {
   const formControl = useFormWithValidation();
-/*  const [ form, setForm ] = useState({
-    name: '',
-    updater_id: '',
-    is_default: true,
-  });*/
-
   const [ groupsState, setGroupsState ] = useState([]);
 
   useEffect(() => {
     setGroupsState(groups)
-  }, [groups])
+  }, [groups, handleCreateNewGroup])
 
-/*const setField = (field, value) => {
-setForm({
-  ...form,
-  [field]: value
-});
-}
+  const { name, updater_id } = formControl.errors;
+  const [ errors, setErrors ] = useState({});
+  const [ firstFocused, setFirstFocused ] = useState({});
 
-const setGroupName = (e) => {
-setField('name', e.target.value);
-}
+  const showErrors = (e) => {
+    const name = e.target.name;
+    setErrors(formControl.errors);
+    setFirstFocused({...firstFocused, [name]: true});
+  }
 
-const setUpdater = (e) => {
-setField('updater_id', e.target.value);
-}*/
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-  /*handleCreateNewGroup(formControl.values);
-  setForm({
-  name: '',
-  updater_id: '',
-  is_default: true,
-} );*/
-  const form = {...formControl.values, is_default: true};
-  console.log(form);
-  formControl.resetForm();
-}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = {...formControl.values, is_default: true};
+    handleCreateNewGroup(form);
+    formControl.resetForm();
+  }
 
 //фильтрация стейта по строке
   const filterGroupsByName = (searchStr) => {
   //  getGroups(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
-setGroupsState(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
+    setGroupsState(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
   }
 
 
@@ -80,20 +63,40 @@ setGroupsState(state => state.filter(g => g.name.toLowerCase().includes(searchSt
       <Form onSubmit={handleSubmit} noValidate>
         <div className="col-md-6">
           <div className="d-flex align-items-center">
-            <Form.Control
-              className="m-1"
-              name="name"
-              type="text"
-              placeholder="Название *"
-              value={formControl.values?.name || ''}
-              onChange={formControl.handleChange} />
-            <Form.Select className="m-1" name="updater_id" onChange={formControl.handleChange} value={formControl.values?.updater_id || ''} required>
-              <option value=''>Частота проверки *</option>
-              {updaters.map((u, i) => (
-                <option key={u.id} value={u.id}>{u.name}</option>
-              ))}
-            </Form.Select>
-            <Button variant="primary" className="m-1" type="submit">Создать</Button>
+            <FormGroup className="m-1 position-relative">
+              <Form.Control
+                name="name"
+                type="text"
+                placeholder="Название *"
+                value={formControl.values?.name || ''}
+                onBlur={showErrors}
+                onChange={formControl.handleChange}
+                isInvalid={firstFocused.name ? name : errors.name}
+                required
+              />
+              <Form.Control.Feedback type="invalid" tooltip>
+                {firstFocused.name ? name : errors.name}
+              </Form.Control.Feedback>
+            </FormGroup>
+            <FormGroup className="m-1 position-relative">
+              <Form.Select
+                name="updater_id"
+                onBlur={showErrors}
+                onChange={formControl.handleChange}
+                value={formControl.values?.updater_id || ''}
+                isInvalid={firstFocused.updater_id ? updater_id : errors.updater_id}
+                required
+              >
+                <option value=''>Частота проверки *</option>
+                {updaters.map((u, i) => (
+                  <option key={u.id} value={u.id}>{u.name}</option>
+                ))}
+              </Form.Select>
+              <Form.Control.Feedback type="invalid" tooltip>
+                {firstFocused.updater_id ? updater_id : errors.updater_id}
+              </Form.Control.Feedback>
+            </FormGroup>
+            <Button variant="primary" className="m-1" type="submit" disabled={!formControl.isValid}>Создать</Button>
             <OverlayTrigger
               placement="right"
               overlay={

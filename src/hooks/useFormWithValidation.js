@@ -7,9 +7,9 @@ export function useFormWithValidation(initData) {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
 
-  useEffect(() => {
+/*  useEffect(() => {
     setValues(initData);
-  }, [initData])
+  }, [initData])*/
 
   const handleChange = (e) => {
     const target = e.target;
@@ -39,5 +39,5 @@ export function useFormWithValidation(initData) {
     [setValues, setErrors, setIsValid]
   );
 
-  return { values, handleChange, handleEmailChange, errors, isValid, resetForm };
+  return { values, handleChange, handleEmailChange, errors, isValid, resetForm, setValues };
 }

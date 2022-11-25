@@ -10,7 +10,7 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, ha
 
   useEffect(() => {
     setGroupState(group)
-  }, [getUpdateGroup])
+  }, [getUpdateGroup, group])
 
   const handleChangeActivity = () => {
     handleChangeActivityGroup(groupState);

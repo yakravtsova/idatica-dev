@@ -340,9 +340,9 @@ const handleUpdateCategoryAndProduct = (category, form) => {
             const newGroups = groups.map(g => {
                 return {...g,
                     is_default: false};
-            })
+            });
+            console.log(newGroups);
             setGroups([data, ...newGroups]);
-            console.log(groups);
         })
         .catch(err => console.log(err));
     }

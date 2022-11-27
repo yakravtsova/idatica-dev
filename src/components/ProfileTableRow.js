@@ -35,7 +35,6 @@ const ProfileTableRow = ({ group, updaters, handleUpdateGroupUpdater }) => {
       <td>{groupState.name}</td>
       <td>
       <Form.Select className="mb-2" name="updater_id" value={form?.updater_id || ''} onChange={handleChangeUpdater} >
-        <option value=''>Расписание</option>
         {updaters.map((updater, i) => (
           <option key={updater.id} value={updater.id}>{updater.name}</option>
         ))}

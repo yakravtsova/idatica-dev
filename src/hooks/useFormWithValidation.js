@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import validator from 'validator';
 
 //хук управления формой и валидации формы
@@ -7,10 +7,6 @@ export function useFormWithValidation(initData) {
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
 
-/*  useEffect(() => {
-    setValues(initData);
-  }, [initData])*/
-
   const handleChange = (e) => {
     const target = e.target;
     const name = target.name;
@@ -18,6 +14,7 @@ export function useFormWithValidation(initData) {
     setValues({...values, [name]: value});
     setErrors({...errors, [name]: target.validationMessage });
     setIsValid(target.closest("form").checkValidity());
+    console.log(errors);
   };
 
   const handleEmailChange = (e) => {

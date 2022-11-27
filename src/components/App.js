@@ -137,10 +137,7 @@ const App = () => {
         userApi.updateUserInfo(userData)
           .then(data => {
             if (data) {
-              setCurrentUser({
-                ...currentUser,
-                data
-              })
+              setCurrentUser(data);
             }
           })
           .catch(err => console.log(err))

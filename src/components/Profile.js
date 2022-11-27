@@ -1,44 +1,70 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
-import { Form, ListGroup, Modal } from "react-bootstrap";
-import { EnvelopeOpenFill, TrashFill } from "react-bootstrap-icons";
+import { Form, Modal, Table, OverlayTrigger, Popover } from "react-bootstrap";
+import { EnvelopeOpenFill } from "react-bootstrap-icons";
 import { Link } from "react-router-dom";
-import Table from "react-bootstrap/Table";
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import Popover from 'react-bootstrap/Popover';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import ProfileTableRow from './ProfileTableRow';
 import CreateUpdaterPopup from './CreateUpdaterPopup';
 import * as updatersApi from '../utils/updatersApi';
 import SchedulesAvailable from './SchedulesAvailable';
-import DeleteUpdaterInfoTooltip from './DeleteUpdaterInfoTooltip';
+import { useFormWithValidation } from '../hooks/useFormWithValidation';
+import PhoneInput from './PhoneInput';
 
 const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters, handleUpdateGroupUpdater, getUpdaters }) => {
     const currentUser = useContext(CurrentUserContext);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
     const [isCreateUpdaterPopupOpen, setIsCreateUpdaterPopupOpen] = useState(false);
-    const [isDeleteUpdaterInfoPopupOpen, setIsDeleteUpdaterInfoPopupOpen] = useState(false);
+    const phoneRef = useRef();
 
-    const [ form, setForm ] = useState({
-        'name': '',
-        'email': '',
-        'phone': '',
-        'company_name': ''
-      });
-
+    const formControl = useFormWithValidation();
+    const { name, company_name } = formControl.errors;
+    const [ errors, setErrors ] = useState({});
+    const [ firstFocused, setFirstFocused ] = useState({});
+    const [ isChanged, setIsChanged ] = useState(false);
 
     useEffect(() => {
       if (currentUser.name) {
-        setForm({
-          ...form,
-          'name': currentUser.name,
-          'email': currentUser.email,
-          'phone': currentUser.phone,
-          'company_name': currentUser.company_name
+        formControl.setValues({
+          name: currentUser.name,
+          email: currentUser.email,
+          phone: currentUser.phone,
+          company_name: currentUser.company_name
         });
+        console.log(currentUser)
       }
-    },[currentUser, handleUpdateProfile]);
+    },[currentUser, isProfileFormDisabled]);
+
+    useEffect(() => {
+      setIsChanged(!(currentUser.name === formControl.values.name && currentUser?.phone === formControl.values?.phone && currentUser?.company_name === formControl.values.company_name));
+    }, [currentUser, formControl.values.name, formControl.values.phone, formControl.values.company_name])
+
+    useEffect(() => {
+      if (!isProfileFormDisabled) {
+        phoneRef.current.removeAttribute('disabled');
+      }
+      else {
+        phoneRef.current.setAttribute('disabled', '');
+      }
+    }, [isProfileFormDisabled])
+
+    const showErrors = (e) => {
+      const name = e.target.name;
+      setErrors(formControl.errors);
+      setFirstFocused({...firstFocused, [name]: true});
+    }
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+
+      handleUpdateProfile({
+        name: formControl.values.name,
+        phone: phoneRef.current.value,
+        company_name: formControl.values.company_name,
+      });
+      handleIsProfileFormDisabled();
+    }
 
     const getDataString = () => {
       const date = new Date(Date.parse(currentUser.tariff_expiration_date));
@@ -46,41 +72,10 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
       return `${date.getDate()} ${months[date.getMonth()]}`;
     }
 
-    const setField = (field, value) => {
-      setForm({
-        ...form,
-        [field]: value
-      });
-    }
-
-    const setName = (e) => {
-      setField('name', e.target.value);
-    }
-
-    const setEmail = (e) => {
-      setField('email', e.target.value);
-    }
-
-    const setPhone = (e) => {
-      setField('phone', e.target.value);
-    }
-
-    const setCompanyName = (e) => {
-      setField('company_name', e.target.value);
-    }
-
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      handleUpdateProfile({
-        name: form.name,
-        phone: form.phone,
-        company_name: form.company_name,
-      });
-      handleIsProfileFormDisabled();
-    }
-
     const handleIsProfileFormDisabled = () => {
       setIsProfileFormDisabled(!isProfileFormDisabled);
+      setFirstFocused({});
+      setErrors({});
     }
 
     const handleCreateUpdaterPopupOpen = () => {
@@ -142,19 +137,28 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
           </div>
           <span className="text-decoration-underline">Аккаунт активен до: {getDataString()}</span>
           <div>&nbsp;</div>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} noValidate>
             <div className="col-md-6">
               <div className="row row-cols-2">
                 <div className="col">
-                  <Form.Group className="mb-3">
+                  <Form.Group className="mb-3 position-relative">
                     <Form.Label>Имя</Form.Label>
                     <Form.Control
+                      name="name"
                       disabled={isProfileFormDisabled}
                       type="text"
                       placeholder="Введите имя"
-                      onChange={setName}
-                      value={form.name ? form.name : ''}
+                      onChange={formControl.handleChange}
+                      value={formControl?.values.name || ''}
+                      onBlur={showErrors}
+                      isInvalid={firstFocused.name ? name : errors.name}
+                      minLength={2}
+                      maxLength={30}
+                      required
                     />
+                    <Form.Control.Feedback type="invalid" tooltip>
+                      {firstFocused.name ? name : errors.name}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </div>
                 <div className="col">
@@ -164,8 +168,8 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
                       disabled={true}
                       type="email"
                       placeholder="Введите email"
-                      onChange={setEmail}
-                      value={form.email ? form.email : ''}
+                      readOnly
+                      value={formControl?.values.email || ''}
                     />
                   </Form.Group>
                 </div>
@@ -174,31 +178,38 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
                 <div className="col">
                   <Form.Group className="mb-3">
                     <Form.Label>Телефон</Form.Label>
-                    <Form.Control
-                      disabled={isProfileFormDisabled}
-                      type="text"
-                      placeholder="Введите телефон"
-                      onChange={setPhone}
-                      value={form.phone ? form.phone : ''}
+                    <PhoneInput
+                      onChange={formControl.handleChange}
+                      value={formControl?.values.phone || ''}
+                      ref={phoneRef}
                     />
                   </Form.Group>
                 </div>
                 <div className="col">
-                  <Form.Group className="mb-3">
+                  <Form.Group className="mb-3 position-relative">
                     <Form.Label>Компания</Form.Label>
                     <Form.Control
                       disabled={isProfileFormDisabled}
                       type="text"
+                      name="company_name"
                       placeholder="Введите название компании"
-                      onChange={setCompanyName}
-                      value={form.company_name ? form.company_name : ''}
+                      onChange={formControl.handleChange}
+                      value={formControl?.values.company_name || ''}
+                      onBlur={showErrors}
+                      isInvalid={firstFocused.company_name ? company_name : errors.company_name}
+                      minLength={2}
+                      maxLength={30}
+                      required
                     />
+                    <Form.Control.Feedback type="invalid" tooltip>
+                      {firstFocused.company_name ? company_name : errors.company_name}
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </div>
               </div>
             </div>
             <Button variant="outline-primary" type="button" onClick={handleIsProfileFormDisabled}>Редактировать</Button>
-            <Button disabled={isProfileFormDisabled} variant="primary" type="submit" className="m-2 mt-0 mb-0">Сохранить</Button>
+            <Button disabled={isProfileFormDisabled || (!formControl.isValid || !isChanged)} variant="primary" type="submit" className="m-2 mt-0 mb-0">Сохранить</Button>
           </Form>
           <div>&nbsp;</div>
           <h5>Уведомления</h5>

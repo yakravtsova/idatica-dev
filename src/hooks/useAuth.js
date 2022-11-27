@@ -68,15 +68,8 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
-  const finishReg = ({ name, phone, companyName, tariffId }) => {
-    const registerData = {
-        name: name,
-        phone: phone,
-        company_name: companyName,
-        tariffId: tariffId,
-    };
-    console.log(registerData);
-    auth.completeRegister(registerData)
+  const finishReg = (regData) => {
+    auth.completeRegister(regData)
     .then(data => {
         if (data.name) {
           setLoggedIn(true);

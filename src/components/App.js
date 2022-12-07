@@ -5,6 +5,7 @@ import './App.css';
 import StartPage from './StartPage';
 import Products from './Products';
 import ProductsCreate from './ProductsCreate';
+import CreateProducts from './CreateProducts';
 import SideBar from './SideBar';
 import Container from 'react-bootstrap/Container';
 import Profile from "./Profile";
@@ -450,7 +451,6 @@ const handleUpdateCategoryAndProduct = (category, form) => {
                               handleGetProfile={handleGetProfile}
                               onTariffInfoPopupOpen={handleTariffInfoPopupOpen}
                               groups={groups}
-                              getUpdateGroup={getUpdateGroup}
                               handleUpdateGroupUpdater={handleUpdateGroupUpdater}
                               updaters={updaters}
                               getUpdaters={getUpdaters} />

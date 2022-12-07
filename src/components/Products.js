@@ -359,7 +359,8 @@ const Products = ({
         isOpen={isUpdateLinkPopupOpen}
         onClose={handleUpdateLinkPopupOpen}
         handleIndexOfProduct={handleIndexOfProduct}
-        updateUrl={updateUrl} />
+        getUpdateProduct={getUpdateProduct}
+      updateUrl={updateUrl} />
       <DeleteLinkPopup isOpen={isDeleteLinkPopupOpen} onClose={deleteLinkPopupOpen} okButtonAction={removeUrl} />
 
     </Container>

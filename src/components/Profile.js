@@ -12,7 +12,7 @@ import SchedulesAvailable from './SchedulesAvailable';
 import { useFormWithValidation } from '../hooks/useFormWithValidation';
 import PhoneInput from './PhoneInput';
 
-const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdateGroup, updaters, handleUpdateGroupUpdater, getUpdaters }) => {
+const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters, handleUpdateGroupUpdater, getUpdaters }) => {
     const currentUser = useContext(CurrentUserContext);
     const [isProfileFormDisabled, setIsProfileFormDisabled] = useState(true);
     const [isCreateUpdaterPopupOpen, setIsCreateUpdaterPopupOpen] = useState(false);
@@ -32,7 +32,6 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
           phone: currentUser.phone,
           company_name: currentUser.company_name
         });
-        console.log(currentUser)
       }
     },[currentUser, isProfileFormDisabled]);
 
@@ -63,6 +62,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
         phone: phoneRef.current.value,
         company_name: formControl.values.company_name,
       });
+      formControl.resetForm();
       handleIsProfileFormDisabled();
     }
 
@@ -324,7 +324,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, getUpdate
             </p>
           </Modal.Body>
         </Modal>
-        <CreateUpdaterPopup onClose={handleCreateUpdaterPopupOpen} isOpen={isCreateUpdaterPopupOpen} updaters={updaters} handleCreateUpdater={handleCreateUpdater} />
+        <CreateUpdaterPopup onClose={handleCreateUpdaterPopupOpen} isOpen={isCreateUpdaterPopupOpen} handleCreateUpdater={handleCreateUpdater} />
       </>
     )
 }

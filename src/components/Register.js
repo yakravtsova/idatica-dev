@@ -10,25 +10,11 @@ const Register = () => {
   const formControl = useFormWithValidation();
   const [ errors, setErrors ] = useState({});
   const [ firstFocused, setFirstFocused ] = useState({});
-  const [ confirmPasswordError, setConfirmPasswordError ] = useState(false);
 
   const showErrors = (e) => {
     const name = e.target.name;
-    if (name === 'confirmPassword') {
-      setErrors({...errors, [name]: confirmPasswordError ? 'Пароли не совпадают' : ''});
-    }
-    else {
-      setErrors(formControl.errors);
-    }
+    setErrors({...errors, [name]: formControl.errors.name });
     setFirstFocused({...firstFocused, [name]: true});
-  }
-
-  const handleConfirmPasswordChange = (e) => {
-    formControl.handleChange(e);
-    if (formControl?.values?.password !== e.target.value) {
-      setConfirmPasswordError(true)
-    }
-    else setConfirmPasswordError(false);
   }
 
   const handleSubmit = (e) => {
@@ -60,7 +46,7 @@ const Register = () => {
             name="password"
             placeholder="Пароль *"
             onBlur={showErrors}
-            onChange={formControl.handleChange}
+            onChange={formControl.handlePasswordChange}
             value={formControl?.values?.password || ''}
             minLength={8}
             maxLength={30}
@@ -73,15 +59,15 @@ const Register = () => {
         <Form.Group className="mb-2 position-relative" controlId="registerConfirmPassword">
           <Form.Control
             type="password"
-            name="confirmPassword"
+            name="confirm_password"
             placeholder="Повторить пароль *"
             onBlur={showErrors}
-            onChange={handleConfirmPasswordChange}
-            value={formControl?.values?.confirmPassword || ''}
-            isInvalid={firstFocused.confirmPassword ? confirmPasswordError && 'Пароли не совпадают' : errors.confirmPassword}
+            onChange={formControl.handleConfirmPasswordChange}
+            value={formControl?.values?.confirm_password || ''}
+            isInvalid={firstFocused.confirm_password ? formControl.errors.confirm_password : errors.confirm_password}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.confirmPassword ? confirmPasswordError && 'Пароли не совпадают' : errors.confirmPassword}
+            {firstFocused.confirm_password ? formControl.errors.confirm_password : errors.confirm_password}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Check className="mb-5 position-relative">

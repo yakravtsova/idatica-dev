@@ -1,7 +1,7 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import { ToggleButtonGroup, ToggleButton, FormGroup } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 
 const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
@@ -21,7 +21,14 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
       weekdays: '',
       days: '',
       update_time: ''
-    })
+    });
+    setFormErrors({
+      weekdays: '',
+      days: '',
+      update_time: 'Задайте время проверки'
+    });
+    setFirstFocused({});
+    setIsValid(false)
   }, [onClose])
 
   const hasErrors = (object) => {
@@ -39,12 +46,18 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     });
   }
 
+  const showErrors = (e) => {
+    const name = e.target.name;
+    setFirstFocused({...firstFocused, [name]: true});
+  }
+
   const setTime = (e) => {
     const target = e.target;
     const name = target.name;
     const errState = {...formErrors, [name]: target.validationMessage };
     setField(e.target.name, e.target.value);
     setFormErrors(errState);
+    console.log(firstFocused.update_time && formErrors.update_time)
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));
   }
 
@@ -69,7 +82,6 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     }
     setFormErrors(errState);
     setIsValid(formElement.checkValidity() && !hasErrors(errState));
-    console.log(errState)
   }
 
   const handleMonthDayChange = (val) => {
@@ -83,13 +95,12 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     }
     setFormErrors(errState);
     setIsValid(formElement.checkValidity() && !hasErrors(errState));
-    console.log(errState)
   }
 
   const weekdayButtons = () => {
     const buttons = [];
     for (let i=0; i<7; i++) {
-      buttons.push(<ToggleButton key={i} id={`tbg-btn-${i}`} value={i + 1}>{weekdays[i]}</ToggleButton>)
+      buttons.push(<ToggleButton key={i} id={`tbg-btn-${i}`} variant="outline-primary" value={i + 1}>{weekdays[i]}</ToggleButton>)
     }
     return buttons;
   }
@@ -97,7 +108,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
   const monthDayButtons = () => {
     const buttons = [];
     for (let i=0; i<31; i++) {
-      buttons.push(<ToggleButton key={i} id={`btn-${i}`} value={i + 1} className="rounded-0" style={{"width": "51px", "maxWidth": "51px"}}>{i + 1}</ToggleButton>)
+      buttons.push(<ToggleButton key={i} id={`btn-${i}`} variant="outline-primary" value={i + 1} className="rounded-0" style={{"width": "51px", "maxWidth": "51px"}}>{i + 1}</ToggleButton>)
     }
     return buttons;
   }
@@ -116,38 +127,46 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
       <Modal.Body>
         <Form noValidate className="d-flex flex-column align-items-center form-updater" onSubmit={handleSubmit}>
           <div className="d-flex flex-column align-items-center justify-content-center">
-            <Form.Label>Выберите частоту проверки</Form.Label>
-            <Form.Select
-              className="m-2"
-              name="updater_type"
-              onChange={setType}
-              value={form?.updater_type || ''}
-              >
-                <option value={DAILY_UPDATER}>Каждый день</option>
-                <option value={WEEKLY_UPDATER}>Еженедельно</option>
-                <option value={MONTHLY_UPDATER}>Ежемесячно</option>
-            </Form.Select>
+            <Form.Label className="m-1">Выберите частоту проверки</Form.Label>
+              <Form.Select
+                className="mb-3"
+                name="updater_type"
+                onChange={setType}
+                value={form?.updater_type || ''}
+                >
+                  <option value={DAILY_UPDATER}>Каждый день</option>
+                  <option value={WEEKLY_UPDATER}>Еженедельно</option>
+                  <option value={MONTHLY_UPDATER}>Ежемесячно</option>
+              </Form.Select>
             {(form.updater_type === WEEKLY_UPDATER) &&
-              <Form.Label className="d-flex flex-column align-items-center justify-content-center">Выберите в какие дни недели делать проверку
-                <ToggleButtonGroup type="checkbox" onChange={handleWeekDayChange}>
+              <>
+              <Form.Label className="d-flex flex-column align-items-center justify-content-center m-1">Выберите в какие дни недели делать проверку</Form.Label>
+                <ToggleButtonGroup className="mb-3" type="checkbox" onChange={handleWeekDayChange}>
                   {weekdayButtons()}
                 </ToggleButtonGroup>
-              </Form.Label>}
+              </>}
             {(form.updater_type === MONTHLY_UPDATER) &&
               <Form.Label className="d-flex flex-column align-items-center justify-content-center">Выберите по каким числам делать проверку
                 <ToggleButtonGroup type="checkbox" onChange={handleMonthDayChange} className="d-flex flex-wrap flex-start" style={{width: "357px"}}>
                   {monthDayButtons()}
                 </ToggleButtonGroup>
               </Form.Label>}
-            <Form.Label>Выберите время
-              <Form.Control
-                className="m-0"
-                type="time"
-                name="update_time"
-                onChange={setTime}
-                value={form?.update_time || ''}
-                required />
-            </Form.Label>
+            <FormGroup className="position-relative mb-3">
+             <Form.Label className="m-1">Выберите время</Form.Label>
+                <Form.Control
+                  className="m-0"
+                  type="time"
+                  name="update_time"
+                  onBlur={showErrors}
+                  onChange={setTime}
+                  value={form?.update_time || ''}
+                  isInvalid={firstFocused.update_time && formErrors.update_time}
+                  required />
+              <Form.Control.Feedback type="invalid" tooltip>
+                {formErrors.update_time}
+              </Form.Control.Feedback>
+            </FormGroup>
+
             <Button variant="primary" type="submit" disabled={!isValid}>Создать</Button>
           </div>
         </Form>

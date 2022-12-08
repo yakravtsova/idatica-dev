@@ -29,7 +29,6 @@ const ProductsCreate = ({
       product_urls: [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
     });
 
-    const [ validated, setValidated ] = useState(false);
 
     const [ errors, setErrors ] = useState({
     });
@@ -295,10 +294,11 @@ const ProductsCreate = ({
                 <Button variant="btn-outline-primary" className="btn-outline-primary">Добавить из файла</Button>
             </div>
 
-            <Form noValidate onSubmit={handleSubmit} className="product-form" validated={validated}>
+            <Form noValidate onSubmit={handleSubmit} className="product-form">
 
                 <div className="d-flex align-items-center">
                   <Form.Group className="m-1 position-relative flex-grow-1">
+                    <Form.Label className="m-0">Название товара <span className="text-danger">*</span></Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Название *"
@@ -315,6 +315,7 @@ const ProductsCreate = ({
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group className="m-1 position-relative flex-grow-1">
+                    <Form.Label className="m-0">Ваша цена</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ваша цена"
@@ -324,6 +325,7 @@ const ProductsCreate = ({
                     />
                   </Form.Group>
                   <Form.Group className="m-1 position-relative flex-grow-1">
+                    <Form.Label className="m-0">Ваша цена</Form.Label>
                     <Form.Control
                       type="text"
                       placeholder="Ваш артикул"
@@ -333,6 +335,7 @@ const ProductsCreate = ({
                     />
                   </Form.Group>
                   <Form.Group className="m-1 position-relative flex-grow-1">
+                    <Form.Label className="m-0">Группа <span className="text-danger">*</span></Form.Label>
                     <Form.Select
                       value={form?.group_id || ''}
                       name="group_id"
@@ -364,6 +367,7 @@ const ProductsCreate = ({
                     return(
                         <div key={i} className="d-flex align-items-center">
                           <Form.Group className="m-1 position-relative flex-grow-1">
+                            <Form.Label className="m-0">Ссылка на товар <span className="text-danger">*</span></Form.Label>
                             <Form.Control
                               type="url"
                               placeholder="Ссылка на товар *"
@@ -379,6 +383,7 @@ const ProductsCreate = ({
                           </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group className="m-1 position-relative flex-grow-1">
+                            <Form.Label className="m-0">Регион</Form.Label>
                             <Form.Select
                               name="region_id"
                               value={form.product_urls[i].region_id || ''}
@@ -390,6 +395,7 @@ const ProductsCreate = ({
                             </Form.Select>
                           </Form.Group>
                           <Form.Group className="m-1 position-relative flex-grow-1">
+                            <Form.Label className="m-0">Другой регион {!(form.product_urls[i].region_id) && <span className="text-danger">*</span>}</Form.Label>
                             <Form.Control
                               type="text"
                               placeholder={!(form.product_urls[i].region_id) ? 'Другой регион *' : 'Другой регион'}
@@ -405,6 +411,7 @@ const ProductsCreate = ({
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group className="m-1 position-relative flex-grow-1">
+                            <Form.Label className="m-0">Артикул</Form.Label>
                             <Form.Control
                               type="text"
                               placeholder="Артикул"
@@ -429,42 +436,54 @@ const ProductsCreate = ({
                     <Accordion.Header>Дополнительные поля</Accordion.Header>
                     <Accordion.Body>
                       <div className="d-flex align-items-center">
-                        <Form.Control
-                          className="m-1"
-                          name="brand"
-                          type="text"
-                          placeholder="Бренд"
-                          value={form.brand ? form.brand : ''}
-                          onChange={handleChange}
-                        />
-                        <Form.Control
-                          className="m-1"
-                          name="purchase_price"
-                          type="text"
-                          placeholder="Закупочная цена"
-                          value={form.purchase_price ? form.purchase_price : ''}
-                          onChange={handleChange}
-                        />
-                        <Form.Select
-                          className="m-1"
-                          name="category_id"
-                          value={form.category_id ? form.category_id : ''}
-                          onChange={setCategoryId}
-                        >
-                          {categories.map((category, i) => (
-                            <option key={category.id} value={category.id}>{category.name}</option>
-                          ))}
-                          <option value=''>Другая категория</option>
-                        </Form.Select>
-                        <Form.Control
-                          className="m-1"
-                          type="text"
-                          placeholder="Другая категория"
-                          name="category"
-                          value={category.name ? category.name : ''}
-                          onChange={handleCategory}
-                          disabled={!!(form.category_id)}
-                        />
+                        <Form.Group className="m-1 flex-grow-1">
+                          <Form.Label className="m-0">Бренд</Form.Label>
+                          <Form.Control
+                            className="m-1"
+                            name="brand"
+                            type="text"
+                            placeholder="Бренд"
+                            value={form.brand ? form.brand : ''}
+                            onChange={handleChange}
+                          />
+                        </Form.Group>
+                        <Form.Group className="m-1 flex-grow-1">
+                          <Form.Label className="m-0">Закупочная цена</Form.Label>
+                          <Form.Control
+                            className="m-1"
+                            name="purchase_price"
+                            type="text"
+                            placeholder="Закупочная цена"
+                            value={form.purchase_price ? form.purchase_price : ''}
+                            onChange={handleChange}
+                          />
+                        </Form.Group>
+                        <Form.Group className="m-1 flex-grow-1">
+                          <Form.Label className="m-0">Категория</Form.Label>
+                          <Form.Select
+                            className="m-1"
+                            name="category_id"
+                            value={form.category_id ? form.category_id : ''}
+                            onChange={setCategoryId}
+                          >
+                            {categories.map((category, i) => (
+                              <option key={category.id} value={category.id}>{category.name}</option>
+                            ))}
+                            <option value=''>Другая категория</option>
+                          </Form.Select>
+                        </Form.Group>
+                        <Form.Group className="m-1 flex-grow-1">
+                          <Form.Label className="m-0">Категория</Form.Label>
+                          <Form.Control
+                            className="m-1"
+                            type="text"
+                            placeholder="Другая категория"
+                            name="category"
+                            value={category.name ? category.name : ''}
+                            onChange={handleCategory}
+                            disabled={!!(form.category_id)}
+                          />
+                        </Form.Group>
                       </div>
                     </Accordion.Body>
                   </Accordion.Item>

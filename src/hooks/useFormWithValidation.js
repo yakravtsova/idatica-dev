@@ -65,7 +65,7 @@ export function useFormWithValidation() {
     const name = target.name;
     const value = target.value;
     const isError = validator.isURL(value);
-    const errState = {...errors, [name]: !isError ? 'Вы указали некорректную ссылку' : '', custom_region: !values.region_id && !values.current_region ? 'Введите регион' : '' };
+    const errState = {...errors, [name]: !isError ? 'Вы указали некорректную ссылку' : ''/*, custom_region: !values.region_id && !values.current_region ? 'Введите регион' : ''*/ };
     setValues({...values, [name]: value});
     setErrors(errState);
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));

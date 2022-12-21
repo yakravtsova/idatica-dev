@@ -67,7 +67,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
     }
 
     const getDataString = () => {
-      const date = new Date(Date.parse(currentUser.tariff_expiration_date));
+      const date = new Date(Date.parse(currentUser.tariff_ends_at));
       const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
       return `${date.getDate()} ${months[date.getMonth()]}`;
     }

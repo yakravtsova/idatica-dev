@@ -25,7 +25,7 @@ const ProductsCreate = ({
       brand: '',
       purchase_price: '',
       category_id: '',
-      is_active: true,
+      is_active: 'true',
       product_urls: [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
     });
 
@@ -156,7 +156,8 @@ const ProductsCreate = ({
     const handleChange = (e) => {
       const target = e.target;
       const name = target.name;
-      const value = target.type === 'checkbox' ? target.checked : target.value;
+      const value = target.type === 'checkbox' ? target.checked ? 'true' : 'false' : target.value;
+      console.log(value);
       const errState = {...errors, [name]: target.validationMessage };
       setForm({...form, [name]: value});
       setErrors(errState);
@@ -358,7 +359,7 @@ const ProductsCreate = ({
                         type="checkbox"
                         name="is_active"
                         onChange={handleChange}
-                        defaultChecked
+                      //  defaultChecked
                       />
                     </Form.Check>
                 </div>

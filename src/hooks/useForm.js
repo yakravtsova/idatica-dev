@@ -15,6 +15,19 @@ export function useForm(initData) {
     setValues({...values, [name]: value});
   };
 
+  const toBool = (val) => {
+    if (val === '') return '';
+    else return val === '2' ? 'false' : 'true';
+  }
+
+  const handleActivityChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    console.log({...values, [name]: value});
+    setValues({...values, [name]: value});
+  };
+
   const resetForm = useCallback(
     (newValues = {}) => {
       setValues(newValues);
@@ -22,5 +35,5 @@ export function useForm(initData) {
     [setValues]
   );
 
-  return {values, handleChange, setValues, resetForm};
+  return {values, handleChange, handleActivityChange, setValues, resetForm};
 }

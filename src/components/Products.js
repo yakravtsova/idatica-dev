@@ -20,6 +20,7 @@ const Products = ({
   groups,
   categories,
   regions,
+  stores,
   redirectTo,
   getUpdateGroup,
   updateProduct,
@@ -311,6 +312,7 @@ const Products = ({
           groups={groups}
           regions={regions}
           categories={categories}
+          stores={stores}
           setSearchParams={setSearchParams}
           params={params}
           filterProductsByName={filterProductsByName} />

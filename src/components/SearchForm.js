@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 
-const SearchForm = ({ filterAction }) => {
+const SearchForm = ({ setSearchParams, params }) => {
   const [ searchString, setSearchString ] = useState('');
 
   //задать строку для поиска по названию товара
@@ -14,7 +14,8 @@ const SearchForm = ({ filterAction }) => {
   //фильтрация по строке
   const handleSubmit = (e) => {
     e.preventDefault();
-    filterAction(searchString.toLowerCase());
+    let params = {q: searchString};
+    setSearchParams({...params, page: 1});
   }
 
   return(

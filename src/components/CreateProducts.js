@@ -7,14 +7,8 @@ import { useFormWithValidation } from '../hooks/useFormWithValidation'
 
 const CreateProducts = ({
   initData,
-  group,
   groups,
   regions,
-  defaultGroupId,
-  handleUpdateProduct,
-  handleCreateNewProduct,
-  handleCreateCategoryAndProduct,
-  handleUpdateCategoryAndProduct,
   categories }) => {
 
     const [ isProductActive, setIsProductActive ] = useState(true);

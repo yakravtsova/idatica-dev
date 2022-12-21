@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useNavigateSearch } from '../hooks/useNavigateSearch';
 
-const FilterForm = ({ groups, regions, categories, setSearchParams, params }) => {
+const FilterForm = ({ groups, regions, categories, stores, setSearchParams, params }) => {
   const formControl = useForm(params);
   const navigateSearch = useNavigateSearch();
 
@@ -22,14 +22,14 @@ const FilterForm = ({ groups, regions, categories, setSearchParams, params }) =>
     <Form onSubmit={handleSubmit}>
       <Form.Select className="mb-2" name="is_active" onChange={formControl.handleChange} value={formControl?.values?.is_active || ''} >
         <option value=''>Активные/неактивные</option>
-        <option value="1">Активные</option>
-        <option value="2">Неактивные</option>
+        <option value='true'>Активные</option>
+        <option value='false'>Неактивные</option>
       </Form.Select>
       <Form.Select className="mb-2" name="store_id" onChange={formControl.handleChange} value={formControl?.values?.store_id || ''} >
-        <option>Конкурент</option>
-        <option value="1">lavka.yandex.ru</option>
-        <option value="2">vprok.ru</option>
-        <option value="2">5ka.ru</option>
+        <option value=''>Конкурент</option>
+          {stores.map((store, i) => (
+            <option key={store.id} value={store.id}>{store.name}</option>
+          ))}
       </Form.Select>
       <Form.Select className="mb-2" name="region_id"  onChange={formControl.handleChange} value={formControl?.values?.region_id || ''} >
         <option value=''>Регион</option>

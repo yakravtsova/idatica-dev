@@ -28,6 +28,7 @@ import * as userApi from '../utils/userInfoApi';
 import * as tariffApi from '../utils/tariffApi';
 import * as clientsApi from '../utils/clientsApi';
 import * as categoriesApi from '../utils/categoriesApi';
+import * as storesApi from '../utils/storesApi';
 import DeleteGroupPopup from './DeleteGroupPopup';
 import ProtectedRoute from './ProtectedRoute';
 //import { GroupsContext } from '../contexts/GroupsContext';
@@ -44,6 +45,7 @@ const App = () => {
     const [ updaters, setUpdaters ] = useState([]);
     const [ regions, setRegions ] = useState([]);
     const [ categories, setCategories ] = useState([]);
+    const [ stores, setStores ] = useState([]);
     const [ tariffs, setTariffs ] = useState([]);
     const [ isTariffActive, setIsTariffActive ] = useState(false);
     const [ updateProduct, setUpdateProduct ] = useState({});
@@ -67,7 +69,7 @@ const App = () => {
           .then(data => {
             if (data) {
               setCurrentUser(data);
-              setIsTariffActive((new Date().toJSON() < data.tariff_expiration_date));
+              setIsTariffActive((new Date().toJSON() < data.tariff_ends_at));
               setIsSuperuser(data.is_superuser);
               if (data.is_superuser) {
                 clientsApi.getClients()
@@ -84,6 +86,7 @@ const App = () => {
                   handleGetGroups();
                   handleGetCategories();
                   setRegionsList();
+                  handleGetStores();
                 })
             }
           }})
@@ -107,6 +110,14 @@ const App = () => {
           getDefaultGroupId(data);
         })
         .catch(err => console.log(err));
+    }
+
+    const handleGetStores = () => {
+      storesApi.getStores()
+        .then(res => {
+          setStores(res);
+        })
+        .catch(err => console.log(err))
     }
 
     const handleGetCategories = () => {
@@ -196,6 +207,7 @@ const handleCreateCategoryAndProduct = (category, form) => {
   categoriesApi.createCategory(category)
     .then(res => {
       const newForm = {...form, category_id: res.id};
+      setCategories([...categories, category]);
       handleCreateNewProduct(newForm);
     })
     .catch(err => console.log(err))
@@ -206,6 +218,7 @@ const handleUpdateCategoryAndProduct = (category, form) => {
   categoriesApi.createCategory(category)
     .then(res => {
       const newForm = {...form, category_id: res.id};
+      setCategories([...categories, category]);
       handleUpdateProduct(newForm);
     })
     .catch(err => console.log(err))
@@ -397,6 +410,7 @@ const handleUpdateCategoryAndProduct = (category, form) => {
                             groups={groups}
                             regions={regions}
                             categories={categories}
+                            stores={stores}
                             redirectTo={redirectTo}
                             getUpdateGroup={getUpdateGroup}
                             updateProduct={updateProduct}

@@ -2,8 +2,9 @@ import { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import { Accordion, Form } from "react-bootstrap";
-import { TrashFill } from 'react-bootstrap-icons';
+import { ArrowLeft, TrashFill } from 'react-bootstrap-icons';
 import validator from 'validator';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsCreate = ({
   initData,
@@ -25,10 +26,11 @@ const ProductsCreate = ({
       brand: '',
       purchase_price: '',
       category_id: '',
-      is_active: 'true',
+      is_active: true,
       product_urls: [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
     });
 
+    const navigate = useNavigate();
 
     const [ errors, setErrors ] = useState({
     });
@@ -111,7 +113,7 @@ const ProductsCreate = ({
 
     useEffect(() => {
       setIsValid(document.querySelector('.product-form').checkValidity() && !hasErrors(errors))
-      console.log(errors)
+    //  console.log(errors)
     }, [errors])
 
     const hasErrors = (object) => {
@@ -156,10 +158,10 @@ const ProductsCreate = ({
     const handleChange = (e) => {
       const target = e.target;
       const name = target.name;
-      const value = target.type === 'checkbox' ? target.checked ? 'true' : 'false' : target.value;
-      console.log(value);
+      const value = target.type === 'checkbox' ? target.checked ? true : false : target.value;
       const errState = {...errors, [name]: target.validationMessage };
       setForm({...form, [name]: value});
+      console.log({...form, [name]: value});
       setErrors(errState);
     };
 
@@ -292,7 +294,10 @@ const ProductsCreate = ({
         <Container fluid className="bg-white">
             <div className="d-flex align-items-center justify-content-between">
                 <h2>{initData.id ? "Редактирование товара" : "Новый товар"}</h2>
-                <Button variant="btn-outline-primary" className="btn-outline-primary">Добавить из файла</Button>
+                <div>
+                  <Button variant="btn-outline-primary" className="btn-outline-primary">Добавить из файла</Button>
+                  <Button variant="secondary" className="m-2" onClick={() => navigate(-1)}><ArrowLeft /> Назад</Button>
+                </div>
             </div>
 
             <Form noValidate onSubmit={handleSubmit} className="product-form">
@@ -355,7 +360,8 @@ const ProductsCreate = ({
                   </Form.Group>
                     <Form.Check className="m-1">
                       <Form.Check.Input
-                        value={form?.is_active || true}
+                        value={form?.is_active}
+                        checked={form?.is_active}
                         type="checkbox"
                         name="is_active"
                         onChange={handleChange}

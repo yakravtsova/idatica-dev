@@ -344,9 +344,9 @@ const Products = ({
             ))}
 
       <Pagination>
-        <Pagination.First />
+        <Pagination.First onClick={() => goToPage(1)} />
           {paginationList()}
-        <Pagination.Last />
+        <Pagination.Last onClick={() => goToPage(numOfPages)} />
       </Pagination>
 
       <ReportingProblemPopup isOpen={isReportingProblemPopupOpen} onClose={handleReportingProblemPopupOpen} />

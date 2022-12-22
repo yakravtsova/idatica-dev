@@ -113,7 +113,6 @@ const ProductsCreate = ({
 
     useEffect(() => {
       setIsValid(document.querySelector('.product-form').checkValidity() && !hasErrors(errors))
-    //  console.log(errors)
     }, [errors])
 
     const hasErrors = (object) => {

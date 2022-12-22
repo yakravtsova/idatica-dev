@@ -11,7 +11,6 @@ import { InfoCircle } from 'react-bootstrap-icons';
 const Groups = ({
                   groups,
                   updaters,
-                  getGroups,
                   redirectTo,
                   handleCreateNewGroup,
                   handleEditGroupPopupOpen,

@@ -1,7 +1,7 @@
 import { BASE_URL, handleResponse } from "./handleResponse";
 
 export const getClients = () => {
-  return fetch(`${BASE_URL}users/`, {
+  return fetch(`${BASE_URL}admin/users/`, {
     method: 'GET',
     headers: {
       'Accept': 'application/json',

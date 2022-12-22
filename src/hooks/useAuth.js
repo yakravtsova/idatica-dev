@@ -7,11 +7,7 @@ import * as userInfo from '../utils/userInfoApi';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-//  const [user, setUser] = useLocalStorage("user", null);
-  const [loggedIn, setLoggedIn] = useLocalStorage(/*() => {
-    const token = localStorage.getItem('token');
-    return token !== null;
-}*/ "loggedIn", false);
+  const [loggedIn, setLoggedIn] = useLocalStorage("loggedIn", false);
   const navigate = useNavigate();
   const [isRegisterFirstStepOk, setIsRegisterFirstStepOk] = useState(false);
   const [isRegistrationInfoTooltipOpen, setIsRegistrationInfoTooltipOpen] = useState(false);
@@ -26,6 +22,7 @@ export const AuthProvider = ({ children }) => {
     setIsRegistrationInfoTooltipOpen(!isRegistrationInfoTooltipOpen);
   }
 
+  //первая ступень регистрации
   const reg = ({email, password}) => {
     const registerData = {
       email: email,
@@ -35,7 +32,6 @@ export const AuthProvider = ({ children }) => {
       .then(data => {
         if (data) {
           setLoggedIn(false);
-        //  setUser(null);
           navigate('/confirm-email', {replace: true});
           setIsRegisterFirstStepOk(true);
           handleRegistrationInfoTooltipOpen();
@@ -52,6 +48,7 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
+  //вторая ступень регистрации
   const confirm = (data) => {
     auth.confirmEmail(data)
     .then(res => {
@@ -68,28 +65,28 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
+  //третья ступень регистрации
   const finishReg = (regData) => {
     auth.completeRegister(regData)
     .then(data => {
-        if (data.name) {
-          setLoggedIn(true);
-        //  setUser(data.name);
-          navigate('/groups', {replace: true});
-        }
-        else {
-          setLoggedIn(false);
-        //  setUser(null);
-          setIsRegisterFirstStepOk(false);
-          handleRegistrationInfoTooltipOpen();
-          }
-        })
-    .catch(err => {
+      if (data.name) {
+        setLoggedIn(true);
+        navigate('/groups', {replace: true});
+      }
+      else {
+        setLoggedIn(false);
         setIsRegisterFirstStepOk(false);
         handleRegistrationInfoTooltipOpen();
-        console.log(err);
+      }
     })
-}
+    .catch(err => {
+      setIsRegisterFirstStepOk(false);
+      handleRegistrationInfoTooltipOpen();
+      console.log(err);
+    })
+  }
 
+  //авторизация
   const login = ({email, password}) => {
     auth.authorize(email, password)
       .then(data => {
@@ -99,13 +96,12 @@ export const AuthProvider = ({ children }) => {
               if (info.is_superuser) {
                 setLoggedIn(true);
                 navigate('/clients', {replace: true});
-                console.log('clients')
               }
               else {
+                //проверка на завершённость регистрации. В последней версии бэка добавлено поле reg_status, где можно это выяснить без плясок.
                 if (info.name /* && info.company_name && info.tariff.id*/) {
                   setLoggedIn(true);
                   navigate('/groups', {replace: true});
-                  console.log('groups')
                 }
                 else {
                   setLoggedIn(false);
@@ -124,15 +120,16 @@ export const AuthProvider = ({ children }) => {
       });
   };
 
+  //восстановление пароля. Не реализовано.
   const recoveryPass = (email) => {
     console.log(email);
   }
 
+  //выход
   const logout = () => {
     setLoggedIn(false);
-  //  setUser(null);
     localStorage.removeItem('token');
-    navigate("/start", { replace: true });
+    navigate("/", { replace: true });
   };
 
   const value = useMemo(

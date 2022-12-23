@@ -46,7 +46,6 @@ export function useFormWithValidation() {
     setValues({...values, [name]: value});
     setErrors(formErrState);
     setIsValid(target.closest("form").checkValidity() && !hasErrors(formErrState));
-    console.log(formErrState)
   }
 
   const handleConfirmPasswordChange = (e) => {
@@ -57,7 +56,6 @@ export function useFormWithValidation() {
     setValues({...values, [name]: value});
     setErrors(errState);
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));
-    console.log(errState)
   }
 
   const handleUrlChange = (e) => {
@@ -89,7 +87,6 @@ export function useFormWithValidation() {
     setValues({...values, [name]: value});
     setErrors(errState);
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));
-    console.log(errState);
   }
 
   const resetForm = useCallback(

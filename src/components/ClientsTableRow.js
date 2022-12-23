@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { PencilFill, TrashFill } from 'react-bootstrap-icons';
 
@@ -8,7 +8,6 @@ const ClientsTableRow = ({ client }) => {
 
 const getDataString = (jsonDate) => {
   const date = new Date(Date.parse(jsonDate));
-  const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
   return date.toLocaleDateString();
 }
 
@@ -18,10 +17,11 @@ const getDataString = (jsonDate) => {
       <td>{clientState.tariff?.name}</td>
       <td>{clientState.tariff_expiration_date ? getDataString(clientState?.tariff_expiration_date) : 'Нет данных'}</td>
       <td>
-                <Form.Check
-                  checked={clientState.tariff?.is_active}
-                  type="switch"
-                /></td>
+        <Form.Check
+          checked={clientState.tariff?.is_active}
+          type="switch"
+        />
+      </td>
       <td>{clientState.info?.payment_info}</td>
       <td>{clientState.info?.number}</td>
       <td><Button size="sm" variant="light"><PencilFill/></Button></td>

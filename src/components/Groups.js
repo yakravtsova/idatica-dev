@@ -30,15 +30,15 @@ const Groups = ({
   }, [groups, handleCreateNewGroup])
 
   const { name, updater_id } = formControl.errors;
-  const [ errors, setErrors ] = useState({});
   const [ firstFocused, setFirstFocused ] = useState({});
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors(formControl.errors);
     setFirstFocused({...firstFocused, [name]: true});
   }
 
+  //создание группы, сброс формы
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = {...formControl.values, is_default: true};
@@ -46,9 +46,8 @@ const Groups = ({
     formControl.resetForm();
   }
 
-//фильтрация стейта по строке
+  //фильтрация стейта по строке
   const filterGroupsByName = (searchStr) => {
-  //  getGroups(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
     setGroupsState(state => state.filter(g => g.name.toLowerCase().includes(searchStr)));
   }
 
@@ -70,11 +69,11 @@ const Groups = ({
                 value={formControl.values?.name || ''}
                 onBlur={showErrors}
                 onChange={formControl.handleChange}
-                isInvalid={firstFocused.name ? name : errors.name}
+                isInvalid={firstFocused.name && name}
                 required
               />
               <Form.Control.Feedback type="invalid" tooltip>
-                {firstFocused.name ? name : errors.name}
+                {firstFocused.name && name}
               </Form.Control.Feedback>
             </FormGroup>
             <FormGroup className="m-1 position-relative">
@@ -83,7 +82,7 @@ const Groups = ({
                 onBlur={showErrors}
                 onChange={formControl.handleChange}
                 value={formControl.values?.updater_id || ''}
-                isInvalid={firstFocused.updater_id ? updater_id : errors.updater_id}
+                isInvalid={firstFocused.updater_id && updater_id}
                 required
               >
                 <option value=''>Частота проверки *</option>
@@ -92,7 +91,7 @@ const Groups = ({
                 ))}
               </Form.Select>
               <Form.Control.Feedback type="invalid" tooltip>
-                {firstFocused.updater_id ? updater_id : errors.updater_id}
+                {firstFocused.updater_id && updater_id}
               </Form.Control.Feedback>
             </FormGroup>
             <Button variant="primary" className="m-1" type="submit" disabled={!formControl.isValid}>Создать</Button>
@@ -151,7 +150,7 @@ const Groups = ({
         bodyText="Группа удаляется со всеми товарами без возможности восстановления. Вы хотите удалить группу?"
       />
     </Container>
-)
+  )
 }
 
 export default Groups;

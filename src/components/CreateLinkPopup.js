@@ -5,7 +5,7 @@ import { useFormWithValidation } from '../hooks/useFormWithValidation';
 const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
 
   const formControl = useFormWithValidation();
-  const [ errors, setErrors ] = useState({});
+  const { url, custom_region } = formControl.errors;
   const [ firstFocused, setFirstFocused ] = useState({});
 
   useEffect(() => {
@@ -15,12 +15,13 @@ const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
     })
   }, [isOpen])
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors(formControl.errors);
     setFirstFocused({...firstFocused, [name]: true});
   }
 
+  //закрыть попап
   const onPopupClose = () => {
     formControl.resetForm();
     setFirstFocused({});
@@ -30,10 +31,8 @@ const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     createUrl(formControl.values);
-    console.log(formControl.values);
     onPopupClose();
   }
-
 
   return (
     <Modal show={isOpen} onHide={onPopupClose}>
@@ -50,10 +49,10 @@ const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
               onBlur={showErrors}
               onChange={formControl.handleUrlChange}
               value={formControl?.values?.url || ''}
-              isInvalid={firstFocused.url ? formControl.errors.url : errors.url}
+              isInvalid={firstFocused.url && url}
               required />
             <Form.Control.Feedback type="invalid" tooltip>
-              {firstFocused.url ? formControl.errors.url : errors.url}
+              {firstFocused.url && url}
             </Form.Control.Feedback>
           </Form.Group>
           <div className="d-flex">
@@ -77,9 +76,9 @@ const CreateLinkPopup = ({ isOpen, onClose, regions, createUrl }) => {
                 onChange={formControl.handleCustomRegionChange}
                 value={formControl?.values?.custom_region || ''}
                 disabled={!!formControl?.values?.region_id}
-                isInvalid={firstFocused.custom_region ? formControl.errors.custom_region : errors.custom_region} />
+                isInvalid={firstFocused.custom_region && custom_region} />
               <Form.Control.Feedback type="invalid" tooltip>
-                {firstFocused.custom_region ? formControl.errors.custom_region : errors.custom_region}
+                {firstFocused.custom_region && custom_region}
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Control

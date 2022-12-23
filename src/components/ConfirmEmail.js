@@ -7,12 +7,12 @@ const ConfirmEmail = () => {
   const {confirm} = useAuth();
 
   const formControl = useFormWithValidation();
-  const [ errors, setErrors ] = useState({});
+  const { confirm_code } = formControl.errors;
   const [ firstFocused, setFirstFocused ] = useState({});
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors(formControl.errors);
     setFirstFocused({...firstFocused, [name]: true});
   }
 
@@ -20,7 +20,6 @@ const ConfirmEmail = () => {
     e.preventDefault();
     confirm(formControl.values);
   }
-
 
   return(
     <Container fluid className="vw-100 vh-100 d-flex flex-column justify-content-center align-items-center">
@@ -35,10 +34,10 @@ const ConfirmEmail = () => {
             onChange={formControl.handleChange}
             minLength={8}
             maxLength={8}
-            isInvalid={firstFocused.confirm_code ? formControl.errors.confirm_code : errors.confirm_code}
+            isInvalid={firstFocused.confirm_code && confirm_code}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.confirm_code ? formControl.errors.confirm_code : errors.confirm_code}
+            {firstFocused.confirm_code && confirm_code}
           </Form.Control.Feedback>
         </Form.Group>
         <Button type="submit" className="align-self-center" disabled={!formControl.isValid}>Отправить</Button>

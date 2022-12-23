@@ -20,7 +20,6 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
 
     const formControl = useFormWithValidation();
     const { name, company_name } = formControl.errors;
-    const [ errors, setErrors ] = useState({});
     const [ firstFocused, setFirstFocused ] = useState({});
     const [ isChanged, setIsChanged ] = useState(false);
 
@@ -48,15 +47,14 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
       }
     }, [isProfileFormDisabled])
 
+    //выводит сообщения об ошибках при onBlur
     const showErrors = (e) => {
       const name = e.target.name;
-      setErrors(formControl.errors);
       setFirstFocused({...firstFocused, [name]: true});
     }
 
     const handleSubmit = (e) => {
       e.preventDefault();
-
       handleUpdateProfile({
         name: formControl.values.name,
         phone: phoneRef.current.value,
@@ -66,22 +64,24 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
       handleIsProfileFormDisabled();
     }
 
+    //возвращает дату в формате 'ДД месяца'
     const getDataString = () => {
       const date = new Date(Date.parse(currentUser.tariff_ends_at));
       const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
       return `${date.getDate()} ${months[date.getMonth()]}`;
     }
 
+    //меняет доступность для редактирования формы данных пользователя
     const handleIsProfileFormDisabled = () => {
       setIsProfileFormDisabled(!isProfileFormDisabled);
       setFirstFocused({});
-      setErrors({});
     }
 
     const handleCreateUpdaterPopupOpen = () => {
       setIsCreateUpdaterPopupOpen(!isCreateUpdaterPopupOpen);
     }
 
+    //создать апдейтер
     const handleCreateUpdater = (data) => {
       updatersApi.createUpdater(data)
         .then(res => {
@@ -91,6 +91,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
         .catch(err => console.log(err))
     }
 
+    //удалить апдейтер
     const handleDeleteUpdater = (updaterId) => {
       updatersApi.deleteUpdater(updaterId)
         .then(res => {
@@ -151,13 +152,13 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
                       onChange={formControl.handleChange}
                       value={formControl?.values.name || ''}
                       onBlur={showErrors}
-                      isInvalid={firstFocused.name ? name : errors.name}
+                      isInvalid={firstFocused.name && name}
                       minLength={2}
                       maxLength={30}
                       required
                     />
                     <Form.Control.Feedback type="invalid" tooltip>
-                      {firstFocused.name ? name : errors.name}
+                      {firstFocused.name && name}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>
@@ -196,13 +197,13 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
                       onChange={formControl.handleChange}
                       value={formControl?.values.company_name || ''}
                       onBlur={showErrors}
-                      isInvalid={firstFocused.company_name ? company_name : errors.company_name}
+                      isInvalid={firstFocused.company_name && company_name}
                       minLength={2}
                       maxLength={30}
                       required
                     />
                     <Form.Control.Feedback type="invalid" tooltip>
-                      {firstFocused.company_name ? company_name : errors.company_name}
+                      {firstFocused.company_name && company_name}
                     </Form.Control.Feedback>
                   </Form.Group>
                 </div>

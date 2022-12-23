@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 
-const SearchForm = ({ setSearchParams, params }) => {
+const SearchForm = ({ setSearchParams }) => {
   const [ searchString, setSearchString ] = useState('');
 
   //задать строку для поиска по названию товара

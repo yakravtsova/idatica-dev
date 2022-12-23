@@ -72,7 +72,6 @@ const App = () => {
               clientsApi.getClients()
               .then(data => {
                 setClients(data.items);
-                console.log(data.items);
               })
               .catch(err => console.log(err));
               }
@@ -245,6 +244,7 @@ const App = () => {
       .catch(err => console.log(err));
   }
 
+  //редактировать группу
   const handleUpdateGroup = (form) => {
     groupsApi.updateGroup(updateGroup.id, form)
       .then(data => {
@@ -263,6 +263,7 @@ const App = () => {
       .catch(err => console.log(err));
   }
 
+  //редактировать апдейтер
   const handleUpdateGroupUpdater = (group, form) => {
     const oldUpdaterId = group.updater.id;
     groupsApi.updateGroup(group.id, form)
@@ -291,6 +292,7 @@ const App = () => {
       .catch(err => console.log(err));
   }
 
+  //изменение стейта групп при активации/деактивации группы
   const changeActivityGroup = (group) => {
     const newGroups = groups.map(g => {
       if (g.id === group.id) {
@@ -301,6 +303,8 @@ const App = () => {
     setGroups(newGroups);
   }
 
+
+  //активация/деактивация группы
   const handleChangeActivityGroup = (group) => {
     if (group.is_active) {
       groupsApi.deactivateGroup(group.id)
@@ -311,9 +315,10 @@ const App = () => {
       groupsApi.activateGroup(group.id)
         .then(res => changeActivityGroup(group))
         .catch(err => console.log(err))
-      }
     }
+  }
 
+  //сделать группу по умолчанию
   const handleIsDefaultGroup = (group) => {
     groupsApi.setDefaultGroup(group.id)
       .then(res => {
@@ -328,6 +333,7 @@ const App = () => {
       .catch(err => console.log(err))
   }
 
+  //создать новую группу
   const handleCreateNewGroup = (form) => {
     groupsApi.createGroup(form)
       .then(data => {
@@ -339,6 +345,7 @@ const App = () => {
       .catch(err => console.log(err));
   }
 
+  //удалить группу
   const handleDeleteGroup = () => {
     const groupId = updateGroup.id;
     groupsApi.deleteGroup(groupId)
@@ -355,6 +362,7 @@ const App = () => {
       .catch(err => console.log(err));
   }
 
+  //получить список регионов
   const setRegionsList = () => {
     regionsApi.getRegions()
     .then(data => setRegions(data))
@@ -369,7 +377,6 @@ const App = () => {
           <Route path="/products" element={
             <ProtectedRoute>
               <Products
-                group={updateGroup}
                 groups={groups}
                 regions={regions}
                 categories={categories}
@@ -416,7 +423,7 @@ const App = () => {
                     getUpdateGroup={getUpdateGroup}
                     handleChangeActivityGroup={handleChangeActivityGroup}
                     handleIsDefaultGroup={handleIsDefaultGroup}
-                    getUpdateProduct={getUpdateProduct} /*isDeletePopupOpen={isDeletePopupOpen} handleDeletePopupOpen={handleDeletePopupOpen}*/
+                    getUpdateProduct={getUpdateProduct}
                   /> :
                   <ExpiredTariff />
                 }

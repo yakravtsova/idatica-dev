@@ -10,12 +10,11 @@ const Login = ({ handleReset }) => {
   const { login } = useAuth();
   const formControl = useFormWithValidation();
   const { email, password } = formControl.errors;
-  const [ errors, setErrors ] = useState({});
   const [ firstFocused, setFirstFocused ] = useState({});
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors(formControl.errors);
     setFirstFocused({...firstFocused, [name]: true});
   }
 
@@ -39,11 +38,11 @@ const Login = ({ handleReset }) => {
             onBlur={showErrors}
             onChange={formControl.handleEmailChange}
             value={formControl?.values?.email || ''}
-            isInvalid={firstFocused.email ? email : errors.email}
+            isInvalid={firstFocused.email && email}
             required
           />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.email ? email : errors.email}
+            {firstFocused.email && email}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-4 position-relative" controlId="registerPassword">

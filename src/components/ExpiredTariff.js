@@ -11,37 +11,37 @@ const ExpiredTariff = () => {
       <div className="d-flex justify-content-center">
         <Button variant="primary" className="m-1" onClick={logout}>Выйти</Button>
         <OverlayTrigger
-                        rootClose
-                        trigger="click"
-                        placement="right"
-                        overlay={
-                            <Popover>
-                                <Popover.Body>
-                                    <div className="d-flex flex-column align-items-center">
-                                        <Link
-                                            to='#'
-                                            onClick={(e) => {
-                                                window.location.href = "mailto:manager@company.com";
-                                                e.preventDefault();
-                                            }}
-                                        >
-                                            Написать менеджеру
-                                        </Link>
-                                        <Link
-                                            to='#'
-                                            onClick={(e) => {
-                                                window.location.href = "tel:+99999999999";
-                                                e.preventDefault();
-                                            }}
-                                        >
-                                            Позвонить
-                                        </Link>
-                                    </div>
-                                </Popover.Body>
-                            </Popover>
-                        }>
-                        <Button variant="outline-primary" className="m-1">Пополнить счёт</Button>
-                    </OverlayTrigger>
+          rootClose
+          trigger="click"
+          placement="right"
+          overlay={
+            <Popover>
+              <Popover.Body>
+                <div className="d-flex flex-column align-items-center">
+                  <Link
+                    to='#'
+                    onClick={(e) => {
+                      window.location.href = "mailto:manager@company.com";
+                      e.preventDefault();
+                    }}
+                  >
+                    Написать менеджеру
+                  </Link>
+                  <Link
+                    to='#'
+                    onClick={(e) => {
+                      window.location.href = "tel:+99999999999";
+                      e.preventDefault();
+                    }}
+                  >
+                    Позвонить
+                  </Link>
+                </div>
+              </Popover.Body>
+            </Popover>
+          }>
+          <Button variant="outline-primary" className="m-1">Пополнить счёт</Button>
+        </OverlayTrigger>
       </div>
     </Container>
   );

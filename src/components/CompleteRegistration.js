@@ -1,5 +1,4 @@
-import { useRef } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
 import { useFormWithValidation } from '../hooks/useFormWithValidation';
@@ -9,14 +8,13 @@ import './CompleteRegistration.css';
 const CompleteRegistration = ({ tariffs }) => {
   const formControl = useFormWithValidation();
   const { name, company_name, tariffId } = formControl.errors;
-  const [ errors, setErrors ] = useState({});
   const [ firstFocused, setFirstFocused ] = useState({});
   const {finishReg} = useAuth();
   const phoneRef = useRef();
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors(formControl.errors);
     setFirstFocused({...firstFocused, [name]: true});
   }
 
@@ -43,12 +41,12 @@ const CompleteRegistration = ({ tariffs }) => {
               onChange={formControl.handleChange}
               value={formControl?.values.name || ''}
               onBlur={showErrors}
-              isInvalid={firstFocused.name ? name : errors.name}
+              isInvalid={firstFocused.name && name}
               minLength={2}
               maxLength={30}
               required />
             <Form.Control.Feedback type="invalid" tooltip>
-              {firstFocused.name ? name : errors.name}
+              {firstFocused.name && name}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-2 position-relative">
@@ -66,13 +64,13 @@ const CompleteRegistration = ({ tariffs }) => {
                 onChange={formControl.handleChange}
                 value={formControl?.values.company_name || ''}
                 onBlur={showErrors}
-                isInvalid={firstFocused.company_name ? company_name : errors.company_name}
+                isInvalid={firstFocused.company_name && company_name}
                 minLength={2}
                 maxLength={30}
                 required
               />
               <Form.Control.Feedback type="invalid" tooltip>
-                {firstFocused.company_name ? company_name : errors.company_name}
+                {firstFocused.company_name && company_name}
               </Form.Control.Feedback>
           </Form.Group>
           <Form.Group className="mb-5 position-relative">
@@ -81,7 +79,7 @@ const CompleteRegistration = ({ tariffs }) => {
               onBlur={showErrors}
               onChange={formControl.handleChange}
               value={formControl.values?.tariffId || ''}
-              isInvalid={firstFocused.tariffId ? tariffId : errors.tariffId}
+              isInvalid={firstFocused.tariffId && tariffId}
               required>
                 <option value=''>Тариф *</option>
                 {tariffs.map((t, i) => (
@@ -89,7 +87,7 @@ const CompleteRegistration = ({ tariffs }) => {
                 ))}
             </Form.Select>
             <Form.Control.Feedback type="invalid" tooltip>
-              {firstFocused.tariffId ? tariffId : errors.tariffId}
+              {firstFocused.tariffId && tariffId}
             </Form.Control.Feedback>
           </Form.Group>
           <Button type="submit" className="align-self-center" disabled={!formControl.isValid}>Завершить регистрацию</Button>

@@ -5,7 +5,7 @@ import { useFormWithValidation } from '../hooks/useFormWithValidation';
 const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateProduct, handleIndexOfProduct, updateUrl }) => {
 
   const formControl = useFormWithValidation();
-  const [ errors, setErrors ] = useState({});
+  const { url, custom_region } = formControl.errors;
   const [ firstFocused, setFirstFocused ] = useState({});
 
   useEffect(() => {
@@ -22,26 +22,26 @@ const UpdateLinkPopup = ({ initData, regions, index, isOpen, onClose, getUpdateP
 
   }, [isOpen, index, initData])
 
-const showErrors = (e) => {
-  const name = e.target.name;
-  setErrors(formControl.errors);
-  setFirstFocused({...firstFocused, [name]: true});
-}
+  //выводит сообщения об ошибках при onBlur
+  const showErrors = (e) => {
+    const name = e.target.name;
+    setFirstFocused({...firstFocused, [name]: true});
+  }
 
-const onPopupClose = () => {
-  formControl.resetForm();
-  setFirstFocused({});
-  getUpdateProduct({});
-  handleIndexOfProduct(null);
-  onClose();
-}
+  //всё чистится, попап закрывается
+  const onPopupClose = () => {
+    formControl.resetForm();
+    setFirstFocused({});
+    getUpdateProduct({});
+    handleIndexOfProduct(null);
+    onClose();
+  }
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  updateUrl(formControl.values);
-  console.log(formControl.values);
-  onPopupClose();
-}
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updateUrl(formControl.values);
+    onPopupClose();
+  }
 
   return (
     <Modal show={isOpen} onHide={onPopupClose}>
@@ -58,10 +58,10 @@ const handleSubmit = (e) => {
             onBlur={showErrors}
             onChange={formControl.handleUrlChange}
             value={formControl?.values?.url || ''}
-            isInvalid={firstFocused.url ? formControl.errors.url : errors.url}
+            isInvalid={firstFocused.url && url}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.url ? formControl.errors.url : errors.url}
+            {firstFocused.url && url}
           </Form.Control.Feedback>
         </Form.Group>
         <div className="d-flex">
@@ -85,9 +85,9 @@ const handleSubmit = (e) => {
               onChange={formControl.handleCustomRegionChange}
               value={formControl?.values?.custom_region || ''}
               disabled={!!formControl?.values?.region_id}
-              isInvalid={firstFocused.custom_region ? formControl.errors.custom_region : errors.custom_region} />
+              isInvalid={firstFocused.custom_region && custom_region} />
             <Form.Control.Feedback type="invalid" tooltip>
-              {firstFocused.custom_region ? formControl.errors.custom_region : errors.custom_region}
+              {firstFocused.custom_region && custom_region}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Control

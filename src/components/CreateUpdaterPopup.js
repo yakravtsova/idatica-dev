@@ -31,6 +31,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     setIsValid(false)
   }, [onClose])
 
+  //функция возвращает true, если в аргументе есть непустые поля
   const hasErrors = (object) => {
     let has = false;
     for (let key in object) {
@@ -39,6 +40,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     return Boolean(has);
   }
 
+  //задаёт полю field значение value
   const setField = (field, value) => {
     setForm({
       ...form,
@@ -46,21 +48,23 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     });
   }
 
+  //выводит сообщения об ошибках при onBlur
   const showErrors = (e) => {
     const name = e.target.name;
     setFirstFocused({...firstFocused, [name]: true});
   }
 
+  //время проверки
   const setTime = (e) => {
     const target = e.target;
     const name = target.name;
     const errState = {...formErrors, [name]: target.validationMessage };
     setField(e.target.name, e.target.value);
     setFormErrors(errState);
-    console.log(firstFocused.update_time && formErrors.update_time)
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));
   }
 
+  //тип апдейтера
   const setType = (e) => {
     const target = e.target;
     const name = target.name;
@@ -71,6 +75,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     setIsValid(target.closest("form").checkValidity() && !hasErrors(errState));
   }
 
+  //выбрать дни недели для проверки
   const handleWeekDayChange = (val) => {
     setField('weekdays', val);
     let errState;
@@ -84,6 +89,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     setIsValid(formElement.checkValidity() && !hasErrors(errState));
   }
 
+  //выбрать дни месяца для проверки
   const handleMonthDayChange = (val) => {
     setField('days', val);
     let errState;
@@ -97,6 +103,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     setIsValid(formElement.checkValidity() && !hasErrors(errState));
   }
 
+  //кнопки дней недели
   const weekdayButtons = () => {
     const buttons = [];
     for (let i=0; i<7; i++) {
@@ -105,6 +112,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
     return buttons;
   }
 
+  //кнопки дней месяца
   const monthDayButtons = () => {
     const buttons = [];
     for (let i=0; i<31; i++) {
@@ -166,7 +174,6 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
                 {formErrors.update_time}
               </Form.Control.Feedback>
             </FormGroup>
-
             <Button variant="primary" type="submit" disabled={!isValid}>Создать</Button>
           </div>
         </Form>

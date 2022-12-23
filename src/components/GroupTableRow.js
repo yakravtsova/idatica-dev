@@ -5,13 +5,13 @@ import { useNavigateSearch } from '../hooks/useNavigateSearch';
 
 const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, handleChangeActivityGroup, handleIsDefaultGroup, handleEditGroupPopupOpen, handleDeleteGroupPopupOpen }) => {
   const [groupState, setGroupState] = useState(group);
-  const [isUpdatingAnabledState, setIsUpdatingAnabledState] = useState(group.isUpdatingAnabled);
   const navigateSearch = useNavigateSearch();
 
   useEffect(() => {
     setGroupState(group)
   }, [getUpdateGroup, group])
 
+  //активация/деактивация группы
   const handleChangeActivity = () => {
     handleChangeActivityGroup(groupState);
     setGroupState({
@@ -20,35 +20,35 @@ const GroupTableRow = ({ group, redirectTo, getUpdateGroup, getUpdateProduct, ha
     });
   }
 
+  //сделать группой по умолчанию
   const handleIsDefaultChange = () => {
     handleIsDefaultGroup(groupState);
   }
 
+  //открыть попап редактирования группы
   const editGroupPopupOpen = () => {
     getUpdateGroup(groupState);
     handleEditGroupPopupOpen();
   }
 
+  //редирект на добавление продукта в группу по нажатию на кнопку "+"
   const handleCreateProduct = () => {
     getUpdateGroup(groupState);
     getUpdateProduct({});
-    console.log(groupState);
     redirectTo('/create-product');
   }
 
+  //открыть попап удаления группы
   const deleteGroupPopupOpen = () => {
     getUpdateGroup(groupState);
     handleDeleteGroupPopupOpen();
 
   }
 
+  //редирект на товары, отфильтрованные по группе
   const handleGroupProductsOutput = () => {
-  //  getUpdateGroup(groupState);
-  //  redirectTo('/products');
     navigateSearch('/products', { group_id: groupState.id })
   }
-
-
 
   return(
     <tr>

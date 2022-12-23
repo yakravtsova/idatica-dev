@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 const ProfileTableRow = ({ group, updaters, handleUpdateGroupUpdater }) => {
   const [ groupState, setGroupState ] = useState(group);
@@ -19,6 +19,7 @@ const ProfileTableRow = ({ group, updaters, handleUpdateGroupUpdater }) => {
     })
   }, [group])
 
+  //редактировать апдейтер
   const handleChangeUpdater = (e) => {
     setField(e);
     if (e.target.value !== group.updater.id) {

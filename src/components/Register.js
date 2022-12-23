@@ -8,12 +8,11 @@ import { useFormWithValidation } from '../hooks/useFormWithValidation';
 const Register = () => {
   const { reg } = useAuth();
   const formControl = useFormWithValidation();
-  const [ errors, setErrors ] = useState({});
+  const { email, password, confirm_password } = formControl.errors;
   const [ firstFocused, setFirstFocused ] = useState({});
 
   const showErrors = (e) => {
     const name = e.target.name;
-    setErrors({...errors, [name]: formControl.errors.name });
     setFirstFocused({...firstFocused, [name]: true});
   }
 
@@ -34,10 +33,10 @@ const Register = () => {
             onBlur={showErrors}
             onChange={formControl.handleEmailChange}
             value={formControl?.values?.email || ''}
-            isInvalid={firstFocused.email ? formControl.errors.email : errors.email}
+            isInvalid={firstFocused.email && email}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.email ? formControl.errors.email : errors.email}
+            {firstFocused.email && email}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-2 position-relative" controlId="registerPassword">
@@ -50,10 +49,10 @@ const Register = () => {
             value={formControl?.values?.password || ''}
             minLength={8}
             maxLength={30}
-            isInvalid={firstFocused.password ? formControl.errors.password : errors.password}
+            isInvalid={firstFocused.password && password}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.password ? formControl.errors.password : errors.password}
+            {firstFocused.password && password}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-2 position-relative" controlId="registerConfirmPassword">
@@ -64,10 +63,10 @@ const Register = () => {
             onBlur={showErrors}
             onChange={formControl.handleConfirmPasswordChange}
             value={formControl?.values?.confirm_password || ''}
-            isInvalid={firstFocused.confirm_password ? formControl.errors.confirm_password : errors.confirm_password}
+            isInvalid={firstFocused.confirm_password && confirm_password}
             required />
           <Form.Control.Feedback type="invalid" tooltip>
-            {firstFocused.confirm_password ? formControl.errors.confirm_password : errors.confirm_password}
+            {firstFocused.confirm_password && confirm_password}
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Check className="mb-5 position-relative">

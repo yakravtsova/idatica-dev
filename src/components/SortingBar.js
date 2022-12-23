@@ -19,6 +19,7 @@ const SortingBar = ({ setSearchParams, removeSearchParams, view }) => {
   }
 
   useEffect(() => {
+    //надо ещё сделать, чтобы при обновлении страницы состояния кнопок отображали сортировку, если она применена.
     setSortLinksList(linkListBlank)
   }, [])
 
@@ -36,11 +37,13 @@ const SortingBar = ({ setSearchParams, removeSearchParams, view }) => {
     removeSearchParams(['sort_by', 'sort_order']);
   }, [sortLinksList])
 
+  //переключать состояния кнопок
   const toggleLinkState = (link) => {
     const newState = {...linkListBlank, [link]: (sortLinksList[link] + 1) % 3};
     setSortLinksList(newState);
   }
 
+  //менять иконки в зависимости от состояния кнопок
   const iconState = (state) => {
     if (state === UNSORTED) {
       return <ArrowDownUp />;

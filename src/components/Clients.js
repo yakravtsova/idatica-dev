@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { Container, Form, InputGroup, Button, Table } from "react-bootstrap";
-import { TrashFill } from "react-bootstrap-icons";
 import ClientsTableRow from "./ClientsTableRow";
-// import * as clientsApi from '../utils/clientsApi';
 
 const Clients = ({clients}) => {
   const [ clientsState, setClientsState ] = useState(clients);
-//  const [ clients, setClients ] = useState([]);
- useEffect(() => {
-  setClientsState(clients);
-  console.log(clients);
-}, [clients])
+  useEffect(() => {
+    setClientsState(clients);
+    console.log(clients);
+  }, [clients])
 
   return(
     <Container fluid className="bg-white">

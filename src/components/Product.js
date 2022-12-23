@@ -23,7 +23,8 @@ const Product = ({
   handleReportingProblemPopupOpen,
   getUpdateProduct,
   handleIndexOfProduct,
-  handleUpdateLinkPopupOpen }) => {
+  handleUpdateLinkPopupOpen
+}) => {
   const [isMenuPopupOpen, setIsMenuPopupOpen] = useState(false);
   const [ isChecked, setIsChecked ] = useState(false);
   const [ productState, setProductState ] = useState(productData);
@@ -45,6 +46,7 @@ const Product = ({
     navigate("/create-product", {replace: false})
   }
 
+  //добавляет/удаляет id продукта в массив на удаление
   const handleCheck = () => {
     setIsChecked(!isChecked);
     checkProduct(isChecked, productState.id)
@@ -52,11 +54,10 @@ const Product = ({
 
   const handleDeleteProductPopupOpen = () => {
     handleDeleteProductId(productData.id);
-    console.log(productData.id);
     deleteProductPopupOpen();
   }
 
-  ///////////
+  //функция выделяет из url доменное имя
   const urlLabel = (url) => {
     if (!url.indexOf('https://')) {
       let newUrl = url.substring(8, url.indexOf('/', 8));
@@ -194,17 +195,6 @@ const Product = ({
             </tr>
           </thead>
          <tbody>
-
-          {/*  {productState.productUrls.map((url, i) => (
-              <UrlTableRow
-                key={url.id}
-                basePrice={productState.basePrice}
-                productUrl={url}
-                handleReportingProblemPopupOpen={handleReportingProblemPopupOpen}
-                handleEditLinkPopupOpen={handleEditLinkPopupOpen}
-                deleteLinkPopupOpen={deleteLinkPopupOpen}
-                handleDeleteUrlId={handleDeleteUrlId} />
-          ))}*/}
           {Boolean(productState.product_urls.length) && productState.product_urls.map((url, i) => (
             <tr key={url.id}>
               <td><a href={url.url}>{urlLabel(url.url)}</a></td>
@@ -212,7 +202,7 @@ const Product = ({
               <td>{url?.discount}%</td>
               <td>{url?.in_stock ? "Да" : "Нет"}</td>
               <td>{url?.last_collected_at}</td>
-              <td><span /*className={isCheaper(i) ? "text-danger" : "text-success"}*/>{/*(isCheaper(i)) ? <CaretDownFill /> : <CaretUpFill /> */} {url.price_diff}%</span></td>
+              <td><span >{url.price_diff}%</span></td>
               <td>{url.region ? url.region.name : url.custom_region}</td>
               <td>{url?.has_parsing_errors ? "Да" : "Нет"}</td>
               <td style={{wordWrap: "normal"}}>{url.vendor_sku}</td>

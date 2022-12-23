@@ -17,7 +17,7 @@ const FilterForm = ({ groups, regions, categories, stores, setSearchParams, para
     navigateSearch('/products', {});
     formControl.resetForm();
   }
-
+//нет обработчиков на чекбоксах
   return(
     <Form onSubmit={handleSubmit}>
       <Form.Select className="mb-2" name="is_active" onChange={formControl.handleChange} value={formControl?.values?.is_active || ''} >

@@ -39,6 +39,7 @@ const Login = ({ handleReset }) => {
             onChange={formControl.handleEmailChange}
             value={formControl?.values?.email || ''}
             isInvalid={firstFocused.email && email}
+            autoComplete="off"
             required
           />
           <Form.Control.Feedback type="invalid" tooltip>

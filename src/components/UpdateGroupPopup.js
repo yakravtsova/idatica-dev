@@ -34,9 +34,12 @@ const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup, update
 
   return (
     <Modal show={isOpen} onHide={onClose}>
-      <Modal.Header closeButton />
+      <Modal.Header closeButton>
+      <Modal.Title>Редактировать группу</Modal.Title>
+      </Modal.Header>
       <Form className="p-2" onSubmit={handleSubmit}>
-        <FormGroup className="m-1 position-relative">
+        <FormGroup className="m-2 position-relative">
+          <Form.Label className="m-0">Название группы <span className="text-danger">*</span></Form.Label>
           <Form.Control
             name="name"
             type="text"
@@ -45,13 +48,15 @@ const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup, update
             onBlur={showErrors}
             onChange={formControl.handleChange}
             isInvalid={firstFocused.name && name}
+            autoComplete="off"
             required
           />
           <Form.Control.Feedback type="invalid" tooltip>
             {firstFocused.name && name}
           </Form.Control.Feedback>
         </FormGroup>
-        <FormGroup className="m-1 position-relative">
+        <FormGroup className="m-2 position-relative">
+          <Form.Label className="m-0">Частота проверки <span className="text-danger">*</span></Form.Label>
           <Form.Select
             name="updater_id"
             onBlur={showErrors}
@@ -69,6 +74,7 @@ const UpdateGroupPopup = ({ isOpen, onClose, formData, handleUpdateGroup, update
             {firstFocused.updater_id && updater_id}
           </Form.Control.Feedback>
         </FormGroup>
+        <p className="align-self-start m-2" style={{fontSize: "12px"}}><span className="text-danger">*</span> &mdash; поле обязательно для заполнения</p>
         <Button variant="secondary" className="m-2" type="submit" disabled={!formControl.isValid || !isChanged}>
           Сохранить
         </Button>

@@ -130,7 +130,7 @@ const CreateUpdaterPopup = ({ isOpen, onClose, handleCreateUpdater }) => {
   return(
     <Modal show={isOpen} onHide={onClose}>
       <Modal.Header closeButton>
-        <Modal.Title></Modal.Title>
+        <Modal.Title>Создать расписание</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form noValidate className="d-flex flex-column align-items-center form-updater" onSubmit={handleSubmit}>

@@ -59,7 +59,7 @@ const Groups = ({
         <SearchForm filterAction={filterGroupsByName} />
       </div>
       <Form onSubmit={handleSubmit} noValidate>
-        <div className="col-md-6">
+        <div className="col-md-8">
           <div className="d-flex align-items-center">
             <FormGroup className="m-1 position-relative">
               <Form.Control
@@ -70,6 +70,7 @@ const Groups = ({
                 onBlur={showErrors}
                 onChange={formControl.handleChange}
                 isInvalid={firstFocused.name && name}
+                autoComplete="off"
                 required
               />
               <Form.Control.Feedback type="invalid" tooltip>

@@ -27,7 +27,7 @@ const ProductsCreate = ({
     purchase_price: '',
     category_id: '',
     is_active: true,  //это поле больше смысла не несёт. За него теперь поле status. Но оно не булево, а текстовое.
-    product_urls: [{ url: '', region_id: '', custom_region: '', vendor_sku: ''}]
+    product_urls: [{ url: '', region_id: regions[0]?.id, custom_region: '', vendor_sku: ''}]
   });
 
   const navigate = useNavigate();
@@ -276,7 +276,7 @@ const ProductsCreate = ({
 
       <Form noValidate onSubmit={handleSubmit} className="product-form d-flex flex-column align-items-center w-100">
         <div className="d-flex align-items-center w-100">
-          <Form.Group className="m-1 position-relative flex-grow-1">
+          <Form.Group className="m-1 position-relative flex-grow-1 w-25">
             <Form.Label className="m-0">Название товара <span className="text-danger">*</span></Form.Label>
             <Form.Control
               type="text"
@@ -288,12 +288,13 @@ const ProductsCreate = ({
               onBlur={showErrors}
               maxLength={100}
               isInvalid={firstFocused.name && errors.name}
+              autoComplete="off"
             />
             <Form.Control.Feedback type="invalid" tooltip>
               {firstFocused.name && errors.name}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group className="m-1 position-relative flex-grow-1">
+          <Form.Group className="m-1 position-relative flex-grow-1 w-25">
             <Form.Label className="m-0">Ваша цена</Form.Label>
             <Form.Control
               type="text"
@@ -301,19 +302,21 @@ const ProductsCreate = ({
               name="base_price"
               value={form?.base_price || ''}
               onChange={handleChange}
+              autoComplete="off"
             />
           </Form.Group>
-          <Form.Group className="m-1 position-relative flex-grow-1">
-            <Form.Label className="m-0">Ваша цена</Form.Label>
+          <Form.Group className="m-1 position-relative flex-grow-1 w-25">
+            <Form.Label className="m-0">Ваш артикул</Form.Label>
             <Form.Control
               type="text"
               placeholder="Ваш артикул"
               name="own_vendor_code"
               value={form?.own_vendor_code || ''}
               onChange={handleChange}
+              autoComplete="off"
             />
           </Form.Group>
-          <Form.Group className="m-1 position-relative flex-grow-1">
+          <Form.Group className="m-1 position-relative flex-grow-1 w-25">
             <Form.Label className="m-0">Группа <span className="text-danger">*</span></Form.Label>
             <Form.Select
               value={form?.group_id || ''}
@@ -332,7 +335,7 @@ const ProductsCreate = ({
               {firstFocused.group_id && errors.group_id}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Check className="m-1">
+          {/*<Form.Check className="m-1">
             <Form.Check.Input
               value={form?.is_active}
               checked={form?.is_active}
@@ -340,12 +343,12 @@ const ProductsCreate = ({
               name="is_active" //это поле больше смысла не несёт. За него теперь поле status. Но оно не булево, а текстовое.
               onChange={handleChange}
             />
-          </Form.Check>
+              </Form.Check>*/}
         </div>
         {form.product_urls.map((item ,i) => {
           return(
-            <div key={i} className="d-flex align-items-center w-100">
-              <Form.Group className="m-1 position-relative flex-grow-1">
+            <div key={i} className="d-flex align-items-end w-100">
+              <Form.Group className="m-1 position-relative flex-grow-1 w-25">
                 <Form.Label className="m-0">Ссылка на товар <span className="text-danger">*</span></Form.Label>
                 <Form.Control
                   type="url"
@@ -355,13 +358,14 @@ const ProductsCreate = ({
                   onChange={(e) => handleFormUrlChange(i, e)}
                   onBlur={(e) => showUrlErrors(i, e)}
                   isInvalid={firstFocused?.product_urls[i]?.url && errors.product_urls[i].url}
+                  autoComplete="off"
                   required
                 />
                 <Form.Control.Feedback type="invalid" tooltip>
                   {firstFocused?.product_urls[i]?.url && errors.product_urls[i].url}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Form.Group className="m-1 position-relative flex-grow-1">
+              <Form.Group className="m-1 position-relative flex-grow-1 w-25">
                 <Form.Label className="m-0">Регион</Form.Label>
                 <Form.Select
                   name="region_id"
@@ -374,7 +378,7 @@ const ProductsCreate = ({
                   <option value=''>Другой регион</option>
                 </Form.Select>
               </Form.Group>
-              <Form.Group className="m-1 position-relative flex-grow-1">
+              <Form.Group className="m-1 position-relative flex-grow-1 w-25">
                 <Form.Label className="m-0">Другой регион {!(form.product_urls[i].region_id) && <span className="text-danger">*</span>}</Form.Label>
                 <Form.Control
                   type="text"
@@ -385,12 +389,13 @@ const ProductsCreate = ({
                   onBlur={(e) => showUrlErrors(i, e)}
                   isInvalid={firstFocused?.product_urls[i]?.custom_region && errors.product_urls[i].custom_region}
                   disabled={!!(form.product_urls[i].region_id)}
+                  autoComplete="off"
                 />
                 <Form.Control.Feedback type="invalid" tooltip>
                   {firstFocused?.product_urls[i]?.custom_region && errors.product_urls[i].custom_region}
                 </Form.Control.Feedback>
               </Form.Group>
-              <Form.Group className="m-1 position-relative flex-grow-1">
+              <Form.Group className="m-1 position-relative flex-grow-1 w-25">
                 <Form.Label className="m-0">Артикул</Form.Label>
                 <Form.Control
                   type="text"
@@ -398,9 +403,10 @@ const ProductsCreate = ({
                   name="vendor_sku"
                   value={form.product_urls[i].vendor_sku || ''}
                   onChange={(e) => handleFormChange(i, e)}
+                  autoComplete="off"
                 />
               </Form.Group>
-              {(form.product_urls.length > 1) && <Button onClick={() => removeFields(i)}><TrashFill /></Button>}
+              {(form.product_urls.length > 1) && <Button className="m-1" onClick={() => removeFields(i)}><TrashFill /></Button>}
             </div>
           )
         })}
@@ -416,32 +422,31 @@ const ProductsCreate = ({
             <Accordion.Header>Дополнительные поля</Accordion.Header>
             <Accordion.Body>
               <div className="d-flex align-items-center">
-                <Form.Group className="m-1 flex-grow-1">
+                <Form.Group className="m-1 flex-grow-1 w-25">
                   <Form.Label className="m-0">Бренд</Form.Label>
                   <Form.Control
-                    className="m-1"
                     name="brand"
                     type="text"
                     placeholder="Бренд"
                     value={form.brand ? form.brand : ''}
                     onChange={handleChange}
+                    autoComplete="off"
                   />
                 </Form.Group>
-                <Form.Group className="m-1 flex-grow-1">
+                <Form.Group className="m-1 flex-grow-1 w-25">
                   <Form.Label className="m-0">Закупочная цена</Form.Label>
                   <Form.Control
-                    className="m-1"
                     name="purchase_price"
                     type="text"
                     placeholder="Закупочная цена"
                     value={form.purchase_price ? form.purchase_price : ''}
                     onChange={handleChange}
+                    autoComplete="off"
                   />
                 </Form.Group>
-                <Form.Group className="m-1 flex-grow-1">
+                <Form.Group className="m-1 flex-grow-1 w-25">
                   <Form.Label className="m-0">Категория</Form.Label>
                   <Form.Select
-                    className="m-1"
                     name="category_id"
                     value={form.category_id ? form.category_id : ''}
                     onChange={setCategoryId}
@@ -452,23 +457,24 @@ const ProductsCreate = ({
                     <option value=''>Другая категория</option>
                   </Form.Select>
                 </Form.Group>
-                <Form.Group className="m-1 flex-grow-1">
-                  <Form.Label className="m-0">Категория</Form.Label>
+                <Form.Group className="m-1 flex-grow-1 w-25">
+                  <Form.Label className="m-0">Другая категория</Form.Label>
                     <Form.Control
-                      className="m-1"
                       type="text"
                       placeholder="Другая категория"
                       name="category"
                       value={category.name ? category.name : ''}
                       onChange={handleCategory}
                       disabled={!!(form.category_id)}
+                      autoComplete="off"
                     />
                 </Form.Group>
               </div>
             </Accordion.Body>
           </Accordion.Item>
         </Accordion>
-        <Button variant="primary" type="submit" disabled={!isValid}>Сохранить</Button>
+        <p className="align-self-start m-1" style={{fontSize: "12px"}}><span className="text-danger">*</span> &mdash; поле обязательно для заполнения</p>
+        <Button className="m-2" variant="primary" type="submit" disabled={!isValid}>Сохранить</Button>
       </Form>
     </Container>
   )

@@ -155,6 +155,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
                       isInvalid={firstFocused.name && name}
                       minLength={2}
                       maxLength={30}
+                      autoComplete="off"
                       required
                     />
                     <Form.Control.Feedback type="invalid" tooltip>
@@ -183,6 +184,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
                       onChange={formControl.handleChange}
                       value={formControl?.values.phone || ''}
                       ref={phoneRef}
+                      autoComplete="off"
                     />
                   </Form.Group>
                 </div>
@@ -200,6 +202,7 @@ const Profile = ({ handleUpdateProfile, onTariffInfoPopupOpen, groups, updaters,
                       isInvalid={firstFocused.company_name && company_name}
                       minLength={2}
                       maxLength={30}
+                      autoComplete="off"
                       required
                     />
                     <Form.Control.Feedback type="invalid" tooltip>

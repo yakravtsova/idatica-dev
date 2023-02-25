@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://pricehub.idatica.com/api/v1/';
+export const BASE_URL = 'https://api-url.com';
 
 export const handleResponse = (res) => {
   if (res.ok) {
